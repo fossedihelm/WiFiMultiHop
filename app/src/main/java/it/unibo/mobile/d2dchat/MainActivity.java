@@ -9,6 +9,7 @@ import android.net.wifi.p2p.WifiP2pManager.Channel;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
 import android.view.WindowManager;
 
 import java.util.ArrayList;
@@ -208,5 +209,11 @@ public class MainActivity extends AppCompatActivity {
 
     public String getDeviceName() {
         return deviceManager.getDeviceName();
+    }
+
+    /** Called when the user clicks the Groupownami button */
+    public void groupownami(View view) {
+        Log.d(TAG, "button clicked");
+        deviceManager.createGroup();
     }
 }

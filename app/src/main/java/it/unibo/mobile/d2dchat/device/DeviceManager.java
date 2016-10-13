@@ -294,4 +294,21 @@ public class DeviceManager implements PeerListListener, ConnectionInfoListener, 
             }
         });
     }
+
+    public void createGroup (){
+        Log.d(TAG, "Mi dichiaro GO");
+
+        wifiP2pManager.createGroup(channel, new WifiP2pManager.ActionListener() {
+
+            @Override
+            public void onSuccess() {
+                Log.d(TAG, "Creazione riuscita");
+            }
+
+            @Override
+            public void onFailure(int reason) {
+                Log.d(TAG, "Creazione non riuscita, codice: " + reason);
+            }
+        });
+    }
 }
