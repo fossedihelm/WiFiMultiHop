@@ -196,6 +196,7 @@ public class MainActivity extends AppCompatActivity {
             for (WifiP2pDevice device : peers) {
                 adapter.add(device);
             }
+            // La seguente chiamata è inutile
             adapter.notifyDataSetChanged();
 
         }
