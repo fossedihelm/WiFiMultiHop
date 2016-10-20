@@ -1,7 +1,6 @@
 package it.unibo.mobile.d2dchat.device;
 
 import android.content.Context;
-import android.content.IntentFilter;
 import android.database.Cursor;
 import android.net.Uri;
 import android.net.wifi.p2p.WifiP2pConfig;
@@ -51,6 +50,10 @@ public class DeviceManager implements PeerListListener, ConnectionInfoListener, 
     private String groupOwner;
     private boolean isGO;
     private List<WifiP2pDevice> peers;
+    private ArrayList<WifiP2pDevice> GOlist;
+    private int currentGO = 0;
+
+    private Timer timer = new Timer();
 
     private SocketHandler socketHandler;
 
@@ -328,18 +331,23 @@ public class DeviceManager implements PeerListListener, ConnectionInfoListener, 
 
     public void startPingPongProcedure (){
         Log.d(TAG, "Fase di ping pong iniziata");
-        Timer timer = new Timer();
+        GOlist = new ArrayList<WifiP2pDevice>();
         for (WifiP2pDevice peer: peers) {
             if(peer.isGroupOwner()) {
-                this.connectTo(peer);
-                timer.schedule(new TimerTask() {
-                    @Override
-                    public void run() {
-                        Log.d(TAG, "MORTE");
-                    }
-                }, 10000);
-                break;
+                GOlist.add(peer);
             }
         }
+        this.switchGO();
+    }
+
+    public void switchGO() {
+        currentGO = (currentGO + 1) % GOlist.size();
+        connectTo(GOlist.get(currentGO));
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                Log.d(TAG, "MORTE");
+            }
+        }, 10000);
     }
 }
