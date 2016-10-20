@@ -342,12 +342,13 @@ public class DeviceManager implements PeerListListener, ConnectionInfoListener, 
 
     public void switchGO() {
         currentGO = (currentGO + 1) % GOlist.size();
+        Log.d(TAG, "switch verso: " +GOlist.get(currentGO).deviceName);
         connectTo(GOlist.get(currentGO));
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                Log.d(TAG, "MORTE");
+                switchGO();
             }
-        }, 10000);
+        }, 30000);
     }
 }
