@@ -23,6 +23,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import it.unibo.mobile.d2dchat.Constants;
 import it.unibo.mobile.d2dchat.MainActivity;
@@ -326,9 +328,16 @@ public class DeviceManager implements PeerListListener, ConnectionInfoListener, 
 
     public void startPingPongProcedure (){
         Log.d(TAG, "Fase di ping pong iniziata");
+        Timer timer = new Timer();
         for (WifiP2pDevice peer: peers) {
             if(peer.isGroupOwner()) {
                 this.connectTo(peer);
+                timer.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        Log.d(TAG, "MORTE");
+                    }
+                }, 10000);
                 break;
             }
         }
