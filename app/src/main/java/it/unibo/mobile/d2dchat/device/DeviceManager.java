@@ -49,6 +49,8 @@ public class DeviceManager implements PeerListListener, ConnectionInfoListener, 
     private String groupOwner;
     private boolean isGO;
     private List<WifiP2pDevice> peers;
+    private ArrayList<WifiP2pDevice> GOlist;
+    private int currentGO = 0;
 
     private SocketHandler socketHandler;
 
@@ -326,11 +328,17 @@ public class DeviceManager implements PeerListListener, ConnectionInfoListener, 
 
     public void startPingPongProcedure (){
         Log.d(TAG, "Fase di ping pong iniziata");
+        GOlist = new ArrayList<WifiP2pDevice>();
         for (WifiP2pDevice peer: peers) {
             if(peer.isGroupOwner()) {
-                this.connectTo(peer);
-                break;
+                GOlist.add(peer);
             }
         }
+        connectTo(GOlist.get(currentGO));
+    }
+
+    public void switchGO() {
+        currentGO = (currentGO + 1) % GOlist.size();
+        connectTo(GOlist.get(currentGO));
     }
 }
