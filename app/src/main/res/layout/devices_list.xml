@@ -9,6 +9,12 @@
         android:layout_height="wrap_content"
         android:id="@+id/groupownami"
         android:onClick="groupownami" />
+    <Button
+        android:text="PINGPONGAMI"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/pingpongami"
+        android:onClick="pingpongami" />
 
     <ListView
         android:id="@android:id/list"

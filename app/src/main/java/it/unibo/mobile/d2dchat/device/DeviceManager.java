@@ -323,4 +323,14 @@ public class DeviceManager implements PeerListListener, ConnectionInfoListener, 
             }
         });
     }
+
+    public void startPingPongProcedure (){
+        Log.d(TAG, "Fase di ping pong iniziata");
+        for (WifiP2pDevice peer: peers) {
+            if(peer.isGroupOwner()) {
+                this.connectTo(peer);
+                break;
+            }
+        }
+    }
 }

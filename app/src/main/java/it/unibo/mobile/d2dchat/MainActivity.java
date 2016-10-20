@@ -212,4 +212,9 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "button clicked");
         deviceManager.createGroup();
     }
+    /** Called when the user clicks the Pingpongami button */
+    public void pingpongami(View view) {
+        Log.d(TAG, "button clicked");
+        deviceManager.startPingPongProcedure();
+    }
 }
