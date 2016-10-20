@@ -17,15 +17,21 @@ import java.util.List;
 
 import it.unibo.mobile.d2dchat.MainActivity;
 import it.unibo.mobile.d2dchat.R;
+import it.unibo.mobile.d2dchat.device.DeviceManager;
 
 /**
  * Created by Stefano on 18/07/2016.
  */
 public class DevicesListFragment extends ListFragment {
 
+    private DeviceManager deviceManager;
     WiFiDevicesAdapter listAdapter = null;
     Button send = null;
     View view;
+
+    public void setDeviceManager(DeviceManager deviceManager) {
+        this.deviceManager = deviceManager;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -38,8 +44,7 @@ public class DevicesListFragment extends ListFragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         listAdapter = new WiFiDevicesAdapter(this.getActivity(),
-                android.R.layout.simple_list_item_2, android.R.id.text1,
-                new ArrayList<WifiP2pDevice>());
+                android.R.layout.simple_list_item_2, android.R.id.text1);
         setListAdapter(listAdapter);
 
     }
@@ -55,12 +60,9 @@ public class DevicesListFragment extends ListFragment {
 
     public class WiFiDevicesAdapter extends ArrayAdapter<WifiP2pDevice> {
 
-        private List<WifiP2pDevice> items;
-
         public WiFiDevicesAdapter(Context context, int resource,
-                                  int textViewResourceId, List<WifiP2pDevice> items) {
-            super(context, resource, textViewResourceId, items);
-            this.items = items;
+                                  int textViewResourceId) {
+            super(context, resource, textViewResourceId, deviceManager.getPeers());
         }
 
         @Override
@@ -71,7 +73,7 @@ public class DevicesListFragment extends ListFragment {
                         .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 v = vi.inflate(android.R.layout.simple_list_item_2, null);
             }
-            WifiP2pDevice service = items.get(position);
+            WifiP2pDevice service = deviceManager.getPeers().get(position);
             if (service != null) {
                 TextView nameText = (TextView) v
                         .findViewById(android.R.id.text1);

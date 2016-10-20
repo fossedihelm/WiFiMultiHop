@@ -48,6 +48,7 @@ public class DeviceManager implements PeerListListener, ConnectionInfoListener, 
     private String deviceName;
     private String groupOwner;
     private boolean isGO;
+    private List<WifiP2pDevice> peers;
 
     private SocketHandler socketHandler;
 
@@ -57,6 +58,14 @@ public class DeviceManager implements PeerListListener, ConnectionInfoListener, 
         return wiFiDirectBroadcastReceiver;
     }
 
+    // peers getter and setter
+    public List<WifiP2pDevice> getPeers() {
+        return peers;
+    }
+
+    public void setPeers(List<WifiP2pDevice> peers) {
+        this.peers = peers;
+    }
 
     public class ActionListenerDiscoverPeers implements ActionListener {
         //La discovery dei peers ha avuto successo, tecnicamente non serve a niente perchè ci avvertirà la callback onPeersAvailable
@@ -78,6 +87,7 @@ public class DeviceManager implements PeerListListener, ConnectionInfoListener, 
         this.channel = channel;
         this.wifiP2pManager = wifiP2pManager;
         this.mainActivity = mainActivity;
+        this.peers = new ArrayList<WifiP2pDevice>();
 
         wiFiDirectBroadcastReceiver = new WiFiDirectBroadcastReceiver(wifiP2pManager, channel, this);
 
@@ -116,7 +126,9 @@ public class DeviceManager implements PeerListListener, ConnectionInfoListener, 
         Log.d(TAG, "Cambiato il gruppo dei peers");
         //Ci interessa solo se siamo in discovery, così aggiorniamo la lista . Se siamo connessi starà agli altri connettersi al gruppo
         if (deviceStatus == Constants.DEVICE_DISCOVERY) {
-            mainActivity.setPeers(wifiP2pDeviceList.getDeviceList());
+            peers.clear();
+            peers.addAll(wifiP2pDeviceList.getDeviceList());
+            mainActivity.updatePeers();
         }
     }
 

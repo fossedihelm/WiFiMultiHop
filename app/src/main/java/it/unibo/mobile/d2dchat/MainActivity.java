@@ -69,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         devicesListFragment = new DevicesListFragment();
+        devicesListFragment.setDeviceManager(deviceManager);
         getFragmentManager().beginTransaction()
                 .add(R.id.container_root, devicesListFragment, "services").commit();
 
@@ -190,16 +191,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void setPeers(Collection<WifiP2pDevice> peers) {
+    public void updatePeers() {
         if (devicesListFragment != null && deviceManager.getDeviceStatus() == Constants.DEVICE_DISCOVERY) {
             DevicesListFragment.WiFiDevicesAdapter adapter = devicesListFragment.getWiFiDeviceAdapter();
-            adapter.clear();
-            for (WifiP2pDevice device : peers) {
-                adapter.add(device);
-            }
-            // La seguente chiamata è inutile
+            // Informa l'adapter che la lista e' cambiata, cambia anche la view
             adapter.notifyDataSetChanged();
-
         }
     }
 
