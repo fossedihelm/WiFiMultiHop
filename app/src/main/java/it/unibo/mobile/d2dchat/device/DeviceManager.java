@@ -112,7 +112,7 @@ public class DeviceManager implements PeerListListener, ConnectionInfoListener, 
         if (active) {
             switch (deviceStatus) {
                 case Constants.DEVICE_INIT:
-                case Constants.DEVICE_NOWIFI:
+                case Constants.DEVICE_NOWIFI://non ha senso
                     wifiP2pManager.discoverPeers(channel, new ActionListenerDiscoverPeers());
                     //Supponiamo che siamo già nella schermata principale poichè i due stati del case dovrebbero già essere gestiti
                     break;
@@ -293,7 +293,7 @@ public class DeviceManager implements PeerListListener, ConnectionInfoListener, 
     }
 
 
-    public void connectTo(WifiP2pDevice device) {
+    public void connectTo(final WifiP2pDevice device) {
         Log.d(TAG, "Ci proviamo a connettere ad un device");
         WifiP2pConfig config = new WifiP2pConfig();
         config.deviceAddress = device.deviceAddress;
@@ -302,12 +302,12 @@ public class DeviceManager implements PeerListListener, ConnectionInfoListener, 
 
             @Override
             public void onSuccess() {
-                Log.d(TAG, "Connessione riuscita");
+                Log.d(TAG, "["+device.deviceName+"]Connessione riuscita");
             }
 
             @Override
             public void onFailure(int reason) {
-                Log.d(TAG, "Connessione non riuscita, codice: " + reason);
+                Log.d(TAG, "["+device.deviceName+"]Connessione non riuscita, codice: " + reason);
             }
         });
     }
@@ -341,14 +341,47 @@ public class DeviceManager implements PeerListListener, ConnectionInfoListener, 
     }
 
     public void switchGO() {
-        currentGO = (currentGO + 1) % GOlist.size();
-        Log.d(TAG, "switch verso: " +GOlist.get(currentGO).deviceName);
-        connectTo(GOlist.get(currentGO));
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                switchGO();
-            }
-        }, 30000);
+        if(deviceStatus==Constants.DEVICE_CONNECTED) {
+            wifiP2pManager.removeGroup(channel, new WifiP2pManager.ActionListener() {
+
+                @Override
+                public void onSuccess(){
+                    Log.d(TAG, "Disconnect riuscita");
+                    currentGO = (currentGO + 1) % GOlist.size();
+                    Log.d(TAG, "switch verso: " + GOlist.get(currentGO).deviceName);
+                    Timer test = new Timer();
+                    test.schedule(new TimerTask() {
+                        @Override
+                        public void run() {
+                            connectTo(GOlist.get(currentGO));
+                            timer.schedule(new TimerTask() {
+                                @Override
+                                public void run() {
+                                    switchGO();
+                                }
+                            }, 65000);
+                        }
+                    }, 5000);
+
+
+                }
+
+                @Override
+                public void onFailure(int reason) {
+                    Log.d(TAG, "Disconnect non riuscita, codice: " + reason);
+                }
+            });
+        }
+        else{
+            currentGO = (currentGO + 1) % GOlist.size();
+            Log.d(TAG, "switch verso: " + GOlist.get(currentGO).deviceName);
+            connectTo(GOlist.get(currentGO));
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    switchGO();
+                }
+            }, 10000);
+        }
     }
 }

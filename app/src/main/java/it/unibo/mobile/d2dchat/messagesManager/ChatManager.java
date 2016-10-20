@@ -51,13 +51,15 @@ public class ChatManager implements Runnable {
                 } catch (IOException e) {
                     Log.e(TAG, "disconnected", e);
                     socket.close();
+                    break;
                 } catch (ClassNotFoundException e) {
                     Log.e(TAG, "Read error: ", e);
                     socket.close();
+                    break;
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
         } finally {
             try {
                 socket.close();
