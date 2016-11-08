@@ -27,4 +27,5 @@ public class Constants {
     public static final int DEVICE_DISCOVERY = 1;
     public static final int DEVICE_CONNECTED = 2;
     public static final int DEVICE_NOWIFI = 3;
+    public static final int DEVICE_DISCONNECTED = 4; // when switching, right after disconnecting
 }

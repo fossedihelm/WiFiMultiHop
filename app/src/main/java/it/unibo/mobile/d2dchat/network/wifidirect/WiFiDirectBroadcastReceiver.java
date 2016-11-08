@@ -7,8 +7,17 @@ import android.net.NetworkInfo;
 import android.net.wifi.p2p.WifiP2pDevice;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.net.wifi.p2p.WifiP2pManager.Channel;
+import android.util.Log;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
+import it.unibo.mobile.d2dchat.Constants;
 import it.unibo.mobile.d2dchat.device.DeviceManager;
+
+import static android.content.ContentValues.TAG;
+import static android.net.wifi.p2p.WifiP2pManager.WIFI_P2P_DISCOVERY_STARTED;
+import static android.net.wifi.p2p.WifiP2pManager.WIFI_P2P_DISCOVERY_STOPPED;
 
 /**
  * Created by Stefano on 17/07/2016.
@@ -49,14 +58,38 @@ public class WiFiDirectBroadcastReceiver extends BroadcastReceiver {
             }
             NetworkInfo networkInfo = intent.getParcelableExtra(WifiP2pManager.EXTRA_NETWORK_INFO);
             if (networkInfo.isConnected()) {
+                Log.d(TAG, "WiFi status: connected");
                 mManager.requestConnectionInfo(mChannel, deviceManager); //Chiama onConnectionInfoAvailable
             } else {
-                deviceManager.onConnectionInfoNotAvailable();
-            }
+                Log.d(TAG, "WiFi status: disconnected");
+
+        }
+
         } else if (WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION.equals(action)) {
             // Respond to this device's wifi state changing
             WifiP2pDevice device = intent.getParcelableExtra(WifiP2pManager.EXTRA_WIFI_P2P_DEVICE);
             deviceManager.updateDevice(device);
+            Log.d(TAG, "device status: "+device.status);
+            if (device.status == WifiP2pDevice.AVAILABLE) {
+                Log.d(TAG, "Device AVAILABLE, ready to connect");
+                //if (deviceManager.getDeviceStatus() == Constants.DEVICE_DISCONNECTED) {
+                if (deviceManager.GOlist != null) {
+                    // Disconnected from group, connect to next one.
+                    deviceManager.discover();
+                    deviceManager.onConnectionInfoNotAvailable();
+                }
+            }
+        } else if (WifiP2pManager.WIFI_P2P_DISCOVERY_CHANGED_ACTION.equals(action)) {
+            int state = intent.getIntExtra(WifiP2pManager.EXTRA_DISCOVERY_STATE, -1);
+            if (state == WIFI_P2P_DISCOVERY_STARTED) {
+                Log.d(TAG, "Discovery is active");
+                if (!deviceManager.firstDiscovery) {
+                    //deviceManager.switchGO();
+                    deviceManager.switching = true;
+                }
+                deviceManager.firstDiscovery = false;
+            }
+            if (state == WIFI_P2P_DISCOVERY_STOPPED) Log.d(TAG, "Discovery is NOT active");
         }
     }
 }

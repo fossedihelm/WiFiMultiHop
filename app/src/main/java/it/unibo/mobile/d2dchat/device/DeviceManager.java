@@ -35,9 +35,6 @@ import it.unibo.mobile.d2dchat.socketManager.GroupOwnerSocketHandler;
 import it.unibo.mobile.d2dchat.socketManager.SocketHandler;
 import it.unibo.mobile.d2dchat.socketManager.SocketReceiver;
 
-/**
- * Created by Stefano on 14/09/2016.
- */
 //Deve gestire il device,  dovrà fare da intermediario tra la rete e l'activity. Gran parte del codice dell'activity andrà qui
 public class DeviceManager implements PeerListListener, ConnectionInfoListener, GroupInfoListener, SocketReceiver {
 
@@ -50,7 +47,9 @@ public class DeviceManager implements PeerListListener, ConnectionInfoListener, 
     private String groupOwner;
     private boolean isGO;
     private List<WifiP2pDevice> peers;
-    private ArrayList<WifiP2pDevice> GOlist;
+    public ArrayList<WifiP2pDevice> GOlist;
+    public boolean firstDiscovery = true;
+    public boolean switching = false;
     private int currentGO = 0;
 
     private Timer timer = new Timer();
@@ -134,6 +133,10 @@ public class DeviceManager implements PeerListListener, ConnectionInfoListener, 
             peers.clear();
             peers.addAll(wifiP2pDeviceList.getDeviceList());
             mainActivity.updatePeers();
+            if (switching) {
+                switching = false;
+                switchGO();
+            }
         }
     }
 
@@ -337,7 +340,7 @@ public class DeviceManager implements PeerListListener, ConnectionInfoListener, 
                 GOlist.add(peer);
             }
         }
-        this.switchGO();
+        switchGO();
     }
 
     public void switchGO() {
@@ -346,24 +349,7 @@ public class DeviceManager implements PeerListListener, ConnectionInfoListener, 
 
                 @Override
                 public void onSuccess(){
-                    Log.d(TAG, "Disconnect riuscita");
-                    currentGO = (currentGO + 1) % GOlist.size();
-                    Log.d(TAG, "switch verso: " + GOlist.get(currentGO).deviceName);
-                    Timer test = new Timer();
-                    test.schedule(new TimerTask() {
-                        @Override
-                        public void run() {
-                            connectTo(GOlist.get(currentGO));
-                            timer.schedule(new TimerTask() {
-                                @Override
-                                public void run() {
-                                    switchGO();
-                                }
-                            }, 65000);
-                        }
-                    }, 5000);
-
-
+                    deviceStatus = Constants.DEVICE_DISCONNECTED;
                 }
 
                 @Override
@@ -383,5 +369,9 @@ public class DeviceManager implements PeerListListener, ConnectionInfoListener, 
                 }
             }, 10000);
         }
+    }
+
+    public void discover() {
+        wifiP2pManager.discoverPeers(channel, new ActionListenerDiscoverPeers());
     }
 }
