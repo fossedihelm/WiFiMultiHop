@@ -9,28 +9,30 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 
-import it.unibo.mobile.d2dchat.socketManager.IReceiver;
+import it.unibo.mobile.d2dchat.device.Peer;
 
 /**
  * Handles reading and writing of messages with socket buffers. Uses a Handler
  * to post messages to UI thread for UI updates.
  */
-public class ChatManager implements Runnable {
+public class MessageManager extends Thread {
 
     private Socket socket = null;
     private String deviceName;
-    private IReceiver receiver;
-    private InputStream iStream;
-    private OutputStream oStream;
+    private Peer receiver;
+    private InputStream inputStream;
+    private OutputStream outputStream;
     private static final String TAG = "ChatHandler";
+    public volatile boolean keepRunning = true;
 
-    public ChatManager(Socket socket, IReceiver receiver) {
+
+    public MessageManager(Socket socket, Peer receiver) {
         this.socket = socket;
         this.receiver = receiver;
     }
 
 
-    public ChatManager(Socket socket, String deviceName, IReceiver receiver) {
+    public MessageManager(Socket socket, String deviceName, Peer receiver) {
         this.socket = socket;
         this.deviceName = deviceName;
         this.receiver = receiver;
@@ -40,21 +42,21 @@ public class ChatManager implements Runnable {
     @Override
     public void run() {
         try {
-            iStream = socket.getInputStream();
-            oStream = socket.getOutputStream();
-            //Qui devo inviare il primo messaggio di registrazione all'owner, con l'username
-            receiver.chatStarted();
-            while (true) {
+            inputStream = socket.getInputStream();
+            outputStream = socket.getOutputStream();
+            while (keepRunning) {
                 try {
-                    Message message = (Message) new ObjectInputStream(iStream).readObject();
+                    Message message = (Message) new ObjectInputStream(inputStream).readObject();
                     receiver.receiveMessage(message, this);
                 } catch (IOException e) {
                     Log.e(TAG, "disconnected", e);
-                    socket.close();
+                    if (socket != null && !socket.isClosed())
+                        socket.close();
                     break;
                 } catch (ClassNotFoundException e) {
                     Log.e(TAG, "Read error: ", e);
-                    socket.close();
+                    if (socket != null && !socket.isClosed())
+                        socket.close();
                     break;
                 }
             }
@@ -62,7 +64,8 @@ public class ChatManager implements Runnable {
 //            e.printStackTrace();
         } finally {
             try {
-                socket.close();
+                if (socket != null && !socket.isClosed())
+                    socket.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -71,7 +74,7 @@ public class ChatManager implements Runnable {
 
     public void write(Message message) {
         try {
-            new ObjectOutputStream(oStream).writeObject(message);
+            new ObjectOutputStream(outputStream).writeObject(message);
         } catch (IOException e) {
             Log.e(TAG, "Exception during write", e);
         }

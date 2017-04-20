@@ -150,6 +150,10 @@ public class MainActivity extends AppCompatActivity {
         deviceManager.sendFile(filePath, receiver);
     }
 
+    public void sendDataMessage(Uri filePath, String receiver) {
+        deviceManager.sendDataMessage(deviceManager.currentDest);
+    }
+
 
     public void addMessage(Message message) {
         synchronized (lock) {

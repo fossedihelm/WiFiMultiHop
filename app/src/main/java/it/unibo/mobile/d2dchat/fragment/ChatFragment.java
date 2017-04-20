@@ -128,7 +128,7 @@ public class ChatFragment extends ListFragment {
     public void onListItemClick(ListView l, View v, int position, long id) {
         Message selectedMessage = (Message) l.getItemAtPosition(position); //Recupero il message cliccato
         if (selectedMessage.getType() == Constants.MESSAGE_FILE && !
-                selectedMessage.getSender().equals(((MainActivity)getActivity()).getDeviceName())) {
+                selectedMessage.getSource().equals(((MainActivity)getActivity()).getDeviceName())) {
             FileAttach file = (FileAttach) selectedMessage.getData();
             FileOutputStream outputStream;
             try {
@@ -207,12 +207,12 @@ public class ChatFragment extends ListFragment {
 
 
                 if (nameText != null) {
-                    if (((MainActivity) getActivity()).getDeviceName().equals(message.getSender()))
+                    if (((MainActivity) getActivity()).getDeviceName().equals(message.getSource()))
                         nameText.setTextColor(Color.RED); //L'ho inviato io
                     else
                         nameText.setTextColor(Color.BLACK); //L'ho ricevuto
-                    String sender = message.getSender();
-                    sender += (message.getReceiver().equals("all")) ? "" : " to " + message.getReceiver();
+                    String sender = message.getSource();
+                    sender += (message.getDest().equals("all")) ? "" : " to " + message.getDest();
                     switch (message.getType()) {
                         case Constants.MESSAGE_TEXT:
                             nameText.setText(sender + " : " + message.getData().toString());

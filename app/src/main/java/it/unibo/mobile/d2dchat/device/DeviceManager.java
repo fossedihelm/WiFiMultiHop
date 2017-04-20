@@ -30,8 +30,6 @@ import it.unibo.mobile.d2dchat.MainActivity;
 import it.unibo.mobile.d2dchat.messagesManager.FileAttach;
 import it.unibo.mobile.d2dchat.messagesManager.Message;
 import it.unibo.mobile.d2dchat.network.wifidirect.WiFiDirectBroadcastReceiver;
-import it.unibo.mobile.d2dchat.socketManager.ClientSocketHandler;
-import it.unibo.mobile.d2dchat.socketManager.GroupOwnerSocketHandler;
 import it.unibo.mobile.d2dchat.socketManager.SocketHandler;
 import it.unibo.mobile.d2dchat.socketManager.SocketReceiver;
 
@@ -50,11 +48,10 @@ public class DeviceManager implements PeerListListener, ConnectionInfoListener, 
     public ArrayList<WifiP2pDevice> GOlist;
     public boolean firstDiscovery = true;
     public boolean switching = false;
-    private int currentGO = 0;
-
+    public String currentDest = null;
+    public int currentGO = 0;
     private Timer timer = new Timer();
-
-    private SocketHandler socketHandler;
+    public Peer peer;
 
     private static final String TAG = "DeviceManager";
 
@@ -99,9 +96,10 @@ public class DeviceManager implements PeerListListener, ConnectionInfoListener, 
         wifiP2pManager.discoverPeers(channel, new ActionListenerDiscoverPeers());
     }
 
+    // Called on activity destruction
     public void stop() {
         deviceStatus = Constants.DEVICE_INIT;
-        socketHandler.stopHandler();
+        peer.onDisconnect();
         wifiP2pManager.removeGroup(channel, null);
     }
 
@@ -146,15 +144,30 @@ public class DeviceManager implements PeerListListener, ConnectionInfoListener, 
     public void onConnectionInfoAvailable(WifiP2pInfo wifiP2pInfo) {
         if (deviceStatus != Constants.DEVICE_CONNECTED) {
             deviceStatus = Constants.DEVICE_CONNECTED;
+            boolean creation = true;
+            if (peer != null)
+                creation = false;
             if (wifiP2pInfo.isGroupOwner) {
                 isGO = true;
-                socketHandler = new GroupOwnerSocketHandler(deviceName, this);
+                if (creation)
+                    peer = new GroupOwner(this);
+                else
+                    peer.onConnect(wifiP2pInfo);
+                // send data to a client in the list (the only one in our test scenario)
+                for (WifiP2pDevice device : peers) {
+                    if (!device.isGroupOwner())
+                        currentDest = device.deviceAddress;
+                }
             } else {
-                socketHandler = new ClientSocketHandler(wifiP2pInfo.groupOwnerAddress, deviceName, this);
-
+                if (creation)
+                    peer = new Client(this);
+                else
+                    peer.onConnect(wifiP2pInfo);
+                currentDest = wifiP2pInfo.groupOwnerAddress.getHostAddress();
             }
 
-            ((Thread) (socketHandler)).start();
+            //TODO: verify that one thread is enough
+            //((Thread) (peer)).start();
 
             wifiP2pManager.requestGroupInfo(channel, this);
         }
@@ -204,16 +217,16 @@ public class DeviceManager implements PeerListListener, ConnectionInfoListener, 
 
     @Override
     //Il socket handler ci comunica l'arrivo di un evento, in genere messaggi
-    public void receiveMessage(int eventType, Object data) {
+    public void receiveMessage(int eventType, Message message) {
         switch (eventType) {
             case Constants.EVENT_REGISTER: //Dobbiamo registrarci al GO
-                if (data == null)
+                if (message == null)
                     registerMessage(); //Dobbiamo registrarci
                 else
-                    mainActivity.addParticipant(((Message) data).getSender());
+                    mainActivity.addParticipant(message.getSource());
                 break;
             case Constants.EVENT_MESSAGE:
-                receiveChatMessage((Message) data);
+                receiveChatMessage((Message) message);
                 break;
         }
     }
@@ -222,30 +235,39 @@ public class DeviceManager implements PeerListListener, ConnectionInfoListener, 
     //(Il GO ha un ChatManager per ogni client).
     private void registerMessage() {
         Message message = new Message();
-        message.setSender(deviceName);
+        message.setSource(deviceName);
         message.setType(Constants.MESSAGE_REGISTER);
-        message.setReceiver(groupOwner);
-        socketHandler.writeMessage(message);
+        message.setDest(groupOwner);
+        peer.writeMessage(message);
     }
 
     private void receiveChatMessage(Message message) {
         mainActivity.addMessage(message);
     }
 
+    public void sendDataMessage(String dest) {
+        Message message = new Message();
+        message.setSource(deviceName);
+        message.setType(Constants.MESSAGE_DATA);
+        message.setDest(dest);
+        message.setData(new char[1024]);
+        message.setSendTime(System.currentTimeMillis());
+    }
+
     public void sendTextMessage(String text, String receiver) {
         Message message = new Message();
-        message.setSender(deviceName);
+        message.setSource(deviceName);
         message.setType(Constants.MESSAGE_TEXT);
-        message.setReceiver(receiver);
+        message.setDest(receiver);
         message.setData(text);
         sendMessage(message);
     }
 
     public void sendFile(Uri filePath, String receiver) {
         Message message = new Message();
-        message.setSender(deviceName);
+        message.setSource(deviceName);
         message.setType(Constants.MESSAGE_FILE);
-        message.setReceiver(receiver);
+        message.setDest(receiver);
         byte[] bfile = getBytes(filePath);
         if (bfile != null) {
             message.setData(new FileAttach(bfile, getFilenameFromUri(filePath)));
@@ -292,7 +314,7 @@ public class DeviceManager implements PeerListListener, ConnectionInfoListener, 
 
     private void sendMessage(Message message) {
         mainActivity.addMessage(message);
-        socketHandler.writeMessage(message);
+        peer.writeMessage(message);
     }
 
 

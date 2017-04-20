@@ -6,18 +6,22 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.util.LinkedList;
 
 import it.unibo.mobile.d2dchat.Constants;
-import it.unibo.mobile.d2dchat.messagesManager.ChatManager;
+import it.unibo.mobile.d2dchat.messagesManager.MessageManager;
 import it.unibo.mobile.d2dchat.messagesManager.Message;
 
+/*
 public class ClientSocketHandler extends Thread implements IReceiver, SocketHandler {
 
     private static final String TAG = "ClientSocketHandler";
-    private ChatManager chat;
+    private MessageManager chat;
     private InetAddress mAddress;
     private String deviceName;
     private SocketReceiver handler;
+    private LinkedList<Message> receiveBuffer;
+    private LinkedList<Message> sendBuffer;
     Socket socket;
 
 
@@ -25,6 +29,8 @@ public class ClientSocketHandler extends Thread implements IReceiver, SocketHand
         this.mAddress = groupOwnerAddress;
         this.deviceName = deviceName;
         this.handler = handler;
+        receiveBuffer = new LinkedList<Message>();
+        sendBuffer = new LinkedList<Message>();
         Log.d(TAG, "Clientsocket creato");
     }
 
@@ -35,7 +41,7 @@ public class ClientSocketHandler extends Thread implements IReceiver, SocketHand
             socket.bind(null);
             socket.connect(new InetSocketAddress(mAddress.getHostAddress(),
                     Constants.SERVER_PORT), 5000);
-            chat = new ChatManager(socket, deviceName, this);
+            chat = new MessageManager(socket, deviceName, this);
             new Thread(chat).start();
         } catch (IOException e) {
             //La connessione non è stata posssibile! Forse non sta usando la nostra applicazione?
@@ -49,12 +55,12 @@ public class ClientSocketHandler extends Thread implements IReceiver, SocketHand
         }
     }
 
-    public ChatManager getChat() {
+    public MessageManager getChat() {
         return chat;
     }
 
     @Override
-    public void receiveMessage(Message message, ChatManager manager) {
+    public void receiveMessage(Message message, MessageManager manager) {
         switch (message.getType()) {
             case Constants.MESSAGE_TEXT:
             case Constants.MESSAGE_FILE:
@@ -87,3 +93,5 @@ public class ClientSocketHandler extends Thread implements IReceiver, SocketHand
     }
 
 }
+
+*/

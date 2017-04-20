@@ -1,6 +1,6 @@
 package it.unibo.mobile.d2dchat.socketManager;
 
-import it.unibo.mobile.d2dchat.messagesManager.ChatManager;
+import it.unibo.mobile.d2dchat.messagesManager.MessageManager;
 import it.unibo.mobile.d2dchat.messagesManager.Message;
 
 /**
@@ -8,7 +8,6 @@ import it.unibo.mobile.d2dchat.messagesManager.Message;
  */
 public interface IReceiver {
 
-    void receiveMessage(Message message, ChatManager manager);
+    void receiveMessage(Message message, MessageManager manager);
 
-    void chatStarted();
 }

@@ -10,7 +10,8 @@ public class Constants {
     //Message codes
     public static final int MESSAGE_REGISTER = 1;
     public static final int MESSAGE_TEXT = 2;
-    public static final int MESSAGE_FILE = 3;
+    public static final int MESSAGE_DATA = 3;
+    public static final int MESSAGE_FILE = 4;
 
     //EVENT codes
     public static final int EVENT_REGISTER = 1;

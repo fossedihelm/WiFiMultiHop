@@ -8,6 +8,6 @@ import it.unibo.mobile.d2dchat.messagesManager.Message;
 public interface SocketHandler {
 
     void writeMessage(Message message);
-
+    void newSocket();
     void stopHandler();
 }
