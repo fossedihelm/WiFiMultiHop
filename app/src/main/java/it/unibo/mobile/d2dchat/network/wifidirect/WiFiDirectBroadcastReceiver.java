@@ -65,7 +65,7 @@ public class WiFiDirectBroadcastReceiver extends BroadcastReceiver {
                 Log.d(TAG, "WiFi status: disconnected");
             }
             WifiP2pGroup group = intent.getParcelableExtra(WifiP2pManager.EXTRA_WIFI_P2P_GROUP);
-            if (group.getClientList().isEmpty()) { // ci siamo disconnessi
+            if (deviceManager.peer != null && group.getClientList().isEmpty()) { // ci siamo disconnessi
                 deviceManager.peer.onDisconnect();
             }
             Log.d(TAG, "Clients: "+group.getClientList().size());
