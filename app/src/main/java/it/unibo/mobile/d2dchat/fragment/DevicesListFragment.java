@@ -1,5 +1,6 @@
 package it.unibo.mobile.d2dchat.fragment;
 
+import android.app.DialogFragment;
 import android.app.ListFragment;
 import android.content.Context;
 import android.net.wifi.p2p.WifiP2pDevice;

@@ -1,5 +1,10 @@
 <resources>
-    <string name="app_name">D2DChat</string>
+    <string name="app_name">WiFiDirectMultiGroup</string>
     <string name="btn_send">Send</string>
     <string name="txt_hint">Type Message</string>
+    <string name="start_btn">Start</string>
+    <string name="ping_pong_interval">Tempo permanenza in gruppo (ms)</string>
+    <string name="packet_generation_interval">Intervallo generazione pacchetti (ms)</string>
+    <string name="packet_size">Grandezza pacchetti (KiB)</string>
+    <string name="cancel">Cancel</string>
 </resources>

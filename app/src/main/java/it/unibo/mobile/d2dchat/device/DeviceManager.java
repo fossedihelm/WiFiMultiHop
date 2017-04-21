@@ -161,7 +161,7 @@ public class DeviceManager implements PeerListListener, ConnectionInfoListener, 
             } else {
                 if (creation)
                     peer = new Client(this);
-                else
+//                else
                     peer.onConnect(wifiP2pInfo);
                 currentDest = wifiP2pInfo.groupOwnerAddress.getHostAddress();
             }
