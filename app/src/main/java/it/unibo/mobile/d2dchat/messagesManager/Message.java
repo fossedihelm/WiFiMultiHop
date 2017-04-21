@@ -3,14 +3,12 @@ package it.unibo.mobile.d2dchat.messagesManager;
 import java.io.Serializable;
 
 public class Message implements Serializable {
-    public static final int SETUP = 0;
-    public static final int DATA = 1;
     private int type;
     private String source;
     private String dest;
     private int seqNum;
-    private Object data;
     private long sendTime;
+    private Object data;
 
     public int getType() {
         return type;

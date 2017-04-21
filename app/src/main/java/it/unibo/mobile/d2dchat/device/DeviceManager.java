@@ -43,8 +43,9 @@ public class DeviceManager implements PeerListListener, ConnectionInfoListener, 
     private MainActivity mainActivity;
     private String deviceName;
     private String groupOwner;
-    private boolean isGO;
     private List<WifiP2pDevice> peers;
+    public String deviceAddress;
+    public boolean isGO;
     public ArrayList<WifiP2pDevice> GOlist;
     public boolean firstDiscovery = true;
     public boolean switching = false;
@@ -99,7 +100,8 @@ public class DeviceManager implements PeerListListener, ConnectionInfoListener, 
     // Called on activity destruction
     public void stop() {
         deviceStatus = Constants.DEVICE_INIT;
-        peer.onDisconnect();
+        //peer.nextAction.setAction(Peer.Action.disconnect);
+        //peer.semaphore.release();
         wifiP2pManager.removeGroup(channel, null);
     }
 
@@ -142,27 +144,36 @@ public class DeviceManager implements PeerListListener, ConnectionInfoListener, 
     @Override
     //Sono disponibili informazioni sulla connessione (siamo in un gruppo), probabilmente ci siamo connessi
     public void onConnectionInfoAvailable(WifiP2pInfo wifiP2pInfo) {
-        if (deviceStatus != Constants.DEVICE_CONNECTED) {
+     //   if (deviceStatus != Constants.DEVICE_CONNECTED) {
             deviceStatus = Constants.DEVICE_CONNECTED;
             boolean creation = true;
             if (peer != null)
                 creation = false;
             if (wifiP2pInfo.isGroupOwner) {
                 isGO = true;
-                if (creation)
+                if (creation) {
                     peer = new GroupOwner(this);
+                    peer.start();
+                }
                 else
-                    peer.onConnect(wifiP2pInfo);
+                    peer.info = wifiP2pInfo;
+                    //perform onConnect()
+                    peer.nextAction.setAction(Peer.Action.connect);
+                    peer.semaphore.release();
                 // send data to a client in the list (the only one in our test scenario)
                 for (WifiP2pDevice device : peers) {
                     if (!device.isGroupOwner())
                         currentDest = device.deviceAddress;
                 }
             } else {
-                if (creation)
+                if (creation) {
                     peer = new Client(this);
-//                else
-                    peer.onConnect(wifiP2pInfo);
+                    peer.info = wifiP2pInfo;
+                    //perform onConnect()
+                    peer.nextAction.setAction(Peer.Action.connect);
+                    peer.semaphore.release();
+                    peer.start();
+                }
                 currentDest = wifiP2pInfo.groupOwnerAddress.getHostAddress();
             }
 
@@ -170,7 +181,7 @@ public class DeviceManager implements PeerListListener, ConnectionInfoListener, 
             //((Thread) (peer)).start();
 
             wifiP2pManager.requestGroupInfo(channel, this);
-        }
+        //}
     }
 
     @Override
@@ -205,6 +216,7 @@ public class DeviceManager implements PeerListListener, ConnectionInfoListener, 
         //Aggiorniamo o, se è la prima volta, salviamo il nome del device
         if (deviceName == null || !deviceName.equals(device.deviceName))
             deviceName = device.deviceName;
+            deviceAddress = device.deviceAddress;
     }
 
     public String getDeviceName() {
@@ -367,20 +379,10 @@ public class DeviceManager implements PeerListListener, ConnectionInfoListener, 
 
     public void switchGO() {
         if(deviceStatus==Constants.DEVICE_CONNECTED) {
-            wifiP2pManager.removeGroup(channel, new WifiP2pManager.ActionListener() {
-
-                @Override
-                public void onSuccess(){
-                    deviceStatus = Constants.DEVICE_DISCONNECTED;
-                }
-
-                @Override
-                public void onFailure(int reason) {
-                    Log.d(TAG, "Disconnect non riuscita, codice: " + reason);
-                }
-            });
+            ((Client)peer).keepSending = false; // stop sending queued messages
+            peer.nextAction.setAction(Peer.Action.initiateDisconnection); // message exchange to stop GO from sending
         }
-        else{
+        else {
             currentGO = (currentGO + 1) % GOlist.size();
             Log.d(TAG, "switch verso: " + GOlist.get(currentGO).deviceName);
             connectTo(GOlist.get(currentGO));
@@ -395,5 +397,19 @@ public class DeviceManager implements PeerListListener, ConnectionInfoListener, 
 
     public void discover() {
         wifiP2pManager.discoverPeers(channel, new ActionListenerDiscoverPeers());
+    }
+
+    public void disconnect() {
+        wifiP2pManager.removeGroup(channel, new WifiP2pManager.ActionListener() {
+            @Override
+            public void onSuccess(){
+                deviceStatus = Constants.DEVICE_DISCONNECTED;
+            }
+
+            @Override
+            public void onFailure(int reason) {
+                Log.d(TAG, "Disconnect non riuscita, codice: " + reason);
+            }
+        });
     }
 }

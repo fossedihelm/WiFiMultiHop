@@ -2,6 +2,7 @@ package it.unibo.mobile.d2dchat.messagesManager;
 
 import android.util.Log;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
@@ -47,13 +48,18 @@ public class MessageManager extends Thread {
             while (keepRunning) {
                 try {
                     Message message = (Message) new ObjectInputStream(inputStream).readObject();
-                    receiver.receiveMessage(message, this);
-                } catch (IOException e) {
+                    receiver.receiveMessage(message);
+                }
+                catch (EOFException e) {
+                    Log.e(TAG, "End of message.");
+                }
+                catch (IOException e) {
                     Log.e(TAG, "disconnected", e);
                     if (socket != null && !socket.isClosed())
                         socket.close();
                     break;
-                } catch (ClassNotFoundException e) {
+                }
+                catch (ClassNotFoundException e) {
                     Log.e(TAG, "Read error: ", e);
                     if (socket != null && !socket.isClosed())
                         socket.close();

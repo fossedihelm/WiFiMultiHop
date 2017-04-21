@@ -15,6 +15,7 @@ import java.util.TimerTask;
 
 import it.unibo.mobile.d2dchat.Constants;
 import it.unibo.mobile.d2dchat.device.DeviceManager;
+import it.unibo.mobile.d2dchat.device.Peer;
 
 import static android.content.ContentValues.TAG;
 import static android.net.wifi.p2p.WifiP2pManager.WIFI_P2P_DISCOVERY_STARTED;
@@ -66,7 +67,8 @@ public class WiFiDirectBroadcastReceiver extends BroadcastReceiver {
             }
             WifiP2pGroup group = intent.getParcelableExtra(WifiP2pManager.EXTRA_WIFI_P2P_GROUP);
             if (deviceManager.peer != null && group.getClientList().isEmpty()) { // ci siamo disconnessi
-                deviceManager.peer.onDisconnect();
+                deviceManager.peer.nextAction.setAction(Peer.Action.disconnect);
+                deviceManager.peer.semaphore.release();
             }
             Log.d(TAG, "Clients: "+group.getClientList().size());
 
@@ -88,7 +90,7 @@ public class WiFiDirectBroadcastReceiver extends BroadcastReceiver {
             int state = intent.getIntExtra(WifiP2pManager.EXTRA_DISCOVERY_STATE, -1);
             if (state == WIFI_P2P_DISCOVERY_STARTED) {
                 Log.d(TAG, "Discovery is active");
-                if (!deviceManager.firstDiscovery) {
+                if (!deviceManager.firstDiscovery && deviceManager.isGO) {
                     //deviceManager.switchGO();
                     deviceManager.switching = true;
                 }
