@@ -50,9 +50,7 @@ public class MessageManager extends Thread {
                     Message message = (Message) new ObjectInputStream(inputStream).readObject();
                     receiver.receiveMessage(message);
                 }
-                catch (EOFException e) {
-                    Log.e(TAG, "End of message.");
-                }
+                catch (EOFException e) {}
                 catch (IOException e) {
                     Log.e(TAG, "disconnected", e);
                     if (socket != null && !socket.isClosed())
@@ -80,6 +78,8 @@ public class MessageManager extends Thread {
 
     public void write(Message message) {
         try {
+            if (outputStream == null)
+                Log.d(TAG, "null outputStream");
             new ObjectOutputStream(outputStream).writeObject(message);
         } catch (IOException e) {
             Log.e(TAG, "Exception during write", e);

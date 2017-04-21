@@ -155,11 +155,12 @@ public class DeviceManager implements PeerListListener, ConnectionInfoListener, 
                     peer = new GroupOwner(this);
                     peer.start();
                 }
-                else
+                else {
                     peer.info = wifiP2pInfo;
                     //perform onConnect()
                     peer.nextAction.setAction(Peer.Action.connect);
                     peer.semaphore.release();
+                }
                 // send data to a client in the list (the only one in our test scenario)
                 for (WifiP2pDevice device : peers) {
                     if (!device.isGroupOwner())
