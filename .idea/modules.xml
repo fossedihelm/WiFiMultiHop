@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file:///mnt/I/workspace/ChatD2Dgabss/ChatD2Dgabss.iml" filepath="/mnt/I/workspace/ChatD2Dgabss/ChatD2Dgabss.iml" />
-      <module fileurl="file:///mnt/I/workspace/ChatD2Dgabss/app/app.iml" filepath="/mnt/I/workspace/ChatD2Dgabss/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ChatD2Dgabss.iml" filepath="$PROJECT_DIR$/ChatD2Dgabss.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>
 </project>
