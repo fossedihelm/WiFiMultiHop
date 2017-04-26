@@ -382,6 +382,7 @@ public class DeviceManager implements PeerListListener, ConnectionInfoListener, 
         if(deviceStatus==Constants.DEVICE_CONNECTED) {
             ((Client)peer).keepSending = false; // stop sending queued messages
             peer.nextAction.setAction(Peer.Action.initiateDisconnection); // message exchange to stop GO from sending
+            peer.semaphore.release();
         }
         else {
             currentGO = (currentGO + 1) % GOlist.size();
