@@ -4,6 +4,7 @@ import android.net.wifi.p2p.WifiP2pInfo;
 import android.util.Log;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.Semaphore;
@@ -22,12 +23,14 @@ class MessageGenerator extends Thread {
     private DeviceManager deviceManager;
     private GroupOwner groupOwner;
     private Message message;
+    public Semaphore lock;
     public volatile boolean waitForClient = false;
     public volatile boolean doneSending = false;
 
     public MessageGenerator(DeviceManager deviceManager, GroupOwner groupOwner) {
         this.deviceManager = deviceManager;
         this.groupOwner = groupOwner;
+        this.lock = new Semaphore(0);
         message = new Message();
         message.setType(Constants.MESSAGE_DATA);
         message.setSource(deviceManager.deviceAddress);
@@ -52,20 +55,17 @@ class MessageGenerator extends Thread {
                 // When the GO receives the message telling it to stop sending, if MessageGenerator is not doneSending the GroupOwner waits
                 // until it is done sending. It also sets waitForClient to true, so that the MessageGenerator knows that it has to wait for
                 // the client return before sending again.
-                synchronized (this) {
-                    doneSending = false;
-                    if (!waitForClient) {
-                        groupOwner.getMessageManager().write(message);
-                        groupOwner.sent++;
-                    }
-                    doneSending = true;
-                    groupOwner.notify();
-                    if (waitForClient)
-                        wait();
-
-                    else // sleep only if we have not already waited with wait()
-                        sleep(100);
+                doneSending = false;
+                if (!waitForClient) {
+                    groupOwner.messageManager.write(message);
+                    groupOwner.sent++;
                 }
+                doneSending = true;
+                groupOwner.lock.release();
+                if (waitForClient)
+                    lock.acquire();
+                else // sleep only if we have not already waited with lock.acquire()
+                    sleep(100);
             } catch (InterruptedException e) {
                 Log.d("MessageGenerator", "sleep() interrupted, ignoring");
             }
@@ -82,14 +82,21 @@ public class GroupOwner extends Peer {
     private int received = 0;
     private int completedConnections = 0;
     public volatile int sent = 0;
+    public Semaphore lock;
+    private int count = 0;
 
     public GroupOwner(DeviceManager deviceManager) {
         super();
         this.deviceManager = deviceManager;
+        this.lock = new Semaphore(0);
     }
+
+    // Used to unlock MessageGenerator
 
     @Override
     public void onConnect() {
+        count++;
+        Log.d(TAG, "onConnect() called "+Integer.toString(count)+" times.");
         try {
             newSocket();
             // every time a new wifi connection is established we need to create a new socket
@@ -100,6 +107,7 @@ public class GroupOwner extends Peer {
             messageManager = new MessageManager(client, this);
             messageManager.start();
         } catch (IOException e) {
+            Log.e(TAG, "Could not create socket.");
             try {
                 if (socket != null && !socket.isClosed())
                     socket.close();
@@ -113,10 +121,8 @@ public class GroupOwner extends Peer {
             generator = new MessageGenerator(deviceManager, this);
             generator.start();
         }
-        synchronized (generator) {
-            generator.waitForClient = false;
-            generator.notify();
-        }
+        generator.waitForClient = false;
+        generator.lock.release();
     }
 
     @Override
@@ -148,7 +154,12 @@ public class GroupOwner extends Peer {
 
     public void newSocket() {
         try {
-            socket = new ServerSocket(Constants.SERVER_PORT);
+            socket = new ServerSocket();
+            socket.setReuseAddress(true);
+            try {
+                sleep(1000);
+            } catch (InterruptedException e) {}
+            socket.bind(new InetSocketAddress(Constants.SERVER_PORT));
             Log.d("GroupOwnerSocketHandler", "Socket Started");
         } catch (IOException e) {
             e.printStackTrace();
@@ -156,14 +167,13 @@ public class GroupOwner extends Peer {
     }
 
     public void initiateDisconnection() {
+        Log.d(TAG, "Departure procedure initiated.");
         // We have to stop sending messages, because the client is leaving.
-        synchronized (generator) {
-            while (!generator.doneSending)
-                try {
-                    wait();
-                } catch (InterruptedException e) {
-                    Log.d(TAG, "Interrupted exception while waiting for generator to finish sending.");
-                }
+        while (!generator.doneSending)
+            try {
+                lock.acquire();
+            } catch (InterruptedException e) {
+                Log.d(TAG, "Interrupted exception while waiting for generator to finish sending.");
         }
         // Generate response to client.
         Message message = new Message();

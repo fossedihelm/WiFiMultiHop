@@ -92,6 +92,7 @@ public class Client extends Peer {
         if (message.getType() == Constants.MESSAGE_DATA)
             goQueue.get(deviceManager.currentGO).add(message);
         else if (message.getType() == Constants.MESSAGE_STOP_ACK) {
+            Log.d(TAG, "Departure procedure completed.");
             deviceManager.disconnect();
         }
     }
@@ -108,6 +109,7 @@ public class Client extends Peer {
     }
 
     public void initiateDisconnection() {
+        Log.d(TAG, "Departure procedure initiated.");
         Message message = new Message();
         message.setType(Constants.MESSAGE_STOP);
         message.setSource(deviceManager.deviceAddress);
