@@ -127,6 +127,7 @@ public class GroupOwner extends Peer {
 
     @Override
     public void onDisconnect() {
+        Log.d(TAG, "onDisconnect()");
         messageManager.keepRunning = false;
         completedConnections++;
     }
