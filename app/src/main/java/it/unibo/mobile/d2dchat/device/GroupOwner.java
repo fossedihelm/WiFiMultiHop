@@ -128,6 +128,13 @@ public class GroupOwner extends Peer {
     @Override
     public void onDisconnect() {
         Log.d(TAG, "onDisconnect()");
+        if(socket != null){
+            try {
+                socket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
         messageManager.keepRunning = false;
         completedConnections++;
     }
@@ -155,9 +162,6 @@ public class GroupOwner extends Peer {
 
     public void newSocket() {
         try {
-            if(socket != null){
-                socket.close();
-            }
             socket = new ServerSocket();
             socket.setReuseAddress(true);
             try {
@@ -186,5 +190,6 @@ public class GroupOwner extends Peer {
         message.setDest(deviceManager.currentDest); // this is the other GO's address but this message is intended for the client
         message.setSeqNum(0);
         messageManager.write(message);
+        onDisconnect();
     }
 }
