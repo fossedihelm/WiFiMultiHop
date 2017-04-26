@@ -155,6 +155,9 @@ public class GroupOwner extends Peer {
 
     public void newSocket() {
         try {
+            if(socket != null){
+                socket.close();
+            }
             socket = new ServerSocket();
             socket.setReuseAddress(true);
             try {

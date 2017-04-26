@@ -4,17 +4,19 @@
     android:layout_height="match_parent">
 
     <Button
-        android:text="GROUPOWNAMI"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:id="@+id/groupownami"
-        android:onClick="groupownami" />
-    <Button
-        android:text="PINGPONGAMI"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="64dp"
+        android:layout_marginBottom="8dp"
+        android:onClick="groupownami"
+        android:text="GROUPOWNAMI" />
+
+    <Button
         android:id="@+id/pingpongami"
-        android:onClick="pingpongami" />
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:onClick="pingpongami"
+        android:text="PINGPONGAMI" />
 
     <ListView
         android:id="@android:id/list"
