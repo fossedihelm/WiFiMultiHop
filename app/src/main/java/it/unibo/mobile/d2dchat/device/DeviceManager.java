@@ -128,7 +128,7 @@ public class DeviceManager implements PeerListListener, ConnectionInfoListener, 
     @Override
     //E' successo qualcosa nei vicini (nuovi vicini, vecchi vicini andati, etc..), non si parla di gruppo
     public void onPeersAvailable(WifiP2pDeviceList wifiP2pDeviceList) {
-        Log.d(TAG, "Cambiato il gruppo dei peers");
+        Log.d(TAG, "onPeersAvailable()");
         //Ci interessa solo se siamo in discovery, così aggiorniamo la lista . Se siamo connessi starà agli altri connettersi al gruppo
         if (deviceStatus == Constants.DEVICE_DISCOVERY) {
             peers.clear();
@@ -154,6 +154,7 @@ public class DeviceManager implements PeerListListener, ConnectionInfoListener, 
                 isGO = true;
                 if (creation) {
                     peer = new GroupOwner(this);
+                    peer.info = wifiP2pInfo;
                     peer.start();
                 }
                 else {
@@ -167,7 +168,7 @@ public class DeviceManager implements PeerListListener, ConnectionInfoListener, 
                     if (!device.isGroupOwner())
                         currentDest = device.deviceAddress;
                 }
-            } else {
+            } else { // Client
                 if (creation) {
                     peer = new Client(this);
                     peer.info = wifiP2pInfo;
@@ -175,6 +176,9 @@ public class DeviceManager implements PeerListListener, ConnectionInfoListener, 
                     peer.nextAction.setAction(Peer.Action.connect);
                     peer.semaphore.release();
                     peer.start();
+                }
+                else {
+                    peer.info = wifiP2pInfo;
                 }
                 currentDest = wifiP2pInfo.groupOwnerAddress.getHostAddress();
             }

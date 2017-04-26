@@ -43,27 +43,23 @@ public class Client extends Peer {
         server = new Socket();
         try {
             server.bind(null);
-            boolean temp=true;
             int c =0;
-            while (temp){
-                try {
-                    Log.d(TAG, Integer.toString(++c) + "o tentativo di connessione");
-                    server.connect(new InetSocketAddress(info.groupOwnerAddress.getHostAddress(),
-                            Constants.SERVER_PORT), 5000);
-                    temp=false;
-                } catch (ConnectException e){
-                    Log.d(TAG, "CONNECTIONEXP nel " + Integer.toString(c) + "o tentativo di connessione");
-                    e.printStackTrace();
-                } catch (IOException e){
-                    Log.d(TAG, "IOEXP nel " + Integer.toString(c) + "o tentativo di connessione");
-                    e.printStackTrace();
-                }
+            try {
+                Log.d(TAG, Integer.toString(++c) + "o tentativo di connessione");
+                server.connect(new InetSocketAddress(info.groupOwnerAddress.getHostAddress(),
+                        Constants.SERVER_PORT), 5000);
+            } catch (ConnectException e){
+                Log.d(TAG, "CONNECTIONEXP nel " + Integer.toString(c) + "o tentativo di connessione");
+                e.printStackTrace();
+            } catch (IOException e){
+                Log.d(TAG, "IOEXP nel " + Integer.toString(c) + "o tentativo di connessione");
+                e.printStackTrace();
             }
             // stop old instance because it's using an old socket
             if (messageManager != null)
                 messageManager.keepRunning = false;
             messageManager = new MessageManager(server, this);
-           messageManager.start();
+            messageManager.start();
         } catch (IOException e) {
             //La connessione non è stata posssibile! Forse non sta usando la nostra applicazione?
             e.printStackTrace();
