@@ -1,16 +1,24 @@
 package it.unibo.mobile.d2dchat;
 
+import android.app.Dialog;
+import android.app.DialogFragment;
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
 import android.net.wifi.p2p.WifiP2pDevice;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.net.wifi.p2p.WifiP2pManager.Channel;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -21,7 +29,7 @@ import it.unibo.mobile.d2dchat.fragment.ChatFragment;
 import it.unibo.mobile.d2dchat.fragment.DevicesListFragment;
 import it.unibo.mobile.d2dchat.messagesManager.Message;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements MyDialogFragment.TimeListener{
 
 
     public static final String TAG = "wifiD2Dchat";
@@ -214,12 +222,46 @@ public class MainActivity extends AppCompatActivity {
 
     /** Called when the user clicks the Groupownami button */
     public void groupownami(View view) {
+//         Do something in response to button
         Log.d(TAG, "button clicked");
         deviceManager.createGroup();
     }
     /** Called when the user clicks the Pingpongami button */
     public void pingpongami(View view) {
         Log.d(TAG, "button clicked");
+//        deviceManager.startPingPongProcedure();
+        FragmentManager manager = getFragmentManager();
+        Fragment frag = manager.findFragmentByTag("fragment_edit_name");
+        if (frag != null) {
+            manager.beginTransaction().remove(frag).commit();
+        }
+        MyDialogFragment editNameDialog = new MyDialogFragment();
+        editNameDialog.show(manager, "fragment_edit_name");
+    }
+
+    @Override
+    public void onFinishTimeDialog(Integer time) {
+        deviceManager.timeInterval = time;
         deviceManager.startPingPongProcedure();
+//        Toast.makeText(this, "Hello, " + user, Toast.LENGTH_SHORT).show();
+    }
+
+    public void onClick(View view) {
+        // close existing dialog fragments
+        FragmentManager manager = getFragmentManager();
+        Fragment frag = manager.findFragmentByTag("fragment_edit_name");
+        if (frag != null) {
+            manager.beginTransaction().remove(frag).commit();
+        }
+//        switch (view.getId()) {
+//            case R.id.showCustomFragment:
+//                MyDialogFragment editNameDialog = new MyDialogFragment();
+//                editNameDialog.show(manager, "fragment_edit_name");
+//                break;
+//            case R.id.showAlertDialogFragment:
+//                MyAlertDialogFragment alertDialogFragment = new MyAlertDialogFragment();
+//                alertDialogFragment.show(manager, "fragment_edit_name");
+//                break;
+//        }
     }
 }
