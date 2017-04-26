@@ -66,10 +66,10 @@ public class WiFiDirectBroadcastReceiver extends BroadcastReceiver {
                 Log.d(TAG, "WiFi status: disconnected");
             }
             WifiP2pGroup group = intent.getParcelableExtra(WifiP2pManager.EXTRA_WIFI_P2P_GROUP);
-            if (deviceManager.peer != null && group.getClientList().isEmpty()) { // ci siamo disconnessi
-                deviceManager.peer.nextAction.setAction(Peer.Action.disconnect);
-                deviceManager.peer.semaphore.release();
-            }
+            //if (deviceManager.peer != null && group.getClientList().isEmpty()) { // ci siamo disconnessi
+            //    deviceManager.peer.nextAction.setAction(Peer.Action.disconnect);
+            //    deviceManager.peer.semaphore.release();
+            //}
             Log.d(TAG, "Clients: "+group.getClientList().size());
 
         } else if (WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION.equals(action)) {

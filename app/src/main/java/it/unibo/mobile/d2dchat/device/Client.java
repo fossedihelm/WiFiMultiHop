@@ -23,6 +23,7 @@ public class Client extends Peer {
     private ArrayList<ArrayList<Message>> goQueue;
     private int discarded = 0;
     private static final String TAG = "Client";
+    private int count = 0;
     public volatile boolean keepSending = false;
 
     public Client(DeviceManager deviceManager) {
@@ -36,6 +37,8 @@ public class Client extends Peer {
 
     @Override
     public void onConnect() {
+        count++;
+        Log.d(TAG, "onConnect() called " + count + " times.");
         // every time a new wifi connection is established we need to create a new socket
         server = new Socket();
         try {
@@ -51,7 +54,7 @@ public class Client extends Peer {
                 } catch (ConnectException e){
                     Log.d(TAG, "CONNECTIONEXP nel " + Integer.toString(c) + "o tentativo di connessione");
                     e.printStackTrace();
-                }catch (IOException e){
+                } catch (IOException e){
                     Log.d(TAG, "IOEXP nel " + Integer.toString(c) + "o tentativo di connessione");
                     e.printStackTrace();
                 }
@@ -77,6 +80,7 @@ public class Client extends Peer {
 
     @Override
     public void onDisconnect() {
+        Log.d(TAG, "onDisconnect()");
         try {
             server.close();
         } catch (IOException e) {
@@ -93,6 +97,7 @@ public class Client extends Peer {
             goQueue.get(deviceManager.currentGO).add(message);
         else if (message.getType() == Constants.MESSAGE_STOP_ACK) {
             Log.d(TAG, "Departure procedure completed.");
+            onDisconnect();
             deviceManager.disconnect();
         }
     }

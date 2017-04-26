@@ -23,7 +23,7 @@ public class MessageManager extends Thread {
     private Peer receiver;
     private InputStream inputStream;
     private OutputStream outputStream;
-    private static final String TAG = "ChatHandler";
+    private static final String TAG = "MessageManager";
     public volatile boolean keepRunning = true;
 
 
