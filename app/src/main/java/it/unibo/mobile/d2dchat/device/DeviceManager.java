@@ -51,6 +51,7 @@ public class DeviceManager implements PeerListListener, ConnectionInfoListener, 
     public boolean switching = false;
     public String currentDest = null;
     public int currentGO = 0;
+    public int timeInterval = 10000;
     private Timer timer = new Timer();
     public Peer peer;
 
@@ -370,7 +371,7 @@ public class DeviceManager implements PeerListListener, ConnectionInfoListener, 
         Log.d(TAG, "Fase di ping pong iniziata");
         GOlist = new ArrayList<WifiP2pDevice>();
         for (WifiP2pDevice peer: peers) {
-            if(peer.isGroupOwner()) {
+            if(peer.isGroupOwner() && (peer.deviceName.equals("Nexus4") || peer.deviceName.equals("Elephone") || peer.deviceName.equals("N5") || peer.deviceName.equals("Mi4C") )) {
                 GOlist.add(peer);
             }
         }
@@ -391,7 +392,7 @@ public class DeviceManager implements PeerListListener, ConnectionInfoListener, 
                 public void run() {
                     switchGO();
                 }
-            }, 10000);
+            }, timeInterval);
         }
     }
 
