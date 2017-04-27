@@ -2,6 +2,7 @@ package it.unibo.mobile.d2dchat.messagesManager;
 
 import android.util.Log;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.ServerSocket;
@@ -68,7 +69,7 @@ public class GroupOwnerMessageManager extends MessageManager {
                     else // sleep only if we have not already waited with lock.acquire()
                         sleep(100);
                 } catch (InterruptedException e) {
-                    Log.d("MessageGenerator", "sleep() interrupted, ignoring");
+                    Log.d(TAG, "sleep() interrupted, ignoring");
                 }
             }
         }
@@ -108,6 +109,9 @@ public class GroupOwnerMessageManager extends MessageManager {
             try {
                 Message message = (Message) new ObjectInputStream(inputStream).readObject();
                 receiver.receiveMessage(message);
+            } catch (EOFException e) {
+                Log.d(TAG, "Clonnection closed, stop reading.");
+                keepRunning = false;
             } catch (IOException e) {
                 Log.d(TAG, "Error reading object");
                 e.printStackTrace();
