@@ -76,7 +76,6 @@ public class GroupOwnerMessageManager extends MessageManager {
     public GroupOwnerMessageManager(Peer peer) {
         super(peer);
         generator = new MessageGenerator();
-        generator.start();
     }
 
     @Override
@@ -88,7 +87,7 @@ public class GroupOwnerMessageManager extends MessageManager {
             e.printStackTrace();
         }
         try {
-            Log.d(TAG, "Server Socket attending accept..");
+            Log.d(TAG, "Server Socket waiting for accept..");
             socket = serverSocket.accept();
             Log.d(TAG, "Server Socket accepted");
         } catch (IOException e) {
@@ -103,6 +102,7 @@ public class GroupOwnerMessageManager extends MessageManager {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        generator.start();
 
         while (keepRunning) {
             try {
@@ -111,6 +111,7 @@ public class GroupOwnerMessageManager extends MessageManager {
             } catch (EOFException e) {
                 Log.d(TAG, "Clonnection closed, stop reading.");
                 keepRunning = false;
+                break;
             } catch (IOException e) {
                 Log.d(TAG, "Error reading object");
                 e.printStackTrace();

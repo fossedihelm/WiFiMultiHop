@@ -45,10 +45,12 @@ public class GroupOwner extends Peer {
     @Override
     public void onConnect() {
         count++;
-        Log.d(TAG, "onConnect() called "+Integer.toString(count)+" times.");
-        manager = new GroupOwnerMessageManager(this);
-        manager.start();
-        Log.d(TAG, "onConnect() created new connection");
+        if (count <= 1) {
+            Log.d(TAG, "onConnect() called " + Integer.toString(count) + " times.");
+            manager = new GroupOwnerMessageManager(this);
+            manager.start();
+            Log.d(TAG, "onConnect() created new connection");
+        }
     }
 
     @Override

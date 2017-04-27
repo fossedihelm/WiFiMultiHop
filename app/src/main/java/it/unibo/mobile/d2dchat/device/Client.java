@@ -35,16 +35,18 @@ public class Client extends Peer {
     @Override
     public void onConnect() {
         count++;
-        Log.d(TAG, "onConnect() called "+Integer.toString(count)+" times.");
-        manager = new ClientMessageManager(this);
-        manager.start();
-        Log.d(TAG, "onConnect() created new connection");
-        try {
-            manager.connecting.acquire();
-        }catch (InterruptedException e ){
-            e.printStackTrace();
+        if (count <= 1) {
+            Log.d(TAG, "onConnect() called " + Integer.toString(count) + " times.");
+            manager = new ClientMessageManager(this);
+            manager.start();
+            Log.d(TAG, "onConnect() created new connection");
+            try {
+                manager.connecting.acquire();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            sendQueued();
         }
-        sendQueued();
     }
 
     @Override
