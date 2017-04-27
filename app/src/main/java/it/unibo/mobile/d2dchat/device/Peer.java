@@ -28,6 +28,9 @@ public abstract class Peer {
             this.action = action;
         }
     }
+    public DeviceManager getDeviceManager(){
+        return this.deviceManager;
+    }
     public NextAction nextAction;
     public abstract void onConnect();
     public abstract void onDisconnect();

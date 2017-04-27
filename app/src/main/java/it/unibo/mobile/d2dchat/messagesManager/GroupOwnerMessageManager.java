@@ -93,7 +93,7 @@ public class GroupOwnerMessageManager extends MessageManager {
             Log.d(TAG, "Server Socket accepted");
         } catch (IOException e) {
             if (socket != null && !socket.isClosed())
-                super.closeSocket();
+                stopManager();
             e.printStackTrace();
         }
 
@@ -107,17 +107,17 @@ public class GroupOwnerMessageManager extends MessageManager {
         while (keepRunning) {
             try {
                 Message message = (Message) new ObjectInputStream(inputStream).readObject();
-                receiver.receiveMessage(message);
+                peer.receiveMessage(message);
             } catch (IOException e) {
                 Log.d(TAG, "Error reading object");
                 e.printStackTrace();
                 if (socket != null && !socket.isClosed())
-                    super.closeSocket();
+                    stopManager();
                 break;
             } catch (ClassNotFoundException e) {
                 Log.e(TAG, "Read error: ", e);
                 if (socket != null && !socket.isClosed()) {
-                    super.closeSocket();
+                    stopManager();
                 }
                 break;
             }
@@ -126,8 +126,8 @@ public class GroupOwnerMessageManager extends MessageManager {
 
     @Override
     public void stopManager() {
-        Log.d(TAG, "Stop server socket request received");
         super.stopManager();
+        Log.d(TAG, "Stop server socket request received");
         try {
             serverSocket.close();
             Log.d(TAG, "Stop server socket request executed");
