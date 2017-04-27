@@ -94,7 +94,7 @@ public abstract class MessageManager extends Thread {
         closeSocket();
     }
 
-    protected void closeSocket(){
+    private void closeSocket(){
         Log.d(TAG, "Close socket request received");
         try {
             socket.close();

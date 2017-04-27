@@ -70,12 +70,12 @@ public class ClientMessageManager extends MessageManager {
                 Log.d(TAG, "Error reading object");
                 e.printStackTrace();
                 if (socket != null && !socket.isClosed())
-                    super.closeSocket();
+                    super.stopManager();
                 break;
             } catch (ClassNotFoundException e) {
                 Log.e(TAG, "Read error: ", e);
                 if (socket != null && !socket.isClosed()) {
-                    super.closeSocket();
+                    super.stopManager();
                 }
                 break;
             }
