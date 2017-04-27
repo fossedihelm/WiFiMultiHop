@@ -45,8 +45,7 @@ public abstract class MessageManager extends Thread {
 
 
     public void send(Message message) {
-        Log.i(TAG, "Sending message");
-        Log.i(TAG, Integer.toString(message.getType()));
+        Log.i(TAG, "Sending message: \n" + message.getContents());
         try {
             if (outputStream == null)
                 Log.d(TAG, "null outputStream");
