@@ -16,16 +16,19 @@ import it.unibo.mobile.d2dchat.device.Peer;
  * Handles reading and writing of messages with socket buffers. Uses a Handler
  * to post messages to UI thread for UI updates.
  */
-public class MessageManager extends Thread {
+public abstract class MessageManager extends Thread {
 
-    private Socket socket = null;
-    private String deviceName;
-    private Peer receiver;
-    private InputStream inputStream;
-    private OutputStream outputStream;
-    private static final String TAG = "MessageManager";
+    protected Socket socket = null;
+    protected String deviceName;
+    protected Peer receiver;
+    protected InputStream inputStream;
+    protected OutputStream outputStream;
+    protected static final String TAG = "MessageManager";
     public volatile boolean keepRunning = true;
 
+    public MessageManager(Peer receiver) {
+        this.receiver = receiver;
+    }
 
     public MessageManager(Socket socket, Peer receiver) {
         this.socket = socket;
@@ -86,4 +89,12 @@ public class MessageManager extends Thread {
         }
     }
 
+    public void stopManager() {
+        keepRunning = false;
+        try {
+            socket.close();
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
+    }
 }

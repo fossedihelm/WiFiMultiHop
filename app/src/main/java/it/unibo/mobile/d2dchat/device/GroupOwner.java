@@ -7,11 +7,18 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import it.unibo.mobile.d2dchat.Constants;
 import it.unibo.mobile.d2dchat.messagesManager.Message;
 import it.unibo.mobile.d2dchat.messagesManager.MessageManager;
+import it.unibo.mobile.d2dchat.socketManager.GroupOwnerSocketHandler;
+import it.unibo.mobile.d2dchat.socketManager.SocketHandler;
 
 /**
  * Created by asig on 12/9/16.
@@ -37,10 +44,6 @@ class MessageGenerator extends Thread {
         message.setDest(deviceManager.currentDest);
         message.setData(new char[1024]);
         message.setSeqNum(0);
-    }
-
-    public synchronized void send(Message message) {
-
     }
 
     @Override
@@ -81,9 +84,13 @@ public class GroupOwner extends Peer {
     private long totalTimeReceivedMessages = 0;
     private int received = 0;
     private int completedConnections = 0;
+    private SocketHandler socketHandler = null;
     public volatile int sent = 0;
     public Semaphore lock;
     private int count = 0;
+
+    // Thread for SocketHandler
+    private final ExecutorService socketHandlerExecutor = Executors.newSingleThreadExecutor();
 
     public GroupOwner(DeviceManager deviceManager) {
         super();
@@ -91,31 +98,13 @@ public class GroupOwner extends Peer {
         this.lock = new Semaphore(0);
     }
 
-    // Used to unlock MessageGenerator
 
     @Override
     public void onConnect() {
         count++;
         Log.d(TAG, "onConnect() called "+Integer.toString(count)+" times.");
-        try {
-            newSocket();
-            // every time a new wifi connection is established we need to create a new socket
-            Socket client = socket.accept();
-            // stop old instance because it's using an old socket
-            if (messageManager != null)
-                messageManager.keepRunning = false;
-            messageManager = new MessageManager(client, this);
-            messageManager.start();
-        } catch (IOException e) {
-            Log.e(TAG, "Could not create socket.");
-            try {
-                if (socket != null && !socket.isClosed())
-                    socket.close();
-            } catch (IOException ioe) {
-
-            }
-            e.printStackTrace();
-        }
+        socketHandler = new GroupOwnerSocketHandler(this);
+        socketHandlerExecutor.execute(socketHandler);
         Log.d(TAG, "onConnect() created new connection");
         if (generator == null) { // lazy instantiation of MessageGenerator (thread)
             generator = new MessageGenerator(deviceManager, this);
@@ -127,15 +116,11 @@ public class GroupOwner extends Peer {
 
     @Override
     public void onDisconnect() {
+        count = 0;
         Log.d(TAG, "onDisconnect()");
-        if(socket != null){
-            try {
-                socket.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
         messageManager.keepRunning = false;
+        socketHandler.stopHandler();
+        //socketHandlerExecutor.shutdownNow();
         completedConnections++;
     }
 
@@ -160,20 +145,6 @@ public class GroupOwner extends Peer {
         }
     }
 
-    public void newSocket() {
-        try {
-            socket = new ServerSocket();
-            socket.setReuseAddress(true);
-            try {
-                sleep(1000);
-            } catch (InterruptedException e) {}
-            socket.bind(new InetSocketAddress(Constants.SERVER_PORT));
-            Log.d("GroupOwnerSocketHandler", "Socket Started");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     public void initiateDisconnection() {
         Log.d(TAG, "Departure procedure initiated.");
         // We have to stop sending messages, because the client is leaving.
@@ -189,6 +160,7 @@ public class GroupOwner extends Peer {
         message.setSource(deviceManager.deviceAddress);
         message.setDest(deviceManager.currentDest); // this is the other GO's address but this message is intended for the client
         message.setSeqNum(0);
+        messageManager.doneWriting = false;
         messageManager.write(message);
         onDisconnect();
     }

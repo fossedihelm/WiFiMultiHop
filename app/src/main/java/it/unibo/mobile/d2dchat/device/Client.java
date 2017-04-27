@@ -46,13 +46,16 @@ public class Client extends Peer {
             int c =0;
             try {
                 Log.d(TAG, Integer.toString(++c) + "o tentativo di connessione");
+                sleep(1500);
                 server.connect(new InetSocketAddress(info.groupOwnerAddress.getHostAddress(),
                         Constants.SERVER_PORT), 5000);
             } catch (ConnectException e){
-                Log.d(TAG, "CONNECTIONEXP nel " + Integer.toString(c) + "o tentativo di connessione");
+                Log.e(TAG, "CONNECTIONEXP nel " + Integer.toString(c) + "o tentativo di connessione");
                 e.printStackTrace();
             } catch (IOException e){
-                Log.d(TAG, "IOEXP nel " + Integer.toString(c) + "o tentativo di connessione");
+                Log.e(TAG, "IOEXP nel " + Integer.toString(c) + "o tentativo di connessione");
+                e.printStackTrace();
+            } catch (InterruptedException e) {
                 e.printStackTrace();
             }
             // stop old instance because it's using an old socket

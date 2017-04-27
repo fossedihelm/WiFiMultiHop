@@ -5,9 +5,8 @@ import it.unibo.mobile.d2dchat.messagesManager.Message;
 /**
  * Created by Stefano on 14/09/2016.
  */
-public interface SocketHandler {
+public interface SocketHandler extends Runnable {
 
-    void writeMessage(Message message);
     void newSocket();
     void stopHandler();
 }
