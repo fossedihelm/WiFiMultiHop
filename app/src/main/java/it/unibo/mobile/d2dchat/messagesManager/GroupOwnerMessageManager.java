@@ -19,7 +19,6 @@ import it.unibo.mobile.d2dchat.device.Peer;
  */
 
 public class GroupOwnerMessageManager extends MessageManager {
-
     protected static final String TAG = "GOMessageManager";
     private ServerSocket serverSocket;
     public int sent = 0;
@@ -30,7 +29,6 @@ public class GroupOwnerMessageManager extends MessageManager {
 
     // Thread that generates and sends messages.
     class MessageGenerator extends Thread {
-        private DeviceManager deviceManager;
         private Message message;
         public Semaphore lock;
 
@@ -38,8 +36,8 @@ public class GroupOwnerMessageManager extends MessageManager {
             this.lock = new Semaphore(0);
             message = new Message();
             message.setType(Constants.MESSAGE_DATA);
-            message.setSource(deviceManager.deviceAddress);
-            message.setDest(deviceManager.currentDest);
+            message.setSource(peer.getDeviceManager().deviceAddress);
+            message.setDest(peer.getDeviceManager().currentDest);
             message.setData(new char[1024]);
             message.setSeqNum(0);
         }
@@ -48,7 +46,7 @@ public class GroupOwnerMessageManager extends MessageManager {
         public void run() {
             while (true) {
                 try {
-                    message.setDest(deviceManager.currentDest);
+                    message.setDest(peer.getDeviceManager().currentDest);
                     message.setSendTime(System.currentTimeMillis());
                     message.incSeqNum();
 
