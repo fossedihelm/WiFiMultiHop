@@ -2,6 +2,7 @@ package it.unibo.mobile.d2dchat.messagesManager;
 
 import android.util.Log;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.ConnectException;
@@ -66,6 +67,9 @@ public class ClientMessageManager extends MessageManager {
             try {
                 Message message = (Message) new ObjectInputStream(inputStream).readObject();
                 peer.receiveMessage(message);
+            } catch (EOFException e){
+                Log.d(TAG, "Connection closed, stop reading");
+                keepRunning = false;
             } catch (IOException e) {
                 Log.d(TAG, "Error reading object");
                 e.printStackTrace();
