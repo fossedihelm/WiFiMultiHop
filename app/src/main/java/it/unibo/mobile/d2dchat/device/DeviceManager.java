@@ -62,6 +62,10 @@ public class DeviceManager implements PeerListListener, ConnectionInfoListener, 
         return wiFiDirectBroadcastReceiver;
     }
 
+    public WifiP2pInfo getInfo() {
+        return info;
+    }
+
     // peers getter and setter
     public List<WifiP2pDevice> getPeers() {
         return peers;

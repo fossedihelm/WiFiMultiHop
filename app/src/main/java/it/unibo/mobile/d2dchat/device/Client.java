@@ -1,17 +1,13 @@
 package it.unibo.mobile.d2dchat.device;
 
-import android.net.wifi.p2p.WifiP2pInfo;
 import android.util.Log;
 
-import java.io.IOException;
-import java.net.ConnectException;
-import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.ArrayList;
 
 import it.unibo.mobile.d2dchat.Constants;
+import it.unibo.mobile.d2dchat.messagesManager.ClientMessageManager;
 import it.unibo.mobile.d2dchat.messagesManager.Message;
-import it.unibo.mobile.d2dchat.messagesManager.MessageManager;
 
 /**
  * Created by asig on 1/3/17.
@@ -20,6 +16,7 @@ import it.unibo.mobile.d2dchat.messagesManager.MessageManager;
 public class Client extends Peer {
     private Socket server;
     private DeviceManager deviceManager;
+    private ClientMessageManager manager;
     private ArrayList<ArrayList<Message>> goQueue;
     private int discarded = 0;
     private static final String TAG = "Client";
@@ -27,7 +24,7 @@ public class Client extends Peer {
     public volatile boolean keepSending = false;
 
     public Client(DeviceManager deviceManager) {
-        super();
+        super(deviceManager);
         this.deviceManager = deviceManager;
         goQueue = new ArrayList<>(deviceManager.GOlist.size());
         for (int i = 0; i < deviceManager.GOlist.size(); i++) {
@@ -38,56 +35,24 @@ public class Client extends Peer {
     @Override
     public void onConnect() {
         count++;
-        Log.d(TAG, "onConnect() called " + count + " times.");
-        // every time a new wifi connection is established we need to create a new socket
-        server = new Socket();
+        Log.d(TAG, "onConnect() called "+Integer.toString(count)+" times.");
+        manager = new ClientMessageManager(this);
+        Log.d(TAG, "onConnect() created new connection");
         try {
-            server.bind(null);
-            int c =0;
-            try {
-                Log.d(TAG, Integer.toString(++c) + "o tentativo di connessione");
-                sleep(1500);
-                server.connect(new InetSocketAddress(info.groupOwnerAddress.getHostAddress(),
-                        Constants.SERVER_PORT), 5000);
-            } catch (ConnectException e){
-                Log.e(TAG, "CONNECTIONEXP nel " + Integer.toString(c) + "o tentativo di connessione");
-                e.printStackTrace();
-            } catch (IOException e){
-                Log.e(TAG, "IOEXP nel " + Integer.toString(c) + "o tentativo di connessione");
-                e.printStackTrace();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            // stop old instance because it's using an old socket
-            if (messageManager != null)
-                messageManager.keepRunning = false;
-            messageManager = new MessageManager(server, this);
-            messageManager.start();
-        } catch (IOException e) {
-            //La connessione non è stata posssibile! Forse non sta usando la nostra applicazione?
+            manager.connecting.acquire();
+        }catch (InterruptedException e ){
             e.printStackTrace();
-            try {
-                server.close();
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            }
         }
-        Log.d(TAG, "onConnect() created new socket");
-        keepSending = true; // to unlock sendQueued() sending cycle
         sendQueued();
     }
 
     @Override
     public void onDisconnect() {
+        count = 0;
         Log.d(TAG, "onDisconnect()");
-        try {
-            server.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        manager.stopManager();
         discarded += goQueue.get(deviceManager.currentGO).size();
         goQueue.get(deviceManager.currentGO).clear();
-        messageManager.keepRunning = false;
     }
 
     @Override
@@ -107,7 +72,7 @@ public class Client extends Peer {
         while (!goQueue.get(dest).isEmpty() && keepSending) {
             Message message = goQueue.get(dest).get(0);
             goQueue.get(dest).remove(0);
-            messageManager.write(message);
+            manager.send(message);
         }
         Log.d(TAG, "Sent all queued messages.");
     }
@@ -119,7 +84,7 @@ public class Client extends Peer {
         message.setSource(deviceManager.deviceAddress);
         message.setDest(deviceManager.currentDest);
         message.setSeqNum(0);
-        messageManager.write(message);
+        manager.send(message);
         nextAction.setAction(Action.wait);
     }
 }

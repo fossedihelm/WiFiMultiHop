@@ -20,26 +20,26 @@ public abstract class MessageManager extends Thread {
 
     protected Socket socket = null;
     protected String deviceName;
-    protected Peer receiver;
+    protected Peer peer;
     protected InputStream inputStream;
     protected OutputStream outputStream;
     protected static final String TAG = "MessageManager";
     public volatile boolean keepRunning = true;
 
-    public MessageManager(Peer receiver) {
-        this.receiver = receiver;
+    public MessageManager(Peer peer) {
+        this.peer = peer;
     }
 
     public MessageManager(Socket socket, Peer receiver) {
         this.socket = socket;
-        this.receiver = receiver;
+        this.peer = receiver;
     }
 
 
     public MessageManager(Socket socket, String deviceName, Peer receiver) {
         this.socket = socket;
         this.deviceName = deviceName;
-        this.receiver = receiver;
+        this.peer = receiver;
     }
 
 
@@ -51,7 +51,7 @@ public abstract class MessageManager extends Thread {
             while (keepRunning) {
                 try {
                     Message message = (Message) new ObjectInputStream(inputStream).readObject();
-                    receiver.receiveMessage(message);
+                    peer.receiveMessage(message);
                 }
                 catch (EOFException e) {}
                 catch (IOException e) {
@@ -94,7 +94,7 @@ public abstract class MessageManager extends Thread {
         closeSocket();
     }
 
-    protected void closeSocket(){
+    private void closeSocket(){
         Log.d(TAG, "Close socket request received");
         try {
             socket.close();
