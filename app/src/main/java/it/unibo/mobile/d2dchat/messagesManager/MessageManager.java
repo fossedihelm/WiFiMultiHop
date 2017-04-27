@@ -79,7 +79,7 @@ public abstract class MessageManager extends Thread {
         }
     }
 
-    public void write(Message message) {
+    public void send(Message message) {
         try {
             if (outputStream == null)
                 Log.d(TAG, "null outputStream");

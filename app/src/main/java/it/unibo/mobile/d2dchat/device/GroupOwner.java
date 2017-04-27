@@ -15,87 +15,30 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import it.unibo.mobile.d2dchat.Constants;
+import it.unibo.mobile.d2dchat.messagesManager.GroupOwnerMessageManager;
 import it.unibo.mobile.d2dchat.messagesManager.Message;
-import it.unibo.mobile.d2dchat.messagesManager.MessageManager;
-import it.unibo.mobile.d2dchat.socketManager.GroupOwnerSocketHandler;
-import it.unibo.mobile.d2dchat.socketManager.SocketHandler;
 
 /**
  * Created by asig on 12/9/16.
  */
 
 
-// Thread that generates and sends messages.
-class MessageGenerator extends Thread {
-    private DeviceManager deviceManager;
-    private GroupOwner groupOwner;
-    private Message message;
-    public Semaphore lock;
-    public volatile boolean waitForClient = false;
-    public volatile boolean doneSending = false;
 
-    public MessageGenerator(DeviceManager deviceManager, GroupOwner groupOwner) {
-        this.deviceManager = deviceManager;
-        this.groupOwner = groupOwner;
-        this.lock = new Semaphore(0);
-        message = new Message();
-        message.setType(Constants.MESSAGE_DATA);
-        message.setSource(deviceManager.deviceAddress);
-        message.setDest(deviceManager.currentDest);
-        message.setData(new char[1024]);
-        message.setSeqNum(0);
-    }
-
-    @Override
-    public void run() {
-        while (true) {
-            try {
-                message.setDest(deviceManager.currentDest);
-                message.setSendTime(System.currentTimeMillis());
-                message.incSeqNum();
-
-                // GroupOwner could have to stop sending messages at any time.
-                // When the GO receives the message telling it to stop sending, if MessageGenerator is not doneSending the GroupOwner waits
-                // until it is done sending. It also sets waitForClient to true, so that the MessageGenerator knows that it has to wait for
-                // the client return before sending again.
-                doneSending = false;
-                if (!waitForClient) {
-                    groupOwner.messageManager.write(message);
-                    groupOwner.sent++;
-                }
-                doneSending = true;
-                groupOwner.lock.release();
-                if (waitForClient)
-                    lock.acquire();
-                else // sleep only if we have not already waited with lock.acquire()
-                    sleep(100);
-            } catch (InterruptedException e) {
-                Log.d("MessageGenerator", "sleep() interrupted, ignoring");
-            }
-        }
-    }
-}
 
 public class GroupOwner extends Peer {
-    private DeviceManager deviceManager;
     private static final String TAG = "GroupOwner";
-    private ServerSocket socket = null;
-    private MessageGenerator generator;
+    private GroupOwnerMessageManager manager;
     private long totalTimeReceivedMessages = 0;
     private int received = 0;
     private int completedConnections = 0;
-    private SocketHandler socketHandler = null;
     public volatile int sent = 0;
-    public Semaphore lock;
     private int count = 0;
 
     // Thread for SocketHandler
     private final ExecutorService socketHandlerExecutor = Executors.newSingleThreadExecutor();
 
     public GroupOwner(DeviceManager deviceManager) {
-        super();
-        this.deviceManager = deviceManager;
-        this.lock = new Semaphore(0);
+        super(deviceManager);
     }
 
 
@@ -103,29 +46,18 @@ public class GroupOwner extends Peer {
     public void onConnect() {
         count++;
         Log.d(TAG, "onConnect() called "+Integer.toString(count)+" times.");
-        socketHandler = new GroupOwnerSocketHandler(this);
-        socketHandlerExecutor.execute(socketHandler);
+        manager = new GroupOwnerMessageManager(this);
         Log.d(TAG, "onConnect() created new connection");
-        if (generator == null) { // lazy instantiation of MessageGenerator (thread)
-            generator = new MessageGenerator(deviceManager, this);
-            generator.start();
-        }
-        generator.waitForClient = false;
-        generator.lock.release();
     }
 
     @Override
     public void onDisconnect() {
         count = 0;
         Log.d(TAG, "onDisconnect()");
-        messageManager.keepRunning = false;
-        socketHandler.stopHandler();
+        sent += manager.sent;
+        manager.stopManager();
         //socketHandlerExecutor.shutdownNow();
         completedConnections++;
-    }
-
-    MessageManager getMessageManager() {
-        return messageManager;
     }
 
     @Override
@@ -148,9 +80,10 @@ public class GroupOwner extends Peer {
     public void initiateDisconnection() {
         Log.d(TAG, "Departure procedure initiated.");
         // We have to stop sending messages, because the client is leaving.
-        while (!generator.doneSending)
+        manager.stopGenerating = true;
+        while (!manager.doneSending)
             try {
-                lock.acquire();
+                manager.sending.acquire();
             } catch (InterruptedException e) {
                 Log.d(TAG, "Interrupted exception while waiting for generator to finish sending.");
         }
@@ -160,8 +93,7 @@ public class GroupOwner extends Peer {
         message.setSource(deviceManager.deviceAddress);
         message.setDest(deviceManager.currentDest); // this is the other GO's address but this message is intended for the client
         message.setSeqNum(0);
-        messageManager.doneWriting = false;
-        messageManager.write(message);
+        manager.send(message);
         onDisconnect();
     }
 }

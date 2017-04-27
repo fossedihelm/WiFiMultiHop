@@ -12,9 +12,9 @@ import it.unibo.mobile.d2dchat.messagesManager.MessageManager;
  * Created by asig on 12/9/16.
  */
 
-public abstract class Peer extends Thread {
-    public volatile MessageManager messageManager;
-    public WifiP2pInfo info;
+public abstract class Peer {
+    //public volatile MessageManager messageManager;
+    protected DeviceManager deviceManager;
     public volatile Semaphore semaphore;
     public enum Action {connect, disconnect, wait, initiateDisconnection};
     public class NextAction {
@@ -31,9 +31,6 @@ public abstract class Peer extends Thread {
     public NextAction nextAction;
     public abstract void onConnect();
     public abstract void onDisconnect();
-    public void writeMessage(Message message) {
-        messageManager.write(message);
-    }
     public abstract void receiveMessage(Message message);
     public abstract void initiateDisconnection();
 
@@ -54,7 +51,8 @@ public abstract class Peer extends Thread {
         }
     }
 
-    public Peer() {
+    public Peer(DeviceManager deviceManager) {
+        this.deviceManager = deviceManager;
         semaphore = new Semaphore(0);
         nextAction = new NextAction();
         nextAction.setAction(Action.wait);

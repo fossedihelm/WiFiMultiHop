@@ -44,6 +44,7 @@ public class DeviceManager implements PeerListListener, ConnectionInfoListener, 
     private String deviceName;
     private String groupOwner;
     private List<WifiP2pDevice> peers;
+    private WifiP2pInfo info;
     public String deviceAddress;
     public boolean isGO;
     public ArrayList<WifiP2pDevice> GOlist;
@@ -154,14 +155,12 @@ public class DeviceManager implements PeerListListener, ConnectionInfoListener, 
                 isGO = true;
                 if (creation) {
                     peer = new GroupOwner(this);
-                    peer.info = wifiP2pInfo;
-                    peer.start();
+                    info = wifiP2pInfo;
                 }
                 else {
-                    peer.info = wifiP2pInfo;
+                    this.info = wifiP2pInfo;
                     //perform onConnect()
-                    peer.nextAction.setAction(Peer.Action.connect);
-                    peer.semaphore.release();
+                    peer.onConnect();
                 }
                 // send data to a client in the list (the only one in our test scenario)
                 for (WifiP2pDevice device : peers) {
@@ -171,14 +170,12 @@ public class DeviceManager implements PeerListListener, ConnectionInfoListener, 
             } else { // Client
                 if (creation) {
                     peer = new Client(this);
-                    peer.info = wifiP2pInfo;
+                    this.info = wifiP2pInfo;
                     //perform onConnect()
-                    peer.nextAction.setAction(Peer.Action.connect);
-                    peer.semaphore.release();
-                    peer.start();
+                    peer.onConnect();
                 }
                 else {
-                    peer.info = wifiP2pInfo;
+                    this.info = wifiP2pInfo;
                 }
                 currentDest = wifiP2pInfo.groupOwnerAddress.getHostAddress();
             }
@@ -238,25 +235,12 @@ public class DeviceManager implements PeerListListener, ConnectionInfoListener, 
     public void receiveMessage(int eventType, Message message) {
         switch (eventType) {
             case Constants.EVENT_REGISTER: //Dobbiamo registrarci al GO
-                if (message == null)
-                    registerMessage(); //Dobbiamo registrarci
-                else
-                    mainActivity.addParticipant(message.getSource());
+                mainActivity.addParticipant(message.getSource());
                 break;
             case Constants.EVENT_MESSAGE:
                 receiveChatMessage((Message) message);
                 break;
         }
-    }
-
-    //Ci registriamo al GO. In questo modo il GO associa il nostro nome al ChatManager da cui riceve il messaggio.
-    //(Il GO ha un ChatManager per ogni client).
-    private void registerMessage() {
-        Message message = new Message();
-        message.setSource(deviceName);
-        message.setType(Constants.MESSAGE_REGISTER);
-        message.setDest(groupOwner);
-        peer.writeMessage(message);
     }
 
     private void receiveChatMessage(Message message) {
@@ -270,27 +254,6 @@ public class DeviceManager implements PeerListListener, ConnectionInfoListener, 
         message.setDest(dest);
         message.setData(new char[1024]);
         message.setSendTime(System.currentTimeMillis());
-    }
-
-    public void sendTextMessage(String text, String receiver) {
-        Message message = new Message();
-        message.setSource(deviceName);
-        message.setType(Constants.MESSAGE_TEXT);
-        message.setDest(receiver);
-        message.setData(text);
-        sendMessage(message);
-    }
-
-    public void sendFile(Uri filePath, String receiver) {
-        Message message = new Message();
-        message.setSource(deviceName);
-        message.setType(Constants.MESSAGE_FILE);
-        message.setDest(receiver);
-        byte[] bfile = getBytes(filePath);
-        if (bfile != null) {
-            message.setData(new FileAttach(bfile, getFilenameFromUri(filePath)));
-            sendMessage(message);
-        }
     }
 
 
@@ -312,7 +275,6 @@ public class DeviceManager implements PeerListListener, ConnectionInfoListener, 
         return fileName;
     }
 
-
     private byte[] getBytes(Uri filePath) {
         InputStream fileInputStream = null;
         try {
@@ -329,12 +291,6 @@ public class DeviceManager implements PeerListListener, ConnectionInfoListener, 
         return null;
 
     }
-
-    private void sendMessage(Message message) {
-        mainActivity.addMessage(message);
-        peer.writeMessage(message);
-    }
-
 
     public void connectTo(final WifiP2pDevice device) {
         Log.d(TAG, "Ci proviamo a connettere ad un device");
@@ -386,8 +342,7 @@ public class DeviceManager implements PeerListListener, ConnectionInfoListener, 
     public void switchGO() {
         if(deviceStatus==Constants.DEVICE_CONNECTED) {
             ((Client)peer).keepSending = false; // stop sending queued messages
-            peer.nextAction.setAction(Peer.Action.initiateDisconnection); // message exchange to stop GO from sending
-            peer.semaphore.release();
+            peer.initiateDisconnection(); // message exchange to stop GO from sending
         }
         else {
             currentGO = (currentGO + 1) % GOlist.size();
