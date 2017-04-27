@@ -47,6 +47,7 @@ public class GroupOwner extends Peer {
         count++;
         Log.d(TAG, "onConnect() called "+Integer.toString(count)+" times.");
         manager = new GroupOwnerMessageManager(this);
+        manager.start();
         Log.d(TAG, "onConnect() created new connection");
     }
 

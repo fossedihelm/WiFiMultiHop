@@ -43,43 +43,10 @@ public abstract class MessageManager extends Thread {
     }
 
 
-    @Override
-    public void run() {
-        try {
-            inputStream = socket.getInputStream();
-            outputStream = socket.getOutputStream();
-            while (keepRunning) {
-                try {
-                    Message message = (Message) new ObjectInputStream(inputStream).readObject();
-                    peer.receiveMessage(message);
-                }
-                catch (EOFException e) {}
-                catch (IOException e) {
-                    Log.e(TAG, "disconnected", e);
-                    if (socket != null && !socket.isClosed())
-                        socket.close();
-                    break;
-                }
-                catch (ClassNotFoundException e) {
-                    Log.e(TAG, "Read error: ", e);
-                    if (socket != null && !socket.isClosed())
-                        socket.close();
-                    break;
-                }
-            }
-        } catch (IOException e) {
-//            e.printStackTrace();
-        } finally {
-            try {
-                if (socket != null && !socket.isClosed())
-                    socket.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
 
     public void send(Message message) {
+        Log.i(TAG, "Sending message");
+        Log.i(TAG, Integer.toString(message.getType()));
         try {
             if (outputStream == null)
                 Log.d(TAG, "null outputStream");

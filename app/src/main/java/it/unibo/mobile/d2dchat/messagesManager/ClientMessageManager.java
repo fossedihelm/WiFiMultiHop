@@ -37,7 +37,6 @@ public class ClientMessageManager extends MessageManager {
                 sleep(1500);
                 socket.connect(new InetSocketAddress(peer.getDeviceManager().getInfo().groupOwnerAddress.getHostAddress(),
                         Constants.SERVER_PORT), 5000);
-                connecting.release();
             } catch (ConnectException e){
                 Log.e(TAG, "CONNECTIONEXP nel " + Integer.toString(c) + "o tentativo di connessione");
                 e.printStackTrace();
@@ -59,6 +58,7 @@ public class ClientMessageManager extends MessageManager {
         try {
             inputStream = socket.getInputStream();
             outputStream = socket.getOutputStream();
+            connecting.release();
         } catch (IOException e) {
             e.printStackTrace();
         }

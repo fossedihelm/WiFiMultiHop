@@ -37,6 +37,7 @@ public class Client extends Peer {
         count++;
         Log.d(TAG, "onConnect() called "+Integer.toString(count)+" times.");
         manager = new ClientMessageManager(this);
+        manager.start();
         Log.d(TAG, "onConnect() created new connection");
         try {
             manager.connecting.acquire();

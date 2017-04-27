@@ -76,6 +76,7 @@ public class GroupOwnerMessageManager extends MessageManager {
     public GroupOwnerMessageManager(Peer peer) {
         super(peer);
         generator = new MessageGenerator();
+        generator.start();
     }
 
     @Override

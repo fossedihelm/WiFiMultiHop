@@ -59,9 +59,9 @@ public class ChatFragment extends ListFragment {
         textMessage = (EditText) view.findViewById(R.id.editText);
         if (!ad.contains(Constants.GROUP_MESSAGE))
             ad.add(Constants.GROUP_MESSAGE);
-        spinnerAdapter = new ArrayAdapter<String>(getActivity(),
-                android.R.layout.simple_spinner_item, ad);
-        receiveSpinner.setAdapter(spinnerAdapter);
+//        spinnerAdapter = new ArrayAdapter<String>(getActivity(),
+//                android.R.layout.simple_spinner_item, ad);
+//        receiveSpinner.setAdapter(spinnerAdapter);
 
         view.findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
             @Override
