@@ -16,7 +16,7 @@ import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 
-public class MyDialogFragment extends DialogFragment implements View.OnClickListener {
+public class IntervalFragment extends DialogFragment implements View.OnClickListener {
 
     private EditText mEditText;
     private NumberPicker mNumberPicker;
@@ -30,7 +30,7 @@ public class MyDialogFragment extends DialogFragment implements View.OnClickList
     }
 
     // Empty constructor required for DialogFragment
-    public MyDialogFragment() {}
+    public IntervalFragment() {}
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

@@ -91,8 +91,14 @@ public abstract class MessageManager extends Thread {
 
     public void stopManager() {
         keepRunning = false;
+        closeSocket();
+    }
+
+    protected void closeSocket(){
+        Log.d(TAG, "Close socket request received");
         try {
             socket.close();
+            Log.d(TAG, "Close socket request executed");
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }

@@ -18,6 +18,8 @@ import it.unibo.mobile.d2dchat.device.Peer;
  */
 
 public class GroupOwnerMessageManager extends MessageManager {
+
+    protected static final String TAG = "GOMessageManager";
     private ServerSocket serverSocket;
     public int sent = 0;
     public MessageGenerator generator;
@@ -81,19 +83,17 @@ public class GroupOwnerMessageManager extends MessageManager {
     public void run() {
         try {
             serverSocket = new ServerSocket(Constants.SERVER_PORT);
-            Log.d("GroupOwnerSocketHandler", "Socket started");
+            Log.d(TAG, "Server Socket started");
         } catch (IOException e) {
             e.printStackTrace();
         }
         try {
+            Log.d(TAG, "Server Socket attending accept..");
             socket = serverSocket.accept();
+            Log.d(TAG, "Server Socket accepted");
         } catch (IOException e) {
-            try {
-                if (socket != null && !socket.isClosed())
-                    socket.close();
-            } catch (IOException ioe) {
-
-            }
+            if (socket != null && !socket.isClosed())
+                super.closeSocket();
             e.printStackTrace();
         }
 
@@ -109,22 +109,15 @@ public class GroupOwnerMessageManager extends MessageManager {
                 Message message = (Message) new ObjectInputStream(inputStream).readObject();
                 receiver.receiveMessage(message);
             } catch (IOException e) {
+                Log.d(TAG, "Error reading object");
                 e.printStackTrace();
                 if (socket != null && !socket.isClosed())
-                    try {
-                        socket.close();
-                    } catch (IOException ioe) {
-                        ioe.printStackTrace();
-                    }
+                    super.closeSocket();
                 break;
             } catch (ClassNotFoundException e) {
                 Log.e(TAG, "Read error: ", e);
                 if (socket != null && !socket.isClosed()) {
-                    try {
-                        socket.close();
-                    } catch (IOException ioe) {
-                        ioe.printStackTrace();
-                    }
+                    super.closeSocket();
                 }
                 break;
             }
@@ -133,9 +126,11 @@ public class GroupOwnerMessageManager extends MessageManager {
 
     @Override
     public void stopManager() {
+        Log.d(TAG, "Stop server socket request received");
         super.stopManager();
         try {
             serverSocket.close();
+            Log.d(TAG, "Stop server socket request executed");
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
