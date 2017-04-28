@@ -34,7 +34,6 @@ public class ClientMessageManager extends MessageManager {
             int c =0;
             try {
                 Log.d(TAG, Integer.toString(++c) + "o tentativo di connessione");
-                sleep(1500);
                 socket.connect(new InetSocketAddress(peer.getDeviceManager().getInfo().groupOwnerAddress.getHostAddress(),
                         Constants.SERVER_PORT), 5000);
             } catch (ConnectException e){
@@ -43,8 +42,8 @@ public class ClientMessageManager extends MessageManager {
             } catch (IOException e){
                 Log.e(TAG, "IOEXP nel " + Integer.toString(c) + "o tentativo di connessione");
                 e.printStackTrace();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
             }
         } catch (IOException e) {
             //La connessione non è stata posssibile! Forse non sta usando la nostra applicazione?

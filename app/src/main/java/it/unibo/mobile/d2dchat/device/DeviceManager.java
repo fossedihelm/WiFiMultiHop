@@ -180,6 +180,7 @@ public class DeviceManager implements PeerListListener, ConnectionInfoListener, 
                 }
                 else {
                     this.info = wifiP2pInfo;
+                    peer.onConnect();
                 }
                 currentDest = wifiP2pInfo.groupOwnerAddress.getHostAddress();
             }
