@@ -82,7 +82,7 @@ public abstract class MessageManager extends Thread {
         }
     }
 
-    public void send(Message message) {
+    public void send(Message message, int port) {
         Log.i(TAG, "Sending message: \n" + message.getContents());
         try {
             ByteArrayOutputStream byteStream = new ByteArrayOutputStream(2048);
@@ -92,7 +92,7 @@ public abstract class MessageManager extends Thread {
             outputStream.flush();
             // retrieves byte array
             byte[] sendBuf = byteStream.toByteArray();
-            DatagramPacket packet = new DatagramPacket(sendBuf, sendBuf.length, remoteAddress, Constants.CLIENT_PORT);
+            DatagramPacket packet = new DatagramPacket(sendBuf, sendBuf.length, remoteAddress, port);
             socket.send(packet);
             outputStream.close();
         } catch (IOException e) {

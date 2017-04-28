@@ -39,7 +39,7 @@ public class ClientMessageManager extends MessageManager {
         if (((Client)peer).currentQueue.isEmpty()) {
             Message message = new Message();
             message.setType(Constants.MESSAGE_REGISTER);
-            send(message);
+            send(message, Constants.SERVER_PORT);
         }
 
         super.run();

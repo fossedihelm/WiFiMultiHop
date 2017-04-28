@@ -100,7 +100,7 @@ public class GroupOwner extends Peer {
         message.setSource(deviceManager.deviceAddress);
         message.setDest(deviceManager.currentDest); // this is the other GO's address but this message is intended for the client
         message.setSeqNum(0);
-        manager.send(message);
+        manager.send(message, Constants.CLIENT_PORT);
         onDisconnect();
     }
 }

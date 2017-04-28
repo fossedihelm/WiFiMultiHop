@@ -30,7 +30,7 @@ public class Client extends Peer {
         this.deviceManager = deviceManager;
         goQueue = new ArrayList<>(deviceManager.GOlist.size());
         for (int i = 0; i < deviceManager.GOlist.size(); i++) {
-            goQueue.add(new ArrayList<Message>(20));
+            goQueue.add(new ArrayList<Message>(200));
         }
     }
 
@@ -77,7 +77,7 @@ public class Client extends Peer {
         while (!goQueue.get(dest).isEmpty() && keepSending) {
             Message message = goQueue.get(dest).get(0);
             goQueue.get(dest).remove(0);
-            manager.send(message);
+            manager.send(message, Constants.SERVER_PORT);
         }
         Log.d(TAG, "Sent all queued messages.");
     }
@@ -89,7 +89,7 @@ public class Client extends Peer {
         message.setSource(deviceManager.deviceAddress);
         message.setDest(deviceManager.currentDest);
         message.setSeqNum(0);
-        manager.send(message);
+        manager.send(message, Constants.SERVER_PORT);
         nextAction.setAction(Action.wait);
     }
 }
