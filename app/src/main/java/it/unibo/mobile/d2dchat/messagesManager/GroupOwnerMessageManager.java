@@ -30,11 +30,8 @@ public class GroupOwnerMessageManager extends MessageManager {
     // Thread that generates and sends messages.
     class MessageGenerator extends Thread {
         private Message message;
-        public Semaphore lock;
 
         public MessageGenerator() {
-            this.lock = new Semaphore(0);
-            stopGenerating = false;
             message = new Message();
             message.setType(Constants.MESSAGE_DATA);
             message.setSource(peer.getDeviceManager().deviceAddress);
@@ -114,6 +111,7 @@ public class GroupOwnerMessageManager extends MessageManager {
                 } catch (EOFException e) {
                     Log.d(TAG, "Clonnection closed, stop reading.");
                     keepRunning = false;
+                    stopGenerating = false;
                     break;
                 } catch (IOException e) {
                     Log.d(TAG, "Error reading object");
