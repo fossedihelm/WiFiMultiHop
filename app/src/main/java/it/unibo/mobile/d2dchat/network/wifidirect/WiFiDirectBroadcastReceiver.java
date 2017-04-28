@@ -91,7 +91,7 @@ public class WiFiDirectBroadcastReceiver extends BroadcastReceiver {
             int state = intent.getIntExtra(WifiP2pManager.EXTRA_DISCOVERY_STATE, -1);
             if (state == WIFI_P2P_DISCOVERY_STARTED) {
                 Log.d(TAG, "Discovery is active");
-                if (!deviceManager.firstDiscovery && deviceManager.isGO) {
+                if (!deviceManager.firstDiscovery && !deviceManager.isGO) {
                     //deviceManager.switchGO();
                     deviceManager.switching = true;
                 }
