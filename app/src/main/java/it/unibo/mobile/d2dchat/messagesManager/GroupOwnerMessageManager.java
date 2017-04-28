@@ -34,6 +34,7 @@ public class GroupOwnerMessageManager extends MessageManager {
 
         public MessageGenerator() {
             this.lock = new Semaphore(0);
+            stopGenerating = false;
             message = new Message();
             message.setType(Constants.MESSAGE_DATA);
             message.setSource(peer.getDeviceManager().deviceAddress);
