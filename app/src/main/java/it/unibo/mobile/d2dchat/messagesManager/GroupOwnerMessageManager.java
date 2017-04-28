@@ -59,7 +59,7 @@ public class GroupOwnerMessageManager extends MessageManager {
                     doneSending = false;
                     Log.d(TAG, "StopGenerating status: " + stopGenerating);
                     if (!stopGenerating) {
-                        send(message);
+                        send(message, Constants.CLIENT_PORT);
                         sent++;
                     }
                     doneSending = true;
