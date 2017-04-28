@@ -21,7 +21,7 @@ public class Client extends Peer {
     private int discarded = 0;
     private static final String TAG = "Client";
     private int count = 0;
-    public volatile boolean keepSending = false;
+    public volatile boolean keepSending = true;
 
     public Client(DeviceManager deviceManager) {
         super(deviceManager);
@@ -44,6 +44,7 @@ public class Client extends Peer {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+            keepSending = true;
             sendQueued();
         }
     }
