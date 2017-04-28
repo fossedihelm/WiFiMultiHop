@@ -75,68 +75,60 @@ public class GroupOwnerMessageManager extends MessageManager {
 
     public GroupOwnerMessageManager(Peer peer) {
         super(peer);
-        generator = new MessageGenerator();
-    }
-
-    @Override
-    public void run() {
         try {
+            Log.d(TAG, "Creating socket with address " + peer.getDeviceManager().getInfo().groupOwnerAddress.getHostAddress());
             serverSocket = new ServerSocket(Constants.SERVER_PORT);
             Log.d(TAG, "Server Socket started");
         } catch (IOException e) {
             e.printStackTrace();
         }
-        try {
-            Log.d(TAG, "Server Socket waiting for accept..");
-            socket = serverSocket.accept();
-            Log.d(TAG, "Server Socket accepted");
-        } catch (IOException e) {
-            if (socket != null && !socket.isClosed())
-                stopManager();
-            e.printStackTrace();
-        }
+    }
 
-        try {
-            inputStream = socket.getInputStream();
-            outputStream = socket.getOutputStream();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        generator.start();
+    @Override
+    public void run() {
 
-        while (keepRunning) {
+        while (true) {
             try {
-                Message message = (Message) new ObjectInputStream(inputStream).readObject();
-                peer.receiveMessage(message);
-            } catch (EOFException e) {
-                Log.d(TAG, "Clonnection closed, stop reading.");
-                keepRunning = false;
-                break;
+                socket = serverSocket.accept();
+                Log.d(TAG, "Server Socket accepted");
             } catch (IOException e) {
-                Log.d(TAG, "Error reading object");
-                e.printStackTrace();
                 if (socket != null && !socket.isClosed())
                     stopManager();
-                break;
-            } catch (ClassNotFoundException e) {
-                Log.e(TAG, "Read error: ", e);
-                if (socket != null && !socket.isClosed()) {
-                    stopManager();
+                e.printStackTrace();
+            }
+
+            try {
+                inputStream = socket.getInputStream();
+                outputStream = socket.getOutputStream();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            generator = new MessageGenerator();
+            generator.start();
+
+            while (keepRunning) {
+                try {
+                    Message message = (Message) new ObjectInputStream(inputStream).readObject();
+                    peer.receiveMessage(message);
+                } catch (EOFException e) {
+                    Log.d(TAG, "Clonnection closed, stop reading.");
+                    keepRunning = false;
+                    break;
+                } catch (IOException e) {
+                    Log.d(TAG, "Error reading object");
+                    e.printStackTrace();
+                    if (socket != null && !socket.isClosed())
+                        stopManager();
+                    break;
+                } catch (ClassNotFoundException e) {
+                    Log.e(TAG, "Read error: ", e);
+                    if (socket != null && !socket.isClosed()) {
+                        stopManager();
+                    }
+                    break;
                 }
-                break;
             }
         }
     }
 
-    @Override
-    public void stopManager() {
-        super.stopManager();
-        Log.d(TAG, "Stop server socket request received");
-        try {
-            serverSocket.close();
-            Log.d(TAG, "Stop server socket request executed");
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
-        }
-    }
 }

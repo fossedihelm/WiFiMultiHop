@@ -35,6 +35,7 @@ public class ClientMessageManager extends MessageManager {
             try {
                 Log.d(TAG, Integer.toString(++c) + "o tentativo di connessione");
                 sleep(1500);
+                Log.d(TAG, "connecting to " + peer.getDeviceManager().getInfo().groupOwnerAddress.getHostAddress());
                 socket.connect(new InetSocketAddress(peer.getDeviceManager().getInfo().groupOwnerAddress.getHostAddress(),
                         Constants.SERVER_PORT), 5000);
             } catch (ConnectException e){

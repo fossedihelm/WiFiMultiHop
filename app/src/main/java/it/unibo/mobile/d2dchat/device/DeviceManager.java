@@ -42,7 +42,7 @@ public class DeviceManager implements PeerListListener, ConnectionInfoListener, 
     private WiFiDirectBroadcastReceiver wiFiDirectBroadcastReceiver;
     private MainActivity mainActivity;
     private String deviceName;
-    private String groupOwner;
+    private String groupOwnerMacAddress;
     private List<WifiP2pDevice> peers;
     private WifiP2pInfo info;
     public String deviceAddress;
@@ -150,6 +150,8 @@ public class DeviceManager implements PeerListListener, ConnectionInfoListener, 
     @Override
     //Sono disponibili informazioni sulla connessione (siamo in un gruppo), probabilmente ci siamo connessi
     public void onConnectionInfoAvailable(WifiP2pInfo wifiP2pInfo) {
+        Log.d(TAG, "onConnectionInfoAvailable()");
+        this.info = wifiP2pInfo;
      //   if (deviceStatus != Constants.DEVICE_CONNECTED) {
             deviceStatus = Constants.DEVICE_CONNECTED;
             boolean creation = true;
@@ -159,10 +161,8 @@ public class DeviceManager implements PeerListListener, ConnectionInfoListener, 
                 isGO = true;
                 if (creation) {
                     peer = new GroupOwner(this);
-                    info = wifiP2pInfo;
                 }
                 else {
-                    this.info = wifiP2pInfo;
                     //perform onConnect()
                     peer.onConnect();
                 }
@@ -174,12 +174,8 @@ public class DeviceManager implements PeerListListener, ConnectionInfoListener, 
             } else { // Client
                 if (creation) {
                     peer = new Client(this);
-                    this.info = wifiP2pInfo;
                     //perform onConnect()
                     peer.onConnect();
-                }
-                else {
-                    this.info = wifiP2pInfo;
                 }
                 currentDest = wifiP2pInfo.groupOwnerAddress.getHostAddress();
             }
@@ -194,7 +190,7 @@ public class DeviceManager implements PeerListListener, ConnectionInfoListener, 
     @Override
     //Riceviamo le informazioni sul gruppo
     public void onGroupInfoAvailable(WifiP2pGroup wifiP2pGroup) {
-        Log.d(TAG, "Informazioni sul gruppo ricevute");
+        Log.d(TAG, "onGroupInfoAvailable()");
         List<WifiP2pDevice> devices = new ArrayList<>();
         devices.addAll(wifiP2pGroup.getClientList());
         //Il GO sembra che non appare nella lista dei client.
@@ -202,7 +198,7 @@ public class DeviceManager implements PeerListListener, ConnectionInfoListener, 
         if (!isGO) {
             devices.add(wifiP2pGroup.getOwner());
         }
-        groupOwner = wifiP2pGroup.getOwner().deviceName;
+        groupOwnerMacAddress = wifiP2pGroup.getOwner().deviceAddress;
         //Gli apaprtenenti al gruppo sono cambiati, aggiorniamo
         mainActivity.setGroupPeers(devices);
     }
