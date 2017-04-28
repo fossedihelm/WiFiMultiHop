@@ -1,10 +1,15 @@
 package it.unibo.mobile.d2dchat.messagesManager;
 
+import android.provider.ContactsContract;
 import android.util.Log;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.Semaphore;
@@ -20,7 +25,6 @@ import it.unibo.mobile.d2dchat.device.Peer;
 
 public class GroupOwnerMessageManager extends MessageManager {
     protected static final String TAG = "GOMessageManager";
-    private ServerSocket serverSocket;
     public int sent = 0;
     public MessageGenerator generator;
     public volatile Semaphore sending = new Semaphore(0);
@@ -78,7 +82,7 @@ public class GroupOwnerMessageManager extends MessageManager {
         super(peer);
         try {
             Log.d(TAG, "Creating socket with address " + peer.getDeviceManager().getInfo().groupOwnerAddress.getHostAddress());
-            serverSocket = new ServerSocket(Constants.SERVER_PORT);
+            socket = new DatagramSocket(Constants.SERVER_PORT);
             Log.d(TAG, "Server Socket started");
         } catch (IOException e) {
             e.printStackTrace();
@@ -87,50 +91,11 @@ public class GroupOwnerMessageManager extends MessageManager {
 
     @Override
     public void run() {
-
-        while (true) {
-            try {
-                socket = serverSocket.accept();
-                Log.d(TAG, "Server Socket accepted");
-            } catch (IOException e) {
-                if (socket != null && !socket.isClosed())
-                    stopManager();
-                e.printStackTrace();
-            }
-
-            try {
-                inputStream = socket.getInputStream();
-                outputStream = socket.getOutputStream();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            generator = new MessageGenerator();
-            generator.start();
-
-            while (keepRunning) {
-                try {
-                    Message message = (Message) new ObjectInputStream(inputStream).readObject();
-                    peer.receiveMessage(message);
-                } catch (EOFException e) {
-                    Log.d(TAG, "Clonnection closed, stop reading.");
-                    keepRunning = false;
-                    stopGenerating = false;
-                    break;
-                } catch (IOException e) {
-                    Log.d(TAG, "Error reading object");
-                    e.printStackTrace();
-                    if (socket != null && !socket.isClosed())
-                        stopManager();
-                    break;
-                } catch (ClassNotFoundException e) {
-                    Log.e(TAG, "Read error: ", e);
-                    if (socket != null && !socket.isClosed()) {
-                        stopManager();
-                    }
-                    break;
-                }
-            }
-        }
+        super.run();
     }
 
+    public void startGenerating() {
+        generator = new MessageGenerator();
+        generator.start();
+    }
 }

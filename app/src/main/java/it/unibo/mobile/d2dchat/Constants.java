@@ -6,6 +6,7 @@ package it.unibo.mobile.d2dchat;
 public class Constants {
 
     public static final int SERVER_PORT = 61222;
+    public static final int CLIENT_PORT = 61223;
 
     //Message codes
     public static final int MESSAGE_REGISTER = 1;

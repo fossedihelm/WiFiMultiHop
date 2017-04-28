@@ -21,6 +21,8 @@ public class Client extends Peer {
     private int discarded = 0;
     private static final String TAG = "Client";
     private int count = 0;
+    private int dest = 0;
+    public ArrayList<Message> currentQueue = null;
     public volatile boolean keepSending = true;
 
     public Client(DeviceManager deviceManager) {
@@ -45,6 +47,8 @@ public class Client extends Peer {
                 e.printStackTrace();
             }
             keepSending = true;
+            dest = 1 - deviceManager.currentGO; // we assume only 2 GOs
+            currentQueue = goQueue.get(dest);
             sendQueued();
         }
     }
@@ -70,8 +74,6 @@ public class Client extends Peer {
     }
 
     public void sendQueued() {
-        int dest;
-        dest = 1 - deviceManager.currentGO; // we assume only 2 GOs
         while (!goQueue.get(dest).isEmpty() && keepSending) {
             Message message = goQueue.get(dest).get(0);
             goQueue.get(dest).remove(0);

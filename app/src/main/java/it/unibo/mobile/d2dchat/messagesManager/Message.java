@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import it.unibo.mobile.d2dchat.Constants;
 
+import java.net.InetAddress;
 import java.util.Formatter;
 
 public class Message implements Serializable {

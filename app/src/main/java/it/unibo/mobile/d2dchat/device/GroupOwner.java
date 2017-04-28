@@ -33,6 +33,7 @@ public class GroupOwner extends Peer {
     private int completedConnections = 0;
     public volatile int sent = 0;
     private int count = 0;
+    private boolean firstMessageReceived = true;
 
     // Thread for SocketHandler
     private final ExecutorService socketHandlerExecutor = Executors.newSingleThreadExecutor();
@@ -64,6 +65,10 @@ public class GroupOwner extends Peer {
 
     @Override
     public void receiveMessage(Message message) {
+        if (firstMessageReceived) {
+            firstMessageReceived = false;
+            manager.startGenerating();
+        }
         if (message.getType() == Constants.MESSAGE_DATA) {
             //Message receiver is the owner
             if (message.getDest().equals(deviceManager.getDeviceName())) {
