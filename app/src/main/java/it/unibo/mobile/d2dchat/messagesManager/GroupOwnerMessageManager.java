@@ -61,6 +61,7 @@ public class GroupOwnerMessageManager extends MessageManager {
                     doneSending = true;
                     if (stopGenerating) {
                         Log.d(TAG, "StopGenerating status is true");
+                        stopGenerating = false;
                         sending.release();
                         break;
                     }
