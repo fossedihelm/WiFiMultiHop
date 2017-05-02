@@ -296,6 +296,7 @@ public class DeviceManager implements PeerListListener, ConnectionInfoListener, 
 //    }
 
     public void connectTo(final WifiP2pDevice device) {
+        disconnect();
         Log.d(TAG, "Ci proviamo a connettere ad un device");
         WifiP2pConfig config = new WifiP2pConfig();
         config.deviceAddress = device.deviceAddress;
@@ -350,6 +351,7 @@ public class DeviceManager implements PeerListListener, ConnectionInfoListener, 
         else {
             currentGO = (currentGO + 1) % GOlist.size();
             Log.d(TAG, "switch verso: " + GOlist.get(currentGO).deviceName);
+            groupOwnerMacAddress = GOlist.get(currentGO).deviceAddress;
             connectTo(GOlist.get(currentGO));
             timer.schedule(new TimerTask() {
                 @Override
@@ -365,6 +367,7 @@ public class DeviceManager implements PeerListListener, ConnectionInfoListener, 
     }
 
     public void disconnect() {
+        Log.d(TAG, "Disconnecting from group.");
         wifiP2pManager.removeGroup(channel, new WifiP2pManager.ActionListener() {
             @Override
             public void onSuccess(){
