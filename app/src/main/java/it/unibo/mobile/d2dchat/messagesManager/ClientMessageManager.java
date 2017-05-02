@@ -45,6 +45,6 @@ public class ClientMessageManager extends MessageManager {
             send(message, Constants.SERVER_PORT);
         }
 
-        super.run();
+        super.receive();
     }
 }

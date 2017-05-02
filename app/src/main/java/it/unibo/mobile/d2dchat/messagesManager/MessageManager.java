@@ -49,7 +49,7 @@ public abstract class MessageManager extends Thread {
         this.peer = receiver;
     }
 
-    public void run() {
+    public void receive() {
         byte[] recvBuf = new byte[2048];
         while (keepRunning) {
             try {
