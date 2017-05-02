@@ -101,7 +101,7 @@ public abstract class MessageManager extends Thread {
         } catch (IOException e) {
             Log.e(TAG, "Exception during write", e);
         }
-        Log.i(TAG, "Sending message: \n" + message.getContents());
+//        Log.i(TAG, "Sending message: \n" + message.getContents());
     }
 
     public void stopManager() {
