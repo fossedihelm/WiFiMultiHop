@@ -9,6 +9,7 @@ import java.net.ConnectException;
 import java.net.DatagramSocket;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.concurrent.Semaphore;
 
 import it.unibo.mobile.d2dchat.Constants;
@@ -35,8 +36,10 @@ public class ClientMessageManager extends MessageManager {
 
     @Override
     public void run(){
+        ArrayList<Message> currentQueue = (ArrayList<Message>) ((Client) peer).getGoQueues()
+                .getQueue(peer.getDeviceManager().getGroupOwnerMacAddress());
         remoteAddress = peer.getDeviceManager().getInfo().groupOwnerAddress;
-        if (((Client)peer).currentQueue.isEmpty()) {
+        if (currentQueue.isEmpty()) {
             Message message = new Message();
             message.setType(Constants.MESSAGE_REGISTER);
             send(message, Constants.SERVER_PORT);

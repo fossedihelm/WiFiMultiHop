@@ -62,6 +62,10 @@ public class DeviceManager implements PeerListListener, ConnectionInfoListener, 
         return wiFiDirectBroadcastReceiver;
     }
 
+    public String getGroupOwnerMacAddress() {
+        return groupOwnerMacAddress;
+    }
+
     public WifiP2pInfo getInfo() {
         return info;
     }
