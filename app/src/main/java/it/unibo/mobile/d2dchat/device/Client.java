@@ -4,6 +4,7 @@ import android.util.Log;
 
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 import it.unibo.mobile.d2dchat.Constants;
@@ -18,7 +19,7 @@ public class Client extends Peer {
     private Socket server;
     private DeviceManager deviceManager;
     private ClientMessageManager manager;
-    private Map<String, ArrayList<Message>> goQueues = null;
+    private Map<String, ArrayList<Message>> goQueues = new HashMap<>();
     private int discarded = 0;
     private static final String TAG = "Client";
     private int count = 0;
