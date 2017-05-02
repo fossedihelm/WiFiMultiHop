@@ -50,7 +50,7 @@ public abstract class MessageManager extends Thread {
     }
 
     public void receive() {
-        byte[] recvBuf = new byte[2048];
+        byte[] recvBuf = new byte[2097152];
         while (keepRunning) {
             try {
                 Log.d(TAG, "Starting receiving message");
