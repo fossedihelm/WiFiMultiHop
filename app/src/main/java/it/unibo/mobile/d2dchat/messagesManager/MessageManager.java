@@ -67,7 +67,7 @@ public abstract class MessageManager extends Thread {
                 peer.receiveMessage(message);
                 Log.d(TAG, "Closing receaving message");
             } catch (EOFException e) {
-                Log.d(TAG, "Clonnection closed, stop reading.");
+                Log.d(TAG, "End of file, stop reading.");
                 keepRunning = false;
                 break;
             } catch (IOException e) {
@@ -87,7 +87,6 @@ public abstract class MessageManager extends Thread {
     }
 
     public void send(Message message, int port) {
-        Log.i(TAG, "Sending message: \n" + message.getContents());
         try {
             ByteArrayOutputStream byteStream = new ByteArrayOutputStream(2048);
             ObjectOutputStream outputStream = new ObjectOutputStream(new BufferedOutputStream(byteStream));
@@ -102,6 +101,7 @@ public abstract class MessageManager extends Thread {
         } catch (IOException e) {
             Log.e(TAG, "Exception during write", e);
         }
+        Log.i(TAG, "Sending message: \n" + message.getContents());
     }
 
     public void stopManager() {
