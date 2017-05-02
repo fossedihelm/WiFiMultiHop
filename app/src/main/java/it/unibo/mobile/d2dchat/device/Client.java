@@ -4,11 +4,11 @@ import android.util.Log;
 
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Map;
 
 import it.unibo.mobile.d2dchat.Constants;
 import it.unibo.mobile.d2dchat.messagesManager.ClientMessageManager;
 import it.unibo.mobile.d2dchat.messagesManager.Message;
-import it.unibo.mobile.d2dchat.device.DeviceQueue;
 
 /**
  * Created by asig on 1/3/17.
@@ -18,7 +18,7 @@ public class Client extends Peer {
     private Socket server;
     private DeviceManager deviceManager;
     private ClientMessageManager manager;
-    private DeviceQueue goQueues = null;
+    private Map<String, ArrayList<Message>> goQueues = null;
     private int discarded = 0;
     private static final String TAG = "Client";
     private int count = 0;
@@ -27,13 +27,12 @@ public class Client extends Peer {
     public Client(DeviceManager deviceManager) {
         super(deviceManager);
         this.deviceManager = deviceManager;
-        goQueues = new DeviceQueue(deviceManager.GOlist.size());
         for (int i = 0; i < deviceManager.GOlist.size(); i++) {
-            goQueues.add(new ArrayList<Message>(200), deviceManager.GOlist.get(i).deviceAddress);
+            goQueues.put(deviceManager.GOlist.get(i).deviceAddress,new ArrayList<Message>(200));
         }
     }
 
-    public DeviceQueue getGoQueues() {
+    public Map<String, ArrayList<Message>> getGoQueues() {
         return goQueues;
     }
 
@@ -59,14 +58,14 @@ public class Client extends Peer {
         count = 0;
         Log.d(TAG, "onDisconnect()");
         manager.stopManager();
-        discarded += goQueues.getQueue(deviceManager.getGroupOwnerMacAddress()).size();
-        goQueues.getQueue(deviceManager.getGroupOwnerMacAddress()).clear();
+        discarded += goQueues.get(deviceManager.getGroupOwnerMacAddress()).size();
+        goQueues.get(deviceManager.getGroupOwnerMacAddress()).clear();
     }
 
     @Override
     public void receiveMessage(Message message) {
         if (message.getType() == Constants.MESSAGE_DATA) {
-            goQueues.getQueue(message.getDest()).add(message);
+            goQueues.get(message.getDest()).add(message);
         }
         else if (message.getType() == Constants.MESSAGE_STOP_ACK) {
             Log.d(TAG, "Departure procedure completed.");
@@ -76,7 +75,7 @@ public class Client extends Peer {
     }
 
     public void sendQueued() {
-        ArrayList<Message> currentQueue = (ArrayList<Message>) goQueues.getQueue(deviceManager.getGroupOwnerMacAddress());
+        ArrayList<Message> currentQueue = (ArrayList<Message>) goQueues.get(deviceManager.getGroupOwnerMacAddress());
         while (!currentQueue.isEmpty() && keepSending) {
             Message message = currentQueue.get(0);
             currentQueue.remove(0);

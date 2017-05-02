@@ -260,40 +260,40 @@ public class DeviceManager implements PeerListListener, ConnectionInfoListener, 
     }
 
 
-    public String getFilenameFromUri(Uri uri) {
-        String fileName = null;
-        Context context = mainActivity.getApplicationContext();
-        String scheme = uri.getScheme();
-        if (scheme.equals("file")) {
-            fileName = uri.getLastPathSegment();
-        } else if (scheme.equals("content")) {
-            Cursor cursor = context.getContentResolver().query(uri, null, null, null, null);
-            if (cursor != null && cursor.getCount() != 0) {
-                int columnIndex = cursor.getColumnIndexOrThrow(OpenableColumns.DISPLAY_NAME);
-                int sizeIndex = cursor.getColumnIndexOrThrow(OpenableColumns.SIZE);
-                cursor.moveToFirst();
-                fileName = cursor.getString(columnIndex);
-            }
-        }
-        return fileName;
-    }
-
-    private byte[] getBytes(Uri filePath) {
-        InputStream fileInputStream = null;
-        try {
-            fileInputStream = mainActivity.getContentResolver().openInputStream(filePath);
-            byte[] bytes = new byte[fileInputStream.available()];
-            fileInputStream.read(bytes);
-            fileInputStream.close();
-            return bytes;
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-
-    }
+//    public String getFilenameFromUri(Uri uri) {
+//        String fileName = null;
+//        Context context = mainActivity.getApplicationContext();
+//        String scheme = uri.getScheme();
+//        if (scheme.equals("file")) {
+//            fileName = uri.getLastPathSegment();
+//        } else if (scheme.equals("content")) {
+//            Cursor cursor = context.getContentResolver().query(uri, null, null, null, null);
+//            if (cursor != null && cursor.getCount() != 0) {
+//                int columnIndex = cursor.getColumnIndexOrThrow(OpenableColumns.DISPLAY_NAME);
+//                int sizeIndex = cursor.getColumnIndexOrThrow(OpenableColumns.SIZE);
+//                cursor.moveToFirst();
+//                fileName = cursor.getString(columnIndex);
+//            }
+//        }
+//        return fileName;
+//    }
+//
+//    private byte[] getBytes(Uri filePath) {
+//        InputStream fileInputStream = null;
+//        try {
+//            fileInputStream = mainActivity.getContentResolver().openInputStream(filePath);
+//            byte[] bytes = new byte[fileInputStream.available()];
+//            fileInputStream.read(bytes);
+//            fileInputStream.close();
+//            return bytes;
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        return null;
+//
+//    }
 
     public void connectTo(final WifiP2pDevice device) {
         Log.d(TAG, "Ci proviamo a connettere ad un device");

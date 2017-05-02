@@ -37,7 +37,7 @@ public class ClientMessageManager extends MessageManager {
     @Override
     public void run(){
         ArrayList<Message> currentQueue = (ArrayList<Message>) ((Client) peer).getGoQueues()
-                .getQueue(peer.getDeviceManager().getGroupOwnerMacAddress());
+                .get(peer.getDeviceManager().getGroupOwnerMacAddress());
         remoteAddress = peer.getDeviceManager().getInfo().groupOwnerAddress;
         if (currentQueue.isEmpty()) {
             Message message = new Message();
