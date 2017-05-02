@@ -1,5 +1,6 @@
 package it.unibo.mobile.d2dchat.messagesManager;
 
+import android.net.wifi.p2p.WifiP2pDevice;
 import android.util.Log;
 
 import java.io.EOFException;
@@ -36,11 +37,17 @@ public class ClientMessageManager extends MessageManager {
 
     @Override
     public void run(){
-        ArrayList<Message> currentQueue = (ArrayList<Message>) ((Client) peer).getGoQueues()
+        ArrayList<Message> currentQueue = ((Client) peer).getGoQueues()
                 .get(peer.getDeviceManager().getGroupOwnerMacAddress());
         remoteAddress = peer.getDeviceManager().getInfo().groupOwnerAddress;
         if (currentQueue.isEmpty()) {
             Message message = new Message();
+            ArrayList<String> goListToSend = new ArrayList<>();
+
+            for (WifiP2pDevice device : peer.getDeviceManager().GOlist)
+                goListToSend.add(device.deviceAddress);
+
+            message.setData(goListToSend);
             message.setType(Constants.MESSAGE_REGISTER);
             send(message, Constants.SERVER_PORT);
         }

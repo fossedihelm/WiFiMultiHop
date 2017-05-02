@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -82,6 +83,14 @@ public class GroupOwner extends Peer {
         }
         else if (message.getType() == Constants.MESSAGE_STOP) {
             initiateDisconnection();
+        }
+        else if (message.getType() == Constants.MESSAGE_REGISTER){
+            ArrayList<String> addresses =(ArrayList<String>) message.getData();
+            int myIndex = addresses.indexOf(deviceManager.deviceAddress);
+            if(addresses.size() <= 1 || myIndex == -1)
+                deviceManager.currentDest = addresses.get(myIndex);
+            else
+                deviceManager.currentDest = addresses.get( (myIndex+1) % addresses.size() );
         }
     }
 

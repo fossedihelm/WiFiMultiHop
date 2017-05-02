@@ -171,16 +171,16 @@ public class DeviceManager implements PeerListListener, ConnectionInfoListener, 
                     peer.onConnect();
                 }
                 // send data to a client in the list (the only one in our test scenario)
-                for (WifiP2pDevice device : peers) {
-                    if (!device.isGroupOwner())
-                        currentDest = device.deviceAddress;
-                }
+//                for (WifiP2pDevice device : peers) {
+//                    if (!device.isGroupOwner())
+//                        currentDest = device.deviceAddress;
+//                }
             } else { // Client
                 if (creation) {
                     peer = new Client(this);
                 }
                 peer.onConnect();
-                currentDest = wifiP2pInfo.groupOwnerAddress.getHostAddress();
+//                currentDest = wifiP2pInfo.groupOwnerAddress.getHostAddress();
             }
 
             //TODO: verify that one thread is enough
@@ -349,7 +349,8 @@ public class DeviceManager implements PeerListListener, ConnectionInfoListener, 
             peer.initiateDisconnection(); // message exchange to stop GO from sending
         }
         else {
-            currentGO = (currentGO + 1) % GOlist.size();
+            if (GOlist.size()>1)
+                currentGO = (currentGO + 1) % GOlist.size();
             Log.d(TAG, "switch verso: " + GOlist.get(currentGO).deviceName);
             groupOwnerMacAddress = GOlist.get(currentGO).deviceAddress;
             connectTo(GOlist.get(currentGO));
