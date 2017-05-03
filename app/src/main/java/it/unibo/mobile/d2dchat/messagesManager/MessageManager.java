@@ -49,23 +49,19 @@ public abstract class MessageManager extends Thread {
         this.peer = receiver;
     }
 
-    public void receive() {
+    public void run() {
         byte[] recvBuf = new byte[2097152];
         while (keepRunning) {
             try {
-                Log.d(TAG, "Starting receiving message");
                 DatagramPacket packet = new DatagramPacket(recvBuf, recvBuf.length);
                 socket.receive(packet);
                 int byteCount = packet.getLength();
                 ByteArrayInputStream byteStream = new ByteArrayInputStream(recvBuf);
                 ObjectInputStream inputStream = new ObjectInputStream(new BufferedInputStream(byteStream));
-                Log.d(TAG, "Starting reading message");
                 Message message = (Message) inputStream.readObject();
                 inputStream.close();
-                Log.d(TAG, "Closing reading message");
                 remoteAddress = packet.getAddress();
                 peer.receiveMessage(message);
-                Log.d(TAG, "Closing receaving message");
             } catch (EOFException e) {
                 Log.d(TAG, "End of file, stop reading.");
                 keepRunning = false;

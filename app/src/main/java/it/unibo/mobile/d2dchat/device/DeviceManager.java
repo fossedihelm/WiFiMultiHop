@@ -296,7 +296,6 @@ public class DeviceManager implements PeerListListener, ConnectionInfoListener, 
 //    }
 
     public void connectTo(final WifiP2pDevice device) {
-        disconnect();
         Log.d(TAG, "Ci proviamo a connettere ad un device");
         WifiP2pConfig config = new WifiP2pConfig();
         config.deviceAddress = device.deviceAddress;

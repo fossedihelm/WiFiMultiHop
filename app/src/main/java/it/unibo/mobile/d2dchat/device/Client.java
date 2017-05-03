@@ -61,6 +61,7 @@ public class Client extends Peer {
         manager.stopManager();
         discarded += goQueues.get(deviceManager.getGroupOwnerMacAddress()).size();
         goQueues.get(deviceManager.getGroupOwnerMacAddress()).clear();
+        deviceManager.disconnect();
     }
 
     @Override

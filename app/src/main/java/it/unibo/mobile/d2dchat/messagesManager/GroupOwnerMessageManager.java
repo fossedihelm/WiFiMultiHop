@@ -91,7 +91,7 @@ public class GroupOwnerMessageManager extends MessageManager {
 
     @Override
     public void run() {
-        super.receive();
+        super.run();
     }
 
     public void startGenerating() {
