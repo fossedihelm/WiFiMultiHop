@@ -9,6 +9,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.concurrent.Semaphore;
 
 import it.unibo.mobile.d2dchat.device.Peer;
 
@@ -21,38 +23,58 @@ public abstract class MessageManager extends Thread {
     protected Socket socket = null;
     protected String deviceName;
     protected Peer peer;
-    protected InputStream inputStream;
-    protected OutputStream outputStream;
+    protected Sender sender = null;
+    protected InputStream inputStream = null;
+    protected OutputStream outputStream = null;
     protected static final String TAG = "MessageManager";
+    protected ArrayList<Message> outputQueue = null;
     public volatile boolean keepRunning = true;
+
+    protected class Sender extends Thread {
+        public Semaphore queue = null;
+
+        public Sender() {
+            queue = new Semaphore(0);
+        }
+
+        @Override
+        public void run() {
+            while (true) {
+                try {
+                    queue.acquire();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                    break;
+                }
+                // Send message
+                Message message = outputQueue.get(0);
+                outputQueue.remove(0);
+                Log.i(TAG, "Sending message: \n" + message.getContents());
+                try {
+                    if (outputStream == null)
+                        Log.d(TAG, "null outputStream");
+                    new ObjectOutputStream(outputStream).writeObject(message);
+                } catch (IOException e) {
+                    Log.e(TAG, "Exception during write", e);
+                }
+            }
+        }
+
+    }
+
+    public void send(Message message) {
+        // lazy instantiation of sender thread
+        if (sender == null) {
+            sender = new Sender();
+            sender.start();
+        }
+        outputQueue.add(message);
+        sender.queue.release();
+    }
 
     public MessageManager(Peer peer) {
         this.peer = peer;
-    }
-
-    public MessageManager(Socket socket, Peer receiver) {
-        this.socket = socket;
-        this.peer = receiver;
-    }
-
-
-    public MessageManager(Socket socket, String deviceName, Peer receiver) {
-        this.socket = socket;
-        this.deviceName = deviceName;
-        this.peer = receiver;
-    }
-
-
-
-    public void send(Message message) {
-        Log.i(TAG, "Sending message: \n" + message.getContents());
-        try {
-            if (outputStream == null)
-                Log.d(TAG, "null outputStream");
-            new ObjectOutputStream(outputStream).writeObject(message);
-        } catch (IOException e) {
-            Log.e(TAG, "Exception during write", e);
-        }
+        this.outputQueue = new ArrayList<>(50);
     }
 
     public void stopManager() {
