@@ -65,6 +65,7 @@ public class GroupOwner extends Peer {
 
     @Override
     public void receiveMessage(Message message) {
+        Log.i(TAG, "Received message: \n" + message.getContents());
         if (message.getType() == Constants.MESSAGE_DATA) {
             //Message receiver is the owner
             if (message.getDest().equals(deviceManager.getDeviceName())) {

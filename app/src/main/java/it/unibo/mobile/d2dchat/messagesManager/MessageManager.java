@@ -34,6 +34,7 @@ public abstract class MessageManager extends Thread {
         protected ArrayList<Message> outputQueue = null;
         public Semaphore queue = null;
         public volatile boolean keepRunning = true;
+        public volatile boolean keepSending = true;
 
         public Sender() {
             queue = new Semaphore(0);
@@ -56,9 +57,7 @@ public abstract class MessageManager extends Thread {
             } catch (IOException e) {
                 Log.e(TAG, "Exception during write", e);
             }
-            synchronized (lock) {
-                notifyAll();
-            }
+            wakeUp();
         }
 
         public synchronized int getQueueSize() {
@@ -73,15 +72,20 @@ public abstract class MessageManager extends Thread {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                send();
+                if (keepSending)
+                    send();
             }
         }
 
     }
 
+    public synchronized void wakeUp() {
+        notifyAll();
+    }
+
     public void send(Message message) {
         // lazy instantiation of sender thread
-        if (sender == null) {
+        if (sender == null || sender.keepRunning == false) {
             sender = new Sender();
             sender.start();
         }
@@ -94,18 +98,17 @@ public abstract class MessageManager extends Thread {
         this.lock = new Object();
     }
 
-    public void stopManager() {
-        keepRunning = false;
+    public synchronized void stopManager() {
         while (sender.getQueueSize() > 0) {
             try{
-                synchronized (lock) {
-                    wait();
-                }
+                wait();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
         sender.keepRunning = false;
+        sender.keepSending = false;
+        sender.queue.release();
         closeSocket();
     }
 

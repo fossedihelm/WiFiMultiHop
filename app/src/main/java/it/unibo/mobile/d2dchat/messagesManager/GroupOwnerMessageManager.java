@@ -86,6 +86,7 @@ public class GroupOwnerMessageManager extends MessageManager {
     }
 
     public void startGenerating() {
+        generator = new MessageGenerator();
         generator.start();
     }
 
@@ -94,6 +95,7 @@ public class GroupOwnerMessageManager extends MessageManager {
 
         while (true) {
             try {
+                keepRunning = true;
                 socket = serverSocket.accept();
                 Log.d(TAG, "Server Socket accepted");
             } catch (IOException e) {
@@ -108,14 +110,13 @@ public class GroupOwnerMessageManager extends MessageManager {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            generator = new MessageGenerator();
 
             while (keepRunning) {
                 try {
                     Message message = (Message) new ObjectInputStream(inputStream).readObject();
                     peer.receiveMessage(message);
                 } catch (EOFException e) {
-                    Log.d(TAG, "Clonnection closed, stop reading.");
+                    Log.d(TAG, "Connection closed, stop reading.");
                     keepRunning = false;
                     stopGenerating = false;
                     break;
