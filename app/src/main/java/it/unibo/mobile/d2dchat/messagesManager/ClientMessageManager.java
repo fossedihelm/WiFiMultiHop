@@ -59,7 +59,6 @@ public class ClientMessageManager extends MessageManager {
         try {
             inputStream = socket.getInputStream();
             outputStream = socket.getOutputStream();
-            connecting.release();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -72,6 +71,8 @@ public class ClientMessageManager extends MessageManager {
         message.setData(goListToSend);
         message.setType(Constants.MESSAGE_REGISTER);
         message.setSource(peer.getDeviceManager().deviceAddress);
+        send(message);
+        connecting.release();
 
         while (keepRunning) {
             try {
