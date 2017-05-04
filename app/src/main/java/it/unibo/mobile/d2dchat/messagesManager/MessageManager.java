@@ -30,11 +30,23 @@ public abstract class MessageManager extends Thread {
     protected ArrayList<Message> outputQueue = null;
     public volatile boolean keepRunning = true;
 
+    protected class InverseSemaphore extends Semaphore {
+        public InverseSemaphore(int permits) {
+            super(permits);
+        }
+
+        public void takePermit() {
+            reducePermits(1);
+        }
+    }
+
     protected class Sender extends Thread {
         public Semaphore queue = null;
+        public InverseSemaphore emptyQueue = null;
 
         public Sender() {
             queue = new Semaphore(0);
+            emptyQueue = new InverseSemaphore(1);
         }
 
         @Override
@@ -57,6 +69,7 @@ public abstract class MessageManager extends Thread {
                 } catch (IOException e) {
                     Log.e(TAG, "Exception during write", e);
                 }
+                emptyQueue.release();
             }
         }
 
@@ -69,6 +82,7 @@ public abstract class MessageManager extends Thread {
             sender.start();
         }
         outputQueue.add(message);
+        sender.emptyQueue.takePermit();
         sender.queue.release();
     }
 
@@ -79,6 +93,7 @@ public abstract class MessageManager extends Thread {
 
     public void stopManager() {
         keepRunning = false;
+        sender.emptyQueue.tryAcquire();
         closeSocket();
     }
 
