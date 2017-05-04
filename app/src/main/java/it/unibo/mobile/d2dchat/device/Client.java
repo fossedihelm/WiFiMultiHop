@@ -4,6 +4,8 @@ import android.util.Log;
 
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import it.unibo.mobile.d2dchat.Constants;
 import it.unibo.mobile.d2dchat.messagesManager.ClientMessageManager;
@@ -17,7 +19,7 @@ public class Client extends Peer {
     private Socket server;
     private DeviceManager deviceManager;
     private ClientMessageManager manager;
-    private ArrayList<ArrayList<Message>> goQueue;
+    private Map<String, ArrayList<Message>> goQueues = new HashMap<>();
     private int discarded = 0;
     private static final String TAG = "Client";
     private int count = 0;
@@ -26,10 +28,13 @@ public class Client extends Peer {
     public Client(DeviceManager deviceManager) {
         super(deviceManager);
         this.deviceManager = deviceManager;
-        goQueue = new ArrayList<>(deviceManager.GOlist.size());
         for (int i = 0; i < deviceManager.GOlist.size(); i++) {
-            goQueue.add(new ArrayList<Message>(20));
+            goQueues.put(deviceManager.GOlist.get(i).deviceAddress,new ArrayList<Message>(200));
         }
+    }
+
+    public Map<String, ArrayList<Message>> getGoQueues() {
+        return goQueues;
     }
 
     @Override
@@ -54,14 +59,17 @@ public class Client extends Peer {
         count = 0;
         Log.d(TAG, "onDisconnect()");
         manager.stopManager();
-        discarded += goQueue.get(deviceManager.currentGO).size();
-        goQueue.get(deviceManager.currentGO).clear();
+        discarded += goQueues.get(deviceManager.getGroupOwnerMacAddress()).size();
+        goQueues.get(deviceManager.getGroupOwnerMacAddress()).clear();
+        deviceManager.disconnect();
     }
 
     @Override
     public void receiveMessage(Message message) {
-        if (message.getType() == Constants.MESSAGE_DATA)
-            goQueue.get(deviceManager.currentGO).add(message);
+        Log.i(TAG, "Received message: \n" + message.getContents());
+        if (message.getType() == Constants.MESSAGE_DATA) {
+            goQueues.get(message.getDest()).add(message);
+        }
         else if (message.getType() == Constants.MESSAGE_STOP_ACK) {
             Log.d(TAG, "Departure procedure completed.");
             onDisconnect();
@@ -70,11 +78,10 @@ public class Client extends Peer {
     }
 
     public void sendQueued() {
-        int dest;
-        dest = 1 - deviceManager.currentGO; // we assume only 2 GOs
-        while (!goQueue.get(dest).isEmpty() && keepSending) {
-            Message message = goQueue.get(dest).get(0);
-            goQueue.get(dest).remove(0);
+        ArrayList<Message> currentQueue = (ArrayList<Message>) goQueues.get(deviceManager.getGroupOwnerMacAddress());
+        while (!currentQueue.isEmpty() && keepSending) {
+            Message message = currentQueue.get(0);
+            currentQueue.remove(0);
             manager.send(message);
         }
         Log.d(TAG, "Sent all queued messages.");

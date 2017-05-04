@@ -62,6 +62,10 @@ public class DeviceManager implements PeerListListener, ConnectionInfoListener, 
         return wiFiDirectBroadcastReceiver;
     }
 
+    public String getGroupOwnerMacAddress() {
+        return groupOwnerMacAddress;
+    }
+
     public WifiP2pInfo getInfo() {
         return info;
     }
@@ -167,20 +171,16 @@ public class DeviceManager implements PeerListListener, ConnectionInfoListener, 
                     peer.onConnect();
                 }
                 // send data to a client in the list (the only one in our test scenario)
-                for (WifiP2pDevice device : peers) {
-                    if (!device.isGroupOwner())
-                        currentDest = device.deviceAddress;
-                }
+//                for (WifiP2pDevice device : peers) {
+//                    if (!device.isGroupOwner())
+//                        currentDest = device.deviceAddress;
+//                }
             } else { // Client
                 if (creation) {
                     peer = new Client(this);
-                    //perform onConnect()
-                    peer.onConnect();
                 }
-                else {
-                    peer.onConnect();
-                }
-                currentDest = wifiP2pInfo.groupOwnerAddress.getHostAddress();
+                peer.onConnect();
+//                currentDest = wifiP2pInfo.groupOwnerAddress.getHostAddress();
             }
 
             //TODO: verify that one thread is enough
@@ -259,42 +259,6 @@ public class DeviceManager implements PeerListListener, ConnectionInfoListener, 
         message.setSendTime(System.currentTimeMillis());
     }
 
-
-    public String getFilenameFromUri(Uri uri) {
-        String fileName = null;
-        Context context = mainActivity.getApplicationContext();
-        String scheme = uri.getScheme();
-        if (scheme.equals("file")) {
-            fileName = uri.getLastPathSegment();
-        } else if (scheme.equals("content")) {
-            Cursor cursor = context.getContentResolver().query(uri, null, null, null, null);
-            if (cursor != null && cursor.getCount() != 0) {
-                int columnIndex = cursor.getColumnIndexOrThrow(OpenableColumns.DISPLAY_NAME);
-                int sizeIndex = cursor.getColumnIndexOrThrow(OpenableColumns.SIZE);
-                cursor.moveToFirst();
-                fileName = cursor.getString(columnIndex);
-            }
-        }
-        return fileName;
-    }
-
-    private byte[] getBytes(Uri filePath) {
-        InputStream fileInputStream = null;
-        try {
-            fileInputStream = mainActivity.getContentResolver().openInputStream(filePath);
-            byte[] bytes = new byte[fileInputStream.available()];
-            fileInputStream.read(bytes);
-            fileInputStream.close();
-            return bytes;
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-
-    }
-
     public void connectTo(final WifiP2pDevice device) {
         Log.d(TAG, "Ci proviamo a connettere ad un device");
         WifiP2pConfig config = new WifiP2pConfig();
@@ -348,8 +312,10 @@ public class DeviceManager implements PeerListListener, ConnectionInfoListener, 
             peer.initiateDisconnection(); // message exchange to stop GO from sending
         }
         else {
-            currentGO = (currentGO + 1) % GOlist.size();
+            if (GOlist.size()>1)
+                currentGO = (currentGO + 1) % GOlist.size();
             Log.d(TAG, "switch verso: " + GOlist.get(currentGO).deviceName);
+            groupOwnerMacAddress = GOlist.get(currentGO).deviceAddress;
             connectTo(GOlist.get(currentGO));
             timer.schedule(new TimerTask() {
                 @Override
@@ -365,6 +331,7 @@ public class DeviceManager implements PeerListListener, ConnectionInfoListener, 
     }
 
     public void disconnect() {
+        Log.d(TAG, "Disconnecting from group.");
         wifiP2pManager.removeGroup(channel, new WifiP2pManager.ActionListener() {
             @Override
             public void onSuccess(){
