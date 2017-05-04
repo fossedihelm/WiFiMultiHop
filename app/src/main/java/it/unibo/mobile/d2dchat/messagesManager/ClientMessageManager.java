@@ -1,5 +1,6 @@
 package it.unibo.mobile.d2dchat.messagesManager;
 
+import android.net.wifi.p2p.WifiP2pDevice;
 import android.util.Log;
 
 import java.io.EOFException;
@@ -9,6 +10,7 @@ import java.net.ConnectException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.concurrent.Semaphore;
+import java.util.ArrayList;
 
 import it.unibo.mobile.d2dchat.Constants;
 import it.unibo.mobile.d2dchat.device.Peer;
@@ -62,9 +64,18 @@ public class ClientMessageManager extends MessageManager {
             e.printStackTrace();
         }
 
+        // Send REGISTER message containing list of GOs.
+        Message message = new Message();
+        ArrayList<String> goListToSend = new ArrayList<>();
+        for (WifiP2pDevice device : peer.getDeviceManager().GOlist)
+            goListToSend.add(device.deviceAddress);
+        message.setData(goListToSend);
+        message.setType(Constants.MESSAGE_REGISTER);
+        message.setSource(peer.getDeviceManager().deviceAddress);
+
         while (keepRunning) {
             try {
-                Message message = (Message) new ObjectInputStream(inputStream).readObject();
+                message = (Message) new ObjectInputStream(inputStream).readObject();
                 peer.receiveMessage(message);
             } catch (EOFException e){
                 Log.d(TAG, "Connection closed, stop reading");

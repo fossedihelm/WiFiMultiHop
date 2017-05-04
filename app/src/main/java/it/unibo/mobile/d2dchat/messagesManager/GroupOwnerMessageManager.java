@@ -85,6 +85,10 @@ public class GroupOwnerMessageManager extends MessageManager {
         }
     }
 
+    public void startGenerating() {
+        generator.start();
+    }
+
     @Override
     public void run() {
 
@@ -105,7 +109,6 @@ public class GroupOwnerMessageManager extends MessageManager {
                 e.printStackTrace();
             }
             generator = new MessageGenerator();
-            generator.start();
 
             while (keepRunning) {
                 try {
