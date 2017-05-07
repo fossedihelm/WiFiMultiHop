@@ -17,5 +17,14 @@
     <item name="android:textStyle">normal</item>
     <item name="android:textColor">#33B5E5</item>
     </style>
+    <style name="Seperator">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1dp</item>
+        <item name="android:layout_marginBottom">0dp</item>
+        <item name="android:layout_marginLeft">8dp</item>
+        <item name="android:layout_marginRight">8dp</item>
+        <item name="android:layout_marginTop">0dp</item>
+        <item name="android:background">#000000</item>
+    </style>
 
 </resources>

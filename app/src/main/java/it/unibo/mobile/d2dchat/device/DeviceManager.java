@@ -34,7 +34,7 @@ import it.unibo.mobile.d2dchat.socketManager.SocketHandler;
 import it.unibo.mobile.d2dchat.socketManager.SocketReceiver;
 
 //Deve gestire il device,  dovrà fare da intermediario tra la rete e l'activity. Gran parte del codice dell'activity andrà qui
-public class DeviceManager implements PeerListListener, ConnectionInfoListener, GroupInfoListener, SocketReceiver {
+public class DeviceManager implements PeerListListener, ConnectionInfoListener, GroupInfoListener {
 
     private int deviceStatus = Constants.DEVICE_INIT;
     private WifiP2pManager wifiP2pManager;
@@ -233,22 +233,6 @@ public class DeviceManager implements PeerListListener, ConnectionInfoListener, 
         return deviceStatus;
     }
 
-    @Override
-    //Il socket handler ci comunica l'arrivo di un evento, in genere messaggi
-    public void receiveMessage(int eventType, Message message) {
-        switch (eventType) {
-            case Constants.EVENT_REGISTER: //Dobbiamo registrarci al GO
-                mainActivity.addParticipant(message.getSource());
-                break;
-            case Constants.EVENT_MESSAGE:
-                receiveChatMessage((Message) message);
-                break;
-        }
-    }
-
-    private void receiveChatMessage(Message message) {
-        mainActivity.addMessage(message);
-    }
 
     public void sendDataMessage(String dest) {
         Message message = new Message();

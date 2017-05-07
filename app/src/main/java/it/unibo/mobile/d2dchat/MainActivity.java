@@ -4,7 +4,6 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
 import android.content.IntentFilter;
-import android.net.Uri;
 import android.net.wifi.p2p.WifiP2pDevice;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.net.wifi.p2p.WifiP2pManager.Channel;
@@ -19,7 +18,7 @@ import java.util.Collection;
 import java.util.List;
 
 import it.unibo.mobile.d2dchat.device.DeviceManager;
-import it.unibo.mobile.d2dchat.fragment.ChatFragment;
+import it.unibo.mobile.d2dchat.fragment.InGroupFragment;
 import it.unibo.mobile.d2dchat.fragment.DevicesListFragment;
 import it.unibo.mobile.d2dchat.messagesManager.Message;
 
@@ -38,7 +37,7 @@ public class MainActivity extends AppCompatActivity implements IntervalFragment.
     WifiP2pManager mManager;
     Channel mChannel;
     DevicesListFragment devicesListFragment;
-    ChatFragment chatFragment = new ChatFragment();
+    InGroupFragment inGroupFragment = new InGroupFragment();
     IntentFilter mIntentFilter;
 
 
@@ -75,45 +74,8 @@ public class MainActivity extends AppCompatActivity implements IntervalFragment.
         devicesListFragment.setDeviceManager(deviceManager);
         getFragmentManager().beginTransaction()
                 .add(R.id.container_root, devicesListFragment, "services").commit();
-
-
-        startTimerThread();
-
     }
 
-    private void startTimerThread() {
-        Thread th = new Thread(new Runnable() {
-            private long startTime = System.currentTimeMillis();
-
-            public void run() {
-                while (true) {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            synchronized (lock) {
-                                if (messageToProcess.size() > 0) {
-                                    for (Message message : messageToProcess) {
-                                        chatFragment.addMessage(message);
-                                    }
-                                    chatFragment.getListAdapter().notifyDataSetChanged();
-                                    messageToProcess.clear();
-                                }
-                                chatFragment.setParticipants(groupPeers); //TODO:Il go ora non aggiorna più, evitare di farlo ogni update?
-                            }
-                        }
-                    });
-
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                        break;
-                    }
-                }
-            }
-        });
-        th.start();
-    }
 
 
     /* register the broadcast receiver with the intent values to be matched */
@@ -143,26 +105,10 @@ public class MainActivity extends AppCompatActivity implements IntervalFragment.
         deviceManager.connectTo(device);
     }
 
-    public void sendDataMessage(Uri filePath, String receiver) {
-        deviceManager.sendDataMessage(deviceManager.currentDest);
-    }
-
-
-    public void addMessage(Message message) {
-        synchronized (lock) {
-            messageToProcess.add(message);
-        }
-    }
-
-    public void removeMessage(Message message) {
-        synchronized (lock) {
-            messageToProcess.remove(message);
-        }
-    }
 
     public void setGroupPeers(Collection<WifiP2pDevice> groupPeers) {
 
-        if (chatFragment != null && deviceManager.getDeviceStatus() == Constants.DEVICE_CONNECTED) {
+        if (inGroupFragment != null && deviceManager.getDeviceStatus() == Constants.DEVICE_CONNECTED) {
             //We have the peer list, let's join the chat fragment
             DevicesListFragment.WiFiDevicesAdapter adapter = devicesListFragment.getWiFiDeviceAdapter();
             adapter.clear();
@@ -170,7 +116,7 @@ public class MainActivity extends AppCompatActivity implements IntervalFragment.
                 chatFragmentShowed = true;
                 getFragmentManager().beginTransaction().hide(devicesListFragment).commit();
 
-                getFragmentManager().beginTransaction().add(R.id.container_root, chatFragment, "services_chat").commit();
+                getFragmentManager().beginTransaction().add(R.id.container_root, inGroupFragment, "services_chat").commit();
             }
 
             List<String> participants = new ArrayList<>();
@@ -179,15 +125,10 @@ public class MainActivity extends AppCompatActivity implements IntervalFragment.
                 participants.add(device.deviceName);
             }
             this.groupPeers.addAll(participants);
-            chatFragment.setParticipants(participants);
+//            inGroupFragment.setParticipants(participants);
         }
     }
 
-    public void addParticipant(String deviceName) {
-        synchronized (lock) {
-            groupPeers.add(deviceName);
-        }
-    }
 
     public void updatePeers() {
         if (devicesListFragment != null && deviceManager.getDeviceStatus() == Constants.DEVICE_DISCOVERY) {
@@ -229,5 +170,10 @@ public class MainActivity extends AppCompatActivity implements IntervalFragment.
         deviceManager.timeInterval = time;
         deviceManager.startPingPongProcedure();
 //        Toast.makeText(this, "Hello, " + user, Toast.LENGTH_SHORT).show();
+    }
+    public void test(View view){
+
+        inGroupFragment.infoMessage.setPartialRecvMessage(inGroupFragment.infoMessage.getPartialRecvMessage()+1);
+        inGroupFragment.binding.executePendingBindings();
     }
 }

@@ -7,4 +7,9 @@
     <string name="packet_generation_interval">Intervallo generazione pacchetti (seconds)</string>
     <string name="packet_size">Grandezza pacchetti (KiB)</string>
     <string name="cancel">Cancel</string>
+    <string name="messages_title">Messaggi</string>
+    <string name="messages_part_received">Parziale Ricevuti</string>
+    <string name="messages_part_send">Parziale Inviati</string>
+    <string name="messages_tot_received">Totale Ricevuti</string>
+    <string name="messages_tot_send">Totale Inviati</string>
 </resources>
