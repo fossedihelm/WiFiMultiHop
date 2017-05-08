@@ -10,7 +10,7 @@ import it.unibo.mobile.d2dchat.BR;
  */
 
 public class InfoMessage extends BaseObservable {
-    private Boolean go;
+    private Boolean go = true;
 
     private Integer partialSentMessage = 0;
     private Integer partialRecvMessage = 0;

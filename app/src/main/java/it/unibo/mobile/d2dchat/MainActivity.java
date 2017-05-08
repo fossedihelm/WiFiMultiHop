@@ -146,7 +146,6 @@ public class MainActivity extends AppCompatActivity implements IntervalFragment.
 //         Do something in response to button
         Log.d(TAG, "button clicked");
         deviceManager.createGroup();
-        mInfoMessage.setGo(true);
     }
     /** Called when the user clicks the Pingpongami button */
     public void pingpongami(View view) {
