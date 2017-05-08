@@ -15,11 +15,10 @@ import it.unibo.mobile.d2dchat.messagesManager.Message;
 public class GroupOwner extends Peer {
     private static final String TAG = "GroupOwner";
     private GroupOwnerMessageManager manager;
-    private long totalTimeReceivedMessages = 0;
+    private long sumAllRTT = 0;
     private int received = 0;
     private int completedConnections = 0;
     private int count = 0;
-    private long averageRTT = 0;
     private Role role = Role.generator;
     public volatile int sent = 0;
     public enum Role {generator, replier};
@@ -65,10 +64,11 @@ public class GroupOwner extends Peer {
                 if (role == Role.generator) {
                     // Record message arrival.
                     received++;
-                    long totalTime = System.currentTimeMillis() - message.getSendTime();
-                    totalTimeReceivedMessages += totalTime;
-                    averageRTT = totalTimeReceivedMessages / received;
-                    Log.d(TAG, "Received msg " + message.getSeqNum() + " after " + (float) totalTime / 1000 + " seconds.");
+                    long RTT = System.currentTimeMillis() - message.getSendTime();
+                    sumAllRTT += RTT;
+                    long averageRTT = sumAllRTT / received;
+                    getDeviceManager().infoMessage.setAverageRTT(averageRTT);
+                    Log.d(TAG, "Received msg " + message.getSeqNum() + " after " + (float) RTT / 1000 + " seconds.");
                 }
                 else if (role == Role.replier) {
                     // Reply to message.

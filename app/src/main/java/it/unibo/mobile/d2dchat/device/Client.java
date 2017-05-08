@@ -16,7 +16,6 @@ import it.unibo.mobile.d2dchat.messagesManager.Message;
  */
 
 public class Client extends Peer {
-    private Socket server;
     private DeviceManager deviceManager;
     private ClientMessageManager manager;
     private Map<String, ArrayList<Message>> goQueues = new HashMap<>();
@@ -24,6 +23,10 @@ public class Client extends Peer {
     private int totalSent = 0;
     private static final String TAG = "Client";
     private int count = 0;
+    private int reconnections = 0;
+    private long sumAllDisconnectionsTime = 0;
+    private long lastDisconnectedTime = 0;
+    private boolean firstConnect = true;
     public volatile boolean keepSending = true;
 
     public Client(DeviceManager deviceManager) {
@@ -42,6 +45,15 @@ public class Client extends Peer {
     public void onConnect() {
         count++;
         if (count <= 1) {
+            if (firstConnect) {
+                firstConnect = false;
+            }
+            else {
+                reconnections++;
+                long reconnectionTime = System.currentTimeMillis() - lastDisconnectedTime;
+                sumAllDisconnectionsTime += reconnectionTime;
+                getDeviceManager().infoMessage.setAverageReconnectionTime(sumAllDisconnectionsTime / reconnections);
+            }
             manager = new ClientMessageManager(this);
             manager.start();
             Log.d(TAG, "onConnect() created new connection");
@@ -62,6 +74,7 @@ public class Client extends Peer {
         manager.stopManager();
         discarded += goQueues.get(deviceManager.getGroupOwnerMacAddress()).size();
         goQueues.get(deviceManager.getGroupOwnerMacAddress()).clear();
+        lastDisconnectedTime = System.currentTimeMillis();
         deviceManager.disconnect();
     }
 
@@ -79,7 +92,7 @@ public class Client extends Peer {
     }
 
     public void sendQueued() {
-        ArrayList<Message> currentQueue = (ArrayList<Message>) goQueues.get(deviceManager.getGroupOwnerMacAddress());
+        ArrayList<Message> currentQueue = goQueues.get(deviceManager.getGroupOwnerMacAddress());
         int sentCnt = 0;
         while (!currentQueue.isEmpty() && keepSending) {
             sentCnt++;
