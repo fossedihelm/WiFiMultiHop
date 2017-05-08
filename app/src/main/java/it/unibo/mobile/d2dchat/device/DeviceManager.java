@@ -53,7 +53,6 @@ public class DeviceManager implements PeerListListener, ConnectionInfoListener, 
     public String currentDest = null;
     public int currentGO = 0;
     public int timeInterval = 10000;
-    public boolean isGenerator = true;
     private Timer timer = new Timer();
     public Peer peer;
 
@@ -165,12 +164,7 @@ public class DeviceManager implements PeerListListener, ConnectionInfoListener, 
             if (wifiP2pInfo.isGroupOwner) {
                 isGO = true;
                 if (creation) {
-                    GroupOwner.Role role;
-                    if (this.isGenerator)
-                        role = GroupOwner.Role.generator;
-                    else // replier
-                        role = GroupOwner.Role.replier;
-                    peer = new GroupOwner(this, role);
+                    peer = new GroupOwner(this);
                 }
                 else {
                     //perform onConnect()
