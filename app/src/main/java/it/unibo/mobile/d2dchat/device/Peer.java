@@ -1,20 +1,17 @@
 package it.unibo.mobile.d2dchat.device;
 
-import android.databinding.BaseObservable;
 import android.net.wifi.p2p.WifiP2pInfo;
 import android.util.Log;
 
 import java.util.concurrent.Semaphore;
 
 import it.unibo.mobile.d2dchat.messagesManager.Message;
-import it.unibo.mobile.d2dchat.messagesManager.MessageManager;
 
 /**
  * Created by asig on 12/9/16.
  */
 
-public abstract class Peer extends BaseObservable{
-    //public volatile MessageManager messageManager;
+public abstract class Peer {
     protected DeviceManager deviceManager;
     public volatile Semaphore semaphore;
     public enum Action {connect, disconnect, wait, initiateDisconnection};

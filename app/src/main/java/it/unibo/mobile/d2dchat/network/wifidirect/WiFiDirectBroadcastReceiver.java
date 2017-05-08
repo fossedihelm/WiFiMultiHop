@@ -21,9 +21,6 @@ import static android.content.ContentValues.TAG;
 import static android.net.wifi.p2p.WifiP2pManager.WIFI_P2P_DISCOVERY_STARTED;
 import static android.net.wifi.p2p.WifiP2pManager.WIFI_P2P_DISCOVERY_STOPPED;
 
-/**
- * Created by Stefano on 17/07/2016.
- */
 public class WiFiDirectBroadcastReceiver extends BroadcastReceiver {
 
     private WifiP2pManager mManager;

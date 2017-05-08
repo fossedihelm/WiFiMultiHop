@@ -1,21 +1,7 @@
 package it.unibo.mobile.d2dchat.device;
 
-import android.databinding.BaseObservable;
-import android.net.wifi.p2p.WifiP2pInfo;
 import android.util.Log;
-
-import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.net.ServerSocket;
-import java.net.Socket;
 import java.util.ArrayList;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.Semaphore;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-
 import it.unibo.mobile.d2dchat.Constants;
 import it.unibo.mobile.d2dchat.messagesManager.GroupOwnerMessageManager;
 import it.unibo.mobile.d2dchat.messagesManager.Message;
@@ -23,7 +9,6 @@ import it.unibo.mobile.d2dchat.messagesManager.Message;
 /**
  * Created by asig on 12/9/16.
  */
-
 
 
 
@@ -47,16 +32,11 @@ public class GroupOwner extends Peer {
         this.role = role;
     }
 
-    // Thread for SocketHandler
-    private final ExecutorService socketHandlerExecutor = Executors.newSingleThreadExecutor();
-
     public GroupOwner(DeviceManager deviceManager) {
         super(deviceManager);
-        this.role = role;
         manager = new GroupOwnerMessageManager(this);
         manager.start();
     }
-
 
     @Override
     public void onConnect() {

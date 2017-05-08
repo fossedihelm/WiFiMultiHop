@@ -27,13 +27,6 @@ public class MainActivity extends AppCompatActivity implements IntervalFragment.
 
     public static final String TAG = "wifiD2Dchat";
 
-    // TXT RECORD properties
-    public static final String TXTRECORD_PROP_AVAILABLE = "available";
-    public static final String SERVICE_INSTANCE = "_wifiD2Dchat";
-    public static final String SERVICE_REG_TYPE = "_presence._tcp";
-    public static final Integer SERVER_PORT = 5454;
-
-
     WifiP2pManager mManager;
     Channel mChannel;
     DevicesListFragment devicesListFragment;

@@ -3,9 +3,7 @@ package it.unibo.mobile.d2dchat.messagesManager;
 import android.net.wifi.p2p.WifiP2pDevice;
 import android.util.Log;
 
-import java.io.EOFException;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.net.ConnectException;
 import java.net.InetSocketAddress;
 import java.net.Socket;

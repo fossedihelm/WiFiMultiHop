@@ -1,8 +1,5 @@
 package it.unibo.mobile.d2dchat;
 
-/**
- * Created by Stefano on 22/07/2016.
- */
 public class Constants {
 
     public static final int SERVER_PORT = 61222;

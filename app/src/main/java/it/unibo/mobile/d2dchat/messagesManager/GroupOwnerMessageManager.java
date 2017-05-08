@@ -1,17 +1,11 @@
 package it.unibo.mobile.d2dchat.messagesManager;
 
 import android.util.Log;
-
-import java.io.EOFException;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.net.ServerSocket;
-import java.net.Socket;
 import java.util.concurrent.Semaphore;
 
 import it.unibo.mobile.d2dchat.Constants;
-import it.unibo.mobile.d2dchat.device.DeviceManager;
-import it.unibo.mobile.d2dchat.device.GroupOwner;
 import it.unibo.mobile.d2dchat.device.Peer;
 
 /**

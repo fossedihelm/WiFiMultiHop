@@ -1,8 +1,5 @@
 package it.unibo.mobile.d2dchat.device;
 
-import android.content.Context;
-import android.database.Cursor;
-import android.net.Uri;
 import android.net.wifi.p2p.WifiP2pConfig;
 import android.net.wifi.p2p.WifiP2pDevice;
 import android.net.wifi.p2p.WifiP2pDeviceList;
@@ -14,12 +11,8 @@ import android.net.wifi.p2p.WifiP2pManager.Channel;
 import android.net.wifi.p2p.WifiP2pManager.ConnectionInfoListener;
 import android.net.wifi.p2p.WifiP2pManager.GroupInfoListener;
 import android.net.wifi.p2p.WifiP2pManager.PeerListListener;
-import android.provider.OpenableColumns;
 import android.util.Log;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
@@ -27,11 +20,8 @@ import java.util.TimerTask;
 
 import it.unibo.mobile.d2dchat.Constants;
 import it.unibo.mobile.d2dchat.MainActivity;
-import it.unibo.mobile.d2dchat.messagesManager.FileAttach;
 import it.unibo.mobile.d2dchat.messagesManager.Message;
 import it.unibo.mobile.d2dchat.network.wifidirect.WiFiDirectBroadcastReceiver;
-import it.unibo.mobile.d2dchat.socketManager.SocketHandler;
-import it.unibo.mobile.d2dchat.socketManager.SocketReceiver;
 
 //Deve gestire il device,  dovrà fare da intermediario tra la rete e l'activity. Gran parte del codice dell'activity andrà qui
 public class DeviceManager implements PeerListListener, ConnectionInfoListener, GroupInfoListener {

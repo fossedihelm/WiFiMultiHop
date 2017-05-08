@@ -1,9 +1,7 @@
 package it.unibo.mobile.d2dchat.messagesManager;
 
 import java.io.Serializable;
-
 import it.unibo.mobile.d2dchat.Constants;
-
 import java.util.Formatter;
 
 public class Message implements Serializable {

@@ -21,7 +21,6 @@ import it.unibo.mobile.d2dchat.device.Peer;
 public abstract class MessageManager extends Thread {
 
     protected Socket socket = null;
-    protected String deviceName;
     protected Peer peer;
     protected Sender sender = null;
     protected InputStream inputStream = null;
