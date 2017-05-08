@@ -53,6 +53,7 @@ public class GroupOwnerMessageManager extends MessageManager {
                         sent++;
                         peer.getDeviceManager().infoMessage.setTotalSentMessage(sent);
                         peer.getDeviceManager().infoMessage.setPartialSentMessage(message.getSeqNum());
+                        peer.getDeviceManager().infoMessage.notifyChange();
                     }
                     doneSending = true;
                     if (stopGenerating) {

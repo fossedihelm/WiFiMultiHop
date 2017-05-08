@@ -165,6 +165,7 @@ public class MainActivity extends AppCompatActivity implements IntervalFragment.
         deviceManager.timeInterval = time;
         deviceManager.startPingPongProcedure();
         mInfoMessage.setGo(false);
+        mInfoMessage.notifyChange();
 //        Toast.makeText(this, "Hello, " + user, Toast.LENGTH_SHORT).show();
     }
     public void test(View view){

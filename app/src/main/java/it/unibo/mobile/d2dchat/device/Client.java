@@ -53,6 +53,7 @@ public class Client extends Peer {
                 sumAllDisconnectionsTime += reconnectionTime;
                 double averageReconnectionTime = (double) sumAllDisconnectionsTime / reconnections;
                 getDeviceManager().infoMessage.setAverageReconnectionTime(averageReconnectionTime);
+                getDeviceManager().infoMessage.notifyChange();
             }
             manager = new ClientMessageManager(this);
             manager.start();
@@ -88,6 +89,7 @@ public class Client extends Peer {
             goQueues.get(message.getDest()).add(message);
             getDeviceManager().infoMessage.setTotalRecvMessage(totalReceived);
             getDeviceManager().infoMessage.setPartialRecvMessage(partReceived);
+            getDeviceManager().infoMessage.notifyChange();
         }
         else if (message.getType() == Constants.MESSAGE_STOP_ACK) {
             Log.d(TAG, "Departure procedure completed.");
@@ -107,6 +109,7 @@ public class Client extends Peer {
             manager.send(message);
             getDeviceManager().infoMessage.setPartialSentMessage(sentCnt);
             getDeviceManager().infoMessage.setTotalSentMessage(totalSent);
+            getDeviceManager().infoMessage.notifyChange();
         }
         Log.d(TAG, "Sent all queued messages.");
     }

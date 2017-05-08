@@ -77,6 +77,7 @@ public class GroupOwner extends Peer {
                 }
                 getDeviceManager().infoMessage.setTotalRecvMessage(totalReceived);
                 getDeviceManager().infoMessage.setPartialRecvMessage(partReceived);
+                getDeviceManager().infoMessage.notifyChange();
 
             }
         }

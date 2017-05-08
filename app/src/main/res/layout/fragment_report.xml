@@ -83,20 +83,22 @@
                 android:layout_marginTop="16dp">
 
                 <TextView
-                    android:id="@+id/textView"
+                    android:id="@+id/textView5"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.36"
-                    android:text="@string/messages_part_send" />
+                    android:text="@string/messages_tot_received" />
 
                 <TextView
-                    android:id="@+id/sent_mess"
+                    android:id="@+id/textView6"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.36"
-                    android:text="@{info.partialSentMessage.toString()}"
+                    android:text="@{info.totalRecvMessage.toString()}"
                     android:textAlignment="textEnd" />
             </TableRow>
+
+
             <View
                 style="@style/Seperator"
                 android:layout_marginLeft="16dp"
@@ -111,18 +113,18 @@
                 android:layout_marginTop="16dp">
 
                 <TextView
-                    android:id="@+id/textView5"
+                    android:id="@+id/textView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.36"
-                    android:text="@string/messages_tot_received" />
+                    android:text="@string/messages_part_send" />
 
                 <TextView
-                    android:id="@+id/textView6"
+                    android:id="@+id/sent_mess"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.36"
-                    android:text="@{info.totalRecvMessage.toString()}"
+                    android:text="@{info.partialSentMessage.toString()}"
                     android:textAlignment="textEnd" />
             </TableRow>
             <View
@@ -180,8 +182,7 @@
 
         <TableLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="0.92">
+            android:layout_height="110dp">
 
             <TableRow
                 android:layout_width="match_parent"

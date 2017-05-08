@@ -28,7 +28,6 @@ public class InfoMessage extends BaseObservable {
 
     public void setGo(Boolean go) {
         this.go = go;
-        notifyPropertyChanged(BR.go);
     }
 
     @Bindable
@@ -38,7 +37,6 @@ public class InfoMessage extends BaseObservable {
 
     public void setPartialSentMessage(Integer partialSentMessage) {
         this.partialSentMessage = partialSentMessage;
-        notifyPropertyChanged(BR.partialSentMessage);
     }
 
     @Bindable
@@ -48,7 +46,6 @@ public class InfoMessage extends BaseObservable {
 
     public void setPartialRecvMessage(Integer partialRecvMessage) {
         this.partialRecvMessage = partialRecvMessage;
-        notifyPropertyChanged(BR.partialRecvMessage);
     }
 
     @Bindable
@@ -58,7 +55,6 @@ public class InfoMessage extends BaseObservable {
 
     public void setAverageRTT(double averageRTT) {
         this.averageRTT = averageRTT;
-        notifyPropertyChanged(BR.averageRTT);
     }
 
     @Bindable
@@ -68,7 +64,6 @@ public class InfoMessage extends BaseObservable {
 
     public void setAverageReconnectionTime(double averageReconnectionTime) {
         this.averageReconnectionTime = averageReconnectionTime;
-        notifyPropertyChanged(BR.averageReconnectionTime);
     }
 
     @Bindable
@@ -78,7 +73,6 @@ public class InfoMessage extends BaseObservable {
 
     public void setTotalSentMessage(Integer totalSentMessage) {
         this.totalSentMessage = totalSentMessage;
-        notifyPropertyChanged(BR.totalSentMessage);
     }
 
     @Bindable
@@ -88,6 +82,8 @@ public class InfoMessage extends BaseObservable {
 
     public void setTotalRecvMessage(Integer totalRecvMessage) {
         this.totalRecvMessage = totalRecvMessage;
-        notifyPropertyChanged(BR.totalRecvMessage);
+    }
+    public void notifyChanges(){
+        notifyChange();
     }
 }
