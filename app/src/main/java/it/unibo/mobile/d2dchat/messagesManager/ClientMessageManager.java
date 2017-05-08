@@ -74,26 +74,6 @@ public class ClientMessageManager extends MessageManager {
         send(message);
         connecting.release();
 
-        while (keepRunning) {
-            try {
-                message = (Message) new ObjectInputStream(inputStream).readObject();
-                peer.receiveMessage(message);
-            } catch (EOFException e){
-                Log.d(TAG, "Connection closed, stop reading");
-                keepRunning = false;
-            } catch (IOException e) {
-                Log.d(TAG, "Error reading object");
-                e.printStackTrace();
-                if (socket != null && !socket.isClosed())
-                    super.stopManager();
-                break;
-            } catch (ClassNotFoundException e) {
-                Log.e(TAG, "Read error: ", e);
-                if (socket != null && !socket.isClosed()) {
-                    super.stopManager();
-                }
-                break;
-            }
-        }
+        receive();
     }
 }

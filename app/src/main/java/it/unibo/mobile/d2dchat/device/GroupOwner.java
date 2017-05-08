@@ -32,14 +32,18 @@ public class GroupOwner extends Peer {
     private long totalTimeReceivedMessages = 0;
     private int received = 0;
     private int completedConnections = 0;
-    public volatile int sent = 0;
     private int count = 0;
+    private long averageRTT = 0;
+    private Role role;
+    public volatile int sent = 0;
+    public enum Role {generator, replier};
 
     // Thread for SocketHandler
     private final ExecutorService socketHandlerExecutor = Executors.newSingleThreadExecutor();
 
-    public GroupOwner(DeviceManager deviceManager) {
+    public GroupOwner(DeviceManager deviceManager, Role role) {
         super(deviceManager);
+        this.role = role;
         manager = new GroupOwnerMessageManager(this);
         manager.start();
     }
@@ -68,12 +72,21 @@ public class GroupOwner extends Peer {
         Log.i(TAG, "Received message: \n" + message.getContents());
         if (message.getType() == Constants.MESSAGE_DATA) {
             //Message receiver is the owner
-            if (message.getDest().equals(deviceManager.getDeviceName())) {
-                // Discard message and record its arrival.
-                received++;
-                long totalTime = System.currentTimeMillis() - message.getSendTime();
-                totalTimeReceivedMessages += totalTime;
-                Log.d(TAG, "Received msg " + message.getSeqNum() + " after " + (float) totalTime / 1000 + " seconds.");
+            if (message.getDest().equals(deviceManager.deviceAddress)) {
+                if (role == Role.generator) {
+                    // Record message arrival.
+                    received++;
+                    long totalTime = System.currentTimeMillis() - message.getSendTime();
+                    totalTimeReceivedMessages += totalTime;
+                    averageRTT = totalTimeReceivedMessages / received;
+                    Log.d(TAG, "Received msg " + message.getSeqNum() + " after " + (float) totalTime / 1000 + " seconds.");
+                }
+                else if (role == Role.replier) {
+                    // Reply to message.
+                    message.setDest(deviceManager.currentDest);
+                    message.setSource(deviceManager.deviceAddress);
+                    manager.send(message);
+                }
             }
         }
         else if (message.getType() == Constants.MESSAGE_STOP) {
@@ -86,19 +99,22 @@ public class GroupOwner extends Peer {
                 deviceManager.currentDest = addresses.get(myIndex);
             else
                 deviceManager.currentDest = addresses.get( (myIndex+1) % addresses.size() );
-            manager.startGenerating();
+            if (role == Role.generator)
+                manager.startGenerating();
         }
     }
 
     public void initiateDisconnection() {
         Log.d(TAG, "Departure procedure initiated.");
-        // We have to stop sending messages, because the client is leaving.
-        manager.stopGenerating = true;
-        while (!manager.doneSending)
-            try {
-                manager.sending.acquire();
-            } catch (InterruptedException e) {
-                Log.d(TAG, "Interrupted exception while waiting for generator to finish sending.");
+        if (role == Role.generator) {
+            // We have to stop sending messages, because the client is leaving.
+            manager.stopGenerating = true;
+            while (!manager.doneSending)
+                try {
+                    manager.sending.acquire();
+                } catch (InterruptedException e) {
+                    Log.d(TAG, "Interrupted exception while waiting to finish sending.");
+                }
         }
         // Generate response to client.
         Message message = new Message();

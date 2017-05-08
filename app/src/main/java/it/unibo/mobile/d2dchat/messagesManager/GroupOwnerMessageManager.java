@@ -86,13 +86,13 @@ public class GroupOwnerMessageManager extends MessageManager {
     }
 
     public void startGenerating() {
+        stopGenerating = false;
         generator = new MessageGenerator();
         generator.start();
     }
 
     @Override
     public void run() {
-
         while (true) {
             try {
                 keepRunning = true;
@@ -110,30 +110,7 @@ public class GroupOwnerMessageManager extends MessageManager {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
-            while (keepRunning) {
-                try {
-                    Message message = (Message) new ObjectInputStream(inputStream).readObject();
-                    peer.receiveMessage(message);
-                } catch (EOFException e) {
-                    Log.d(TAG, "Connection closed, stop reading.");
-                    keepRunning = false;
-                    stopGenerating = false;
-                    break;
-                } catch (IOException e) {
-                    Log.d(TAG, "Error reading object");
-                    e.printStackTrace();
-                    if (socket != null && !socket.isClosed())
-                        stopManager();
-                    break;
-                } catch (ClassNotFoundException e) {
-                    Log.e(TAG, "Read error: ", e);
-                    if (socket != null && !socket.isClosed()) {
-                        stopManager();
-                    }
-                    break;
-                }
-            }
+            receive();
         }
     }
 

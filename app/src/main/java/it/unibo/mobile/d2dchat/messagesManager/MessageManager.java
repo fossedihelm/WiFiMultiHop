@@ -93,6 +93,31 @@ public abstract class MessageManager extends Thread {
         sender.queue.release();
     }
 
+    public void receive() {
+        while (keepRunning) {
+            try {
+                Message message = (Message) new ObjectInputStream(inputStream).readObject();
+                peer.receiveMessage(message);
+            } catch (EOFException e) {
+                Log.d(TAG, "Connection closed, stop reading.");
+                keepRunning = false;
+                break;
+            } catch (IOException e) {
+                Log.d(TAG, "The socket was probably closed. This is fine.");
+                //e.printStackTrace();
+                if (socket != null && !socket.isClosed())
+                    stopManager();
+                break;
+            } catch (ClassNotFoundException e) {
+                Log.e(TAG, "Read error: ", e);
+                if (socket != null && !socket.isClosed()) {
+                    stopManager();
+                }
+                break;
+            }
+        }
+    }
+
     public MessageManager(Peer peer) {
         this.peer = peer;
         this.lock = new Object();
