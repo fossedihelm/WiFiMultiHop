@@ -1,5 +1,6 @@
 package it.unibo.mobile.d2dchat.device;
 
+import android.databinding.BaseObservable;
 import android.net.wifi.p2p.WifiP2pInfo;
 import android.util.Log;
 
@@ -37,6 +38,14 @@ public class GroupOwner extends Peer {
     private Role role;
     public volatile int sent = 0;
     public enum Role {generator, replier};
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
 
     // Thread for SocketHandler
     private final ExecutorService socketHandlerExecutor = Executors.newSingleThreadExecutor();
