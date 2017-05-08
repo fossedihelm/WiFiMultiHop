@@ -34,14 +34,14 @@ public class GroupOwner extends Peer {
     private int completedConnections = 0;
     private int count = 0;
     private long averageRTT = 0;
-    private Role role;
+    private Role role = Role.generator;
     public volatile int sent = 0;
     public enum Role {generator, replier};
 
     // Thread for SocketHandler
     private final ExecutorService socketHandlerExecutor = Executors.newSingleThreadExecutor();
 
-    public GroupOwner(DeviceManager deviceManager, Role role) {
+    public GroupOwner(DeviceManager deviceManager) {
         super(deviceManager);
         this.role = role;
         manager = new GroupOwnerMessageManager(this);
