@@ -72,6 +72,7 @@ public class Client extends Peer {
         count = 0;
         Log.d(TAG, "onDisconnect()");
         manager.stopManager();
+        partReceived = 0;
         discarded += goQueues.get(deviceManager.getGroupOwnerMacAddress()).size();
         goQueues.get(deviceManager.getGroupOwnerMacAddress()).clear();
         lastDisconnectedTime = System.currentTimeMillis();
@@ -82,7 +83,11 @@ public class Client extends Peer {
     public void receiveMessage(Message message) {
         Log.i(TAG, "Received message: \n" + message.getContents());
         if (message.getType() == Constants.MESSAGE_DATA) {
+            totalReceived++;
+            partReceived++;
             goQueues.get(message.getDest()).add(message);
+            getDeviceManager().infoMessage.setTotalRecvMessage(totalReceived);
+            getDeviceManager().infoMessage.setPartialRecvMessage(partReceived);
         }
         else if (message.getType() == Constants.MESSAGE_STOP_ACK) {
             Log.d(TAG, "Departure procedure completed.");

@@ -16,7 +16,6 @@ public class GroupOwner extends Peer {
     private static final String TAG = "GroupOwner";
     private GroupOwnerMessageManager manager;
     private long sumAllRTT = 0;
-    private int received = 0;
     private int completedConnections = 0;
     private int count = 0;
     private Role role = Role.generator;
@@ -50,6 +49,7 @@ public class GroupOwner extends Peer {
         count = 0;
         Log.d(TAG, "onDisconnect()");
         sent += manager.sent;
+        partReceived = 0;
         manager.stopManager();
         //socketHandlerExecutor.shutdownNow();
         completedConnections++;
@@ -63,19 +63,25 @@ public class GroupOwner extends Peer {
             if (message.getDest().equals(deviceManager.deviceAddress)) {
                 if (role == Role.generator) {
                     // Record message arrival.
-                    received++;
+                    totalReceived++;
+                    partReceived++;
                     long RTT = System.currentTimeMillis() - message.getSendTime();
                     sumAllRTT += RTT;
-                    long averageRTT = sumAllRTT / received;
+                    long averageRTT = sumAllRTT / totalReceived;
                     getDeviceManager().infoMessage.setAverageRTT(averageRTT);
                     Log.d(TAG, "Received msg " + message.getSeqNum() + " after " + (float) RTT / 1000 + " seconds.");
                 }
                 else if (role == Role.replier) {
                     // Reply to message.
+                    totalReceived++;
+                    partReceived++;
                     message.setDest(deviceManager.currentDest);
                     message.setSource(deviceManager.deviceAddress);
                     manager.send(message);
                 }
+                getDeviceManager().infoMessage.setTotalRecvMessage(totalReceived);
+                getDeviceManager().infoMessage.setPartialRecvMessage(partReceived);
+
             }
         }
         else if (message.getType() == Constants.MESSAGE_STOP) {
