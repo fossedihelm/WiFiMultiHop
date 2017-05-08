@@ -51,7 +51,7 @@ public class Client extends Peer {
                 reconnections++;
                 long reconnectionTime = System.currentTimeMillis() - lastDisconnectedTime;
                 sumAllDisconnectionsTime += reconnectionTime;
-                //sumAllDisconnectionsTime / reconnections;
+                getDeviceManager().infoMessage.setAverageReconnectionTime(sumAllDisconnectionsTime / reconnections);
             }
             manager = new ClientMessageManager(this);
             manager.start();
