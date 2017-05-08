@@ -2,7 +2,6 @@ package it.unibo.mobile.d2dchat.device;
 
 import android.util.Log;
 
-import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -51,7 +50,8 @@ public class Client extends Peer {
                 reconnections++;
                 long reconnectionTime = System.currentTimeMillis() - lastDisconnectedTime;
                 sumAllDisconnectionsTime += reconnectionTime;
-                getDeviceManager().infoMessage.setAverageReconnectionTime(sumAllDisconnectionsTime / reconnections);
+                double averageReconnectionTime = (double) sumAllDisconnectionsTime / reconnections;
+                getDeviceManager().infoMessage.setAverageReconnectionTime(averageReconnectionTime);
             }
             manager = new ClientMessageManager(this);
             manager.start();

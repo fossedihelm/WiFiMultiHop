@@ -13,8 +13,8 @@ public class InfoMessage extends BaseObservable {
     private Integer partialSentMessage = 0;
     private Integer partialRecvMessage = 0;
 
-    private long averageRTT = 0;
-    private long averageReconnectionTime = 0;
+    private double averageRTT = 0;
+    private double averageReconnectionTime = 0;
 
     private Integer totalSentMessage = 0;
     private Integer totalRecvMessage = 0;
@@ -39,20 +39,20 @@ public class InfoMessage extends BaseObservable {
     }
 
     @Bindable
-    public long getAverageRTT() {
+    public double getAverageRTT() {
         return averageRTT;
     }
 
-    public void setAverageRTT(long averageRTT) {
+    public void setAverageRTT(double averageRTT) {
         this.averageRTT = averageRTT;
     }
 
     @Bindable
-    public long getAverageReconnectionTime() {
+    public double getAverageReconnectionTime() {
         return averageReconnectionTime;
     }
 
-    public void setAverageReconnectionTime(long averageReconnectionTime) {
+    public void setAverageReconnectionTime(double averageReconnectionTime) {
         this.averageReconnectionTime = averageReconnectionTime;
     }
 
