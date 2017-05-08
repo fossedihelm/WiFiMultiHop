@@ -146,6 +146,7 @@ public class MainActivity extends AppCompatActivity implements IntervalFragment.
 //         Do something in response to button
         Log.d(TAG, "button clicked");
         deviceManager.createGroup();
+        mInfoMessage.setGo(true);
     }
     /** Called when the user clicks the Pingpongami button */
     public void pingpongami(View view) {
@@ -164,6 +165,7 @@ public class MainActivity extends AppCompatActivity implements IntervalFragment.
     public void onFinishTimeDialog(Integer time) {
         deviceManager.timeInterval = time;
         deviceManager.startPingPongProcedure();
+        mInfoMessage.setGo(false);
 //        Toast.makeText(this, "Hello, " + user, Toast.LENGTH_SHORT).show();
     }
     public void test(View view){

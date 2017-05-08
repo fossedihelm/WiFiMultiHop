@@ -3,6 +3,7 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
 
     <data>
+        <import type="android.view.View"/>
         <variable name="info" type="it.unibo.mobile.d2dchat.infoReport.InfoMessage"/>
     </data>
     <LinearLayout
@@ -33,7 +34,8 @@
                 android:layout_height="wrap_content"
                 android:checked="true"
                 android:text="Generator?"
-                android:layout_weight="0.06" />
+                android:layout_weight="0.06"
+                android:visibility="@{info.go ? View.VISIBLE : View.GONE}"/>
 
         </LinearLayout>
 
@@ -41,8 +43,7 @@
 
         <TableLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.05">
+            android:layout_height="168dp">
 
             <TableRow
                 android:layout_width="match_parent"
@@ -157,6 +158,90 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
                 android:background="@android:color/darker_gray" />
+        </TableLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/textView4"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="4dp"
+                android:layout_weight="0.92"
+                android:text="@string/time_title"
+                android:textColor="@android:color/black" />
+
+        </LinearLayout>
+
+
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="0.92">
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="0dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="16dp">
+
+                <TextView
+                    android:id="@+id/rtt_mess"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.36"
+                    android:text="@string/avg_rtt" />
+
+                <TextView
+                    android:id="@+id/rtt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.36"
+                    android:text="@{String.valueOf(info.averageRTT)}"
+                    android:textAlignment="textEnd" />
+            </TableRow>
+
+            <View
+                style="@style/Seperator"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:background="@android:color/darker_gray" />
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="16dp">
+
+                <TextView
+                    android:id="@+id/ttr_mess"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.36"
+                    android:text="@string/avg_ttr" />
+
+                <TextView
+                    android:id="@+id/ttr"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.36"
+                    android:text="@{String.valueOf(info.averageReconnectionTime)}"
+                    android:textAlignment="textEnd" />
+            </TableRow>
+
+            <View
+                style="@style/Seperator"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:background="@android:color/darker_gray" />
+
         </TableLayout>
 
         <Button

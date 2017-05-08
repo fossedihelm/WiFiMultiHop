@@ -10,6 +10,8 @@ import it.unibo.mobile.d2dchat.BR;
  */
 
 public class InfoMessage extends BaseObservable {
+    private Boolean go;
+
     private Integer partialSentMessage = 0;
     private Integer partialRecvMessage = 0;
 
@@ -18,6 +20,16 @@ public class InfoMessage extends BaseObservable {
 
     private Integer totalSentMessage = 0;
     private Integer totalRecvMessage = 0;
+
+    @Bindable
+    public Boolean getGo() {
+        return go;
+    }
+
+    public void setGo(Boolean go) {
+        this.go = go;
+        notifyPropertyChanged(BR.go);
+    }
 
     @Bindable
     public Integer getPartialSentMessage() {

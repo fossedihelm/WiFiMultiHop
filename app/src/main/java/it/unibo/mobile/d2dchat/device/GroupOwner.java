@@ -63,7 +63,7 @@ public class GroupOwner extends Peer {
                     partReceived++;
                     long RTT = System.currentTimeMillis() - message.getSendTime();
                     sumAllRTT += RTT;
-                    double averageRTT = (double) sumAllRTT / received;
+                    double averageRTT = (double) sumAllRTT / totalReceived;
                     getDeviceManager().infoMessage.setAverageRTT(averageRTT);
                     Log.d(TAG, "Received msg " + message.getSeqNum() + " after " + (float) RTT / 1000 + " seconds.");
                 }

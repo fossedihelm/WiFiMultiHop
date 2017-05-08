@@ -12,4 +12,7 @@
     <string name="messages_part_send">Parziale Inviati</string>
     <string name="messages_tot_received">Totale Ricevuti</string>
     <string name="messages_tot_send">Totale Inviati</string>
+    <string name="time_title">Tempo</string>
+    <string name="avg_rtt">RTT medio</string>
+    <string name="avg_ttr">TTR medio</string>
 </resources>
