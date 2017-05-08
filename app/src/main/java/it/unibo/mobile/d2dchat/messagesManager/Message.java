@@ -60,6 +60,9 @@ public class Message implements Serializable {
             case Constants.MESSAGE_TEXT:
                 type = "TEXT";
                 break;
+            case Constants.MESSAGE_DATA:
+                type = "DATA";
+                break;
             case Constants.MESSAGE_FILE:
                 type = "FILE";
                 break;
