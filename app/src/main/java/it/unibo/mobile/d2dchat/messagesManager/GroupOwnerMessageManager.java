@@ -51,7 +51,8 @@ public class GroupOwnerMessageManager extends MessageManager {
                     if (!stopGenerating) {
                         send(message);
                         sent++;
-                        peer.getDeviceManager().infoMessage.setPartialRecvMessage(sent);
+                        peer.getDeviceManager().infoMessage.setTotalSentMessage(sent);
+                        peer.getDeviceManager().infoMessage.setPartialSentMessage(message.getSeqNum());
                     }
                     doneSending = true;
                     if (stopGenerating) {

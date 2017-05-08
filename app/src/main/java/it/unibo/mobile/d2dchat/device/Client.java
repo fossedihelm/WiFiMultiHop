@@ -21,6 +21,7 @@ public class Client extends Peer {
     private ClientMessageManager manager;
     private Map<String, ArrayList<Message>> goQueues = new HashMap<>();
     private int discarded = 0;
+    private int totalSent = 0;
     private static final String TAG = "Client";
     private int count = 0;
     public volatile boolean keepSending = true;
@@ -79,10 +80,15 @@ public class Client extends Peer {
 
     public void sendQueued() {
         ArrayList<Message> currentQueue = (ArrayList<Message>) goQueues.get(deviceManager.getGroupOwnerMacAddress());
+        int sentCnt = 0;
         while (!currentQueue.isEmpty() && keepSending) {
+            sentCnt++;
+            totalSent++;
             Message message = currentQueue.get(0);
             currentQueue.remove(0);
             manager.send(message);
+            getDeviceManager().infoMessage.setPartialSentMessage(sentCnt);
+            getDeviceManager().infoMessage.setTotalSentMessage(totalSent);
         }
         Log.d(TAG, "Sent all queued messages.");
     }
