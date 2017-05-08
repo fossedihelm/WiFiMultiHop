@@ -22,10 +22,6 @@ public class GroupOwner extends Peer {
     public volatile int sent = 0;
     public enum Role {generator, replier};
 
-    public Role getRole() {
-        return role;
-    }
-
     public void setRole(Role role) {
         this.role = role;
     }
@@ -67,7 +63,7 @@ public class GroupOwner extends Peer {
                     partReceived++;
                     long RTT = System.currentTimeMillis() - message.getSendTime();
                     sumAllRTT += RTT;
-                    long averageRTT = sumAllRTT / totalReceived;
+                    double averageRTT = (double) sumAllRTT / received;
                     getDeviceManager().infoMessage.setAverageRTT(averageRTT);
                     Log.d(TAG, "Received msg " + message.getSeqNum() + " after " + (float) RTT / 1000 + " seconds.");
                 }
