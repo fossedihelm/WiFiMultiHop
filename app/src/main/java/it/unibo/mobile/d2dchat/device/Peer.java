@@ -5,6 +5,7 @@ import android.util.Log;
 
 import java.util.concurrent.Semaphore;
 
+import it.unibo.mobile.d2dchat.infoReport.InfoMessage;
 import it.unibo.mobile.d2dchat.messagesManager.Message;
 
 /**

@@ -25,7 +25,7 @@ import it.unibo.mobile.d2dchat.infoReport.InfoMessage;
  * chat fragment attached to main activity.
  */
 public class InGroupFragment extends Fragment {
-    public InfoMessage infoMessage = new InfoMessage();
+    public InfoMessage infoMessage;
     public FragmentReportBinding binding;
     TextView recvText;
     TextView sentText;
@@ -36,6 +36,7 @@ public class InGroupFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        infoMessage = ((MainActivity) getActivity()).mInfoMessage;
         binding = DataBindingUtil.inflate(
                 inflater, R.layout.fragment_report, container, false);
 

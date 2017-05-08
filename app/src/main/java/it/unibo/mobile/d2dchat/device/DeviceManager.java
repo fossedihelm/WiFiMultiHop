@@ -20,6 +20,7 @@ import java.util.TimerTask;
 
 import it.unibo.mobile.d2dchat.Constants;
 import it.unibo.mobile.d2dchat.MainActivity;
+import it.unibo.mobile.d2dchat.infoReport.InfoMessage;
 import it.unibo.mobile.d2dchat.messagesManager.Message;
 import it.unibo.mobile.d2dchat.network.wifidirect.WiFiDirectBroadcastReceiver;
 
@@ -36,6 +37,7 @@ public class DeviceManager implements PeerListListener, ConnectionInfoListener, 
     private List<WifiP2pDevice> peers;
     private WifiP2pInfo info;
     public String deviceAddress;
+    public InfoMessage infoMessage;
     public boolean isGO;
     public ArrayList<WifiP2pDevice> GOlist;
     public boolean firstDiscovery = true;
@@ -84,12 +86,13 @@ public class DeviceManager implements PeerListListener, ConnectionInfoListener, 
         }
     }
 
-    public DeviceManager(WifiP2pManager wifiP2pManager, Channel channel, MainActivity mainActivity) {
+    public DeviceManager(WifiP2pManager wifiP2pManager, Channel channel, MainActivity mainActivity, InfoMessage infoMessage) {
 
         this.channel = channel;
         this.wifiP2pManager = wifiP2pManager;
         this.mainActivity = mainActivity;
         this.peers = new ArrayList<WifiP2pDevice>();
+        this.infoMessage = infoMessage;
 
         wiFiDirectBroadcastReceiver = new WiFiDirectBroadcastReceiver(wifiP2pManager, channel, this);
 

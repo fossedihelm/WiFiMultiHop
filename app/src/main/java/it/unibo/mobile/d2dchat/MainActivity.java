@@ -20,6 +20,7 @@ import java.util.List;
 import it.unibo.mobile.d2dchat.device.DeviceManager;
 import it.unibo.mobile.d2dchat.fragment.InGroupFragment;
 import it.unibo.mobile.d2dchat.fragment.DevicesListFragment;
+import it.unibo.mobile.d2dchat.infoReport.InfoMessage;
 import it.unibo.mobile.d2dchat.messagesManager.Message;
 
 public class MainActivity extends AppCompatActivity implements IntervalFragment.TimeListener{
@@ -33,7 +34,7 @@ public class MainActivity extends AppCompatActivity implements IntervalFragment.
     InGroupFragment inGroupFragment = new InGroupFragment();
     IntentFilter mIntentFilter;
 
-
+    public InfoMessage mInfoMessage;
     public DeviceManager deviceManager;
 
     //Questi oggetti verranno riempiti da fuori e letti dal main activity per fill della gui
@@ -57,8 +58,9 @@ public class MainActivity extends AppCompatActivity implements IntervalFragment.
 
         mManager = (WifiP2pManager) getSystemService(Context.WIFI_P2P_SERVICE);
         mChannel = mManager.initialize(this, getMainLooper(), null);
+        mInfoMessage = new InfoMessage();
         //mReceiver = new WiFiDirectBroadcastReceiver(mManager, mChannel, this);
-        deviceManager = new DeviceManager(mManager, mChannel, this);
+        deviceManager = new DeviceManager(mManager, mChannel, this, mInfoMessage);
         //Quando clicchiamo per scrivere e si alza la tastiera, tutto i layout viene mosso con lei
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 
