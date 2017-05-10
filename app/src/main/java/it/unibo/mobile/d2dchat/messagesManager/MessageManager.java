@@ -49,8 +49,6 @@ public abstract class MessageManager extends Thread {
             // Send message
             Message message = outputQueue.get(0);
             outputQueue.remove(0);
-            if (message.getType() != Constants.MESSAGE_DATA)
-                Log.i(TAG, "Sending message: \n" + message.getContents());
             try {
                 if (outputStream == null)
                     Log.d(TAG, "null outputStream");
@@ -59,6 +57,8 @@ public abstract class MessageManager extends Thread {
                 Log.e(TAG, "Exception during write", e);
             }
             wakeUp();
+            if (message.getType() != Constants.MESSAGE_DATA)
+                Log.i(TAG, "Sent message: \n" + message.getContents());
         }
 
         public synchronized int getQueueSize() {
