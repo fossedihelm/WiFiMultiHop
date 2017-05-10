@@ -94,7 +94,7 @@ public abstract class MessageManager extends Thread {
         sender.queue.release();
     }
 
-    public void receive() {
+    public void receive(boolean stopSender) {
         while (keepRunning) {
             try {
                 Message message = (Message) new ObjectInputStream(inputStream).readObject();
@@ -107,12 +107,12 @@ public abstract class MessageManager extends Thread {
                 Log.d(TAG, "The socket was probably closed. This is fine.");
                 //e.printStackTrace();
                 if (socket != null && !socket.isClosed())
-                    stopManager();
+                    stopManager(stopSender);
                 break;
             } catch (ClassNotFoundException e) {
                 Log.e(TAG, "Read error: ", e);
                 if (socket != null && !socket.isClosed()) {
-                    stopManager();
+                    stopManager(stopSender);
                 }
                 break;
             }
@@ -124,7 +124,7 @@ public abstract class MessageManager extends Thread {
         this.lock = new Object();
     }
 
-    public synchronized void stopManager() {
+    public synchronized void stopManager(boolean stopSender) {
         while (sender.getQueueSize() > 0) {
             try{
                 wait();
@@ -132,8 +132,8 @@ public abstract class MessageManager extends Thread {
                 e.printStackTrace();
             }
         }
-        sender.keepRunning = false;
-        sender.keepSending = false;
+        sender.keepRunning = !stopSender;
+        sender.keepSending = !stopSender;
         sender.queue.release();
         closeSocket();
     }

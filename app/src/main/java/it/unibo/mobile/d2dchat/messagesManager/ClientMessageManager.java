@@ -72,6 +72,6 @@ public class ClientMessageManager extends MessageManager {
         send(message);
         connecting.release();
 
-        receive();
+        receive(true);
     }
 }

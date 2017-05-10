@@ -97,7 +97,7 @@ public class GroupOwnerMessageManager extends MessageManager {
                 Log.d(TAG, "Server Socket accepted");
             } catch (IOException e) {
                 if (socket != null && !socket.isClosed())
-                    stopManager();
+                    stopManager(false);
                 e.printStackTrace();
             }
 
@@ -107,7 +107,7 @@ public class GroupOwnerMessageManager extends MessageManager {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            receive();
+            receive(false);
         }
     }
 
