@@ -61,6 +61,7 @@ public class MainActivity extends AppCompatActivity implements IntervalFragment.
         mInfoMessage = new InfoMessage();
         //mReceiver = new WiFiDirectBroadcastReceiver(mManager, mChannel, this);
         deviceManager = new DeviceManager(mManager, mChannel, this, mInfoMessage);
+        deviceManager.start();
         //Quando clicchiamo per scrivere e si alza la tastiera, tutto i layout viene mosso con lei
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 
@@ -90,7 +91,7 @@ public class MainActivity extends AppCompatActivity implements IntervalFragment.
     @Override
     protected void onDestroy() {
         super.onDestroy();  // Always call the superclass method first
-        deviceManager.stop();
+        deviceManager.stopManager();
 
         unregisterReceiver(deviceManager.getWiFiDirectBroadcastReceiver());
         Log.d(TAG, "App chiusa");

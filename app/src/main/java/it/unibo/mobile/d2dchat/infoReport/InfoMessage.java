@@ -83,7 +83,4 @@ public class InfoMessage extends BaseObservable {
     public void setTotalRecvMessage(Integer totalRecvMessage) {
         this.totalRecvMessage = totalRecvMessage;
     }
-    public void notifyChanges(){
-        notifyChange();
-    }
 }

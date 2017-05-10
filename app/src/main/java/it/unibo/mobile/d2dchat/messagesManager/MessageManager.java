@@ -12,6 +12,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.concurrent.Semaphore;
 
+import it.unibo.mobile.d2dchat.Constants;
 import it.unibo.mobile.d2dchat.device.Peer;
 
 /**
@@ -48,7 +49,8 @@ public abstract class MessageManager extends Thread {
             // Send message
             Message message = outputQueue.get(0);
             outputQueue.remove(0);
-            Log.i(TAG, "Sending message: \n" + message.getContents());
+            if (message.getType() != Constants.MESSAGE_DATA)
+                Log.i(TAG, "Sending message: \n" + message.getContents());
             try {
                 if (outputStream == null)
                     Log.d(TAG, "null outputStream");

@@ -53,7 +53,6 @@ public class GroupOwner extends Peer {
 
     @Override
     public void receiveMessage(Message message) {
-        Log.i(TAG, "Received message: \n" + message.getContents());
         if (message.getType() == Constants.MESSAGE_DATA) {
             //Message receiver is the owner
             if (message.getDest().equals(deviceManager.deviceAddress)) {
@@ -82,9 +81,11 @@ public class GroupOwner extends Peer {
             }
         }
         else if (message.getType() == Constants.MESSAGE_STOP) {
+            Log.i(TAG, "Received message: \n" + message.getContents());
             initiateDisconnection();
         }
         else if (message.getType() == Constants.MESSAGE_REGISTER){
+            Log.i(TAG, "Received message: \n" + message.getContents());
             ArrayList<String> addresses =(ArrayList<String>) message.getData();
             int myIndex = addresses.indexOf(deviceManager.deviceAddress);
             if(addresses.size() <= 1 || myIndex == -1)

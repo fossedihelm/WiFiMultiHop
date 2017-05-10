@@ -25,7 +25,7 @@ import it.unibo.mobile.d2dchat.messagesManager.Message;
 import it.unibo.mobile.d2dchat.network.wifidirect.WiFiDirectBroadcastReceiver;
 
 //Deve gestire il device,  dovrà fare da intermediario tra la rete e l'activity. Gran parte del codice dell'activity andrà qui
-public class DeviceManager implements PeerListListener, ConnectionInfoListener, GroupInfoListener {
+public class DeviceManager extends Thread implements PeerListListener, ConnectionInfoListener, GroupInfoListener {
 
     private int deviceStatus = Constants.DEVICE_INIT;
     private WifiP2pManager wifiP2pManager;
@@ -36,6 +36,7 @@ public class DeviceManager implements PeerListListener, ConnectionInfoListener, 
     private String groupOwnerMacAddress;
     private List<WifiP2pDevice> peers;
     private WifiP2pInfo info;
+    public boolean keepRunning = true;
     public String deviceAddress;
     public InfoMessage infoMessage;
     public boolean isGO;
@@ -100,8 +101,20 @@ public class DeviceManager implements PeerListListener, ConnectionInfoListener, 
         wifiP2pManager.discoverPeers(channel, new ActionListenerDiscoverPeers());
     }
 
+    @Override
+    public synchronized void run() {
+        while (keepRunning) {
+            try {
+                wait();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+                break;
+            }
+        }
+    }
+
     // Called on activity destruction
-    public void stop() {
+    public void stopManager() {
         deviceStatus = Constants.DEVICE_INIT;
         //peer.nextAction.setAction(Peer.Action.disconnect);
         //peer.semaphore.release();
@@ -294,13 +307,16 @@ public class DeviceManager implements PeerListListener, ConnectionInfoListener, 
             Log.d(TAG, "switch verso: " + GOlist.get(currentGO).deviceName);
             groupOwnerMacAddress = GOlist.get(currentGO).deviceAddress;
             connectTo(GOlist.get(currentGO));
-            timer.schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    switchGO();
-                }
-            }, timeInterval);
         }
+    }
+
+    public void scheduleSwitchGO() {
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                switchGO();
+            }
+        }, timeInterval);
     }
 
     public void discover() {

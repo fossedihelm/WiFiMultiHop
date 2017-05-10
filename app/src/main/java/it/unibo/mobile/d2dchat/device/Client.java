@@ -44,6 +44,7 @@ public class Client extends Peer {
     public void onConnect() {
         count++;
         if (count <= 1) {
+            deviceManager.scheduleSwitchGO();
             if (firstConnect) {
                 firstConnect = false;
             }
@@ -82,7 +83,6 @@ public class Client extends Peer {
 
     @Override
     public void receiveMessage(Message message) {
-        Log.i(TAG, "Received message: \n" + message.getContents());
         if (message.getType() == Constants.MESSAGE_DATA) {
             totalReceived++;
             partReceived++;
@@ -92,7 +92,7 @@ public class Client extends Peer {
             getDeviceManager().infoMessage.notifyChange();
         }
         else if (message.getType() == Constants.MESSAGE_STOP_ACK) {
-            Log.d(TAG, "Departure procedure completed.");
+            Log.i(TAG, "Received message: \n" + message.getContents());
             onDisconnect();
             deviceManager.disconnect();
         }
