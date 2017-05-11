@@ -22,7 +22,7 @@ public class IntervalFragment extends DialogFragment implements View.OnClickList
     private NumberPicker mNumberPicker;
     private Button buttonSend;
 
-    final String[] values= {"5", "10", "15", "20", "25"};
+    final String[] values= {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "15", "20"};
 
 
     public interface TimeListener {

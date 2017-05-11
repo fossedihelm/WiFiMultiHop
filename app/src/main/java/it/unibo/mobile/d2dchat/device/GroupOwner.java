@@ -46,7 +46,7 @@ public class GroupOwner extends Peer {
         Log.d(TAG, "onDisconnect()");
         sent += manager.sent;
         partReceived = 0;
-        manager.closeSocket();
+        manager.stopManager(false);
         //socketHandlerExecutor.shutdownNow();
         completedConnections++;
     }

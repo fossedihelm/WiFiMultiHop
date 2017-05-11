@@ -73,7 +73,7 @@ public class Client extends Peer {
     public void onDisconnect() {
         count = 0;
         Log.d(TAG, "onDisconnect()");
-        manager.stopManager();
+        manager.stopManager(true);
         partReceived = 0;
         discarded += goQueues.get(deviceManager.getGroupOwnerMacAddress()).size();
         goQueues.get(deviceManager.getGroupOwnerMacAddress()).clear();
@@ -119,7 +119,7 @@ public class Client extends Peer {
         Message message = new Message();
         message.setType(Constants.MESSAGE_STOP);
         message.setSource(deviceManager.deviceAddress);
-        message.setDest(deviceManager.currentDest);
+        message.setDest(deviceManager.getGroupOwnerMacAddress());
         message.setSeqNum(0);
         manager.send(message);
         nextAction.setAction(Action.wait);
