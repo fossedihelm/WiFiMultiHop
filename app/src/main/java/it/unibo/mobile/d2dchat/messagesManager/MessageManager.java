@@ -132,9 +132,11 @@ public abstract class MessageManager extends Thread {
                 e.printStackTrace();
             }
         }
-        sender.keepRunning = !stopSender;
-        sender.keepSending = !stopSender;
-        sender.queue.release();
+        if (stopSender) {
+            sender.keepRunning = false;
+            sender.keepSending = false;
+            sender.queue.release();
+        }
         closeSocket();
     }
 
