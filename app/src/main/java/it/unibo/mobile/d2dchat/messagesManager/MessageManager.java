@@ -32,6 +32,7 @@ public abstract class MessageManager extends Thread {
 
     protected class Sender extends Thread {
         protected ArrayList<Message> outputQueue = null;
+        public volatile int queueSize = 0;
         public Semaphore queue = null;
         public volatile boolean keepRunning = true;
         public volatile boolean keepSending = true;
@@ -42,27 +43,24 @@ public abstract class MessageManager extends Thread {
         }
 
         public synchronized void addToQueue(Message message) {
-            synchronized (outputQueue){
-                outputQueue.add(message);
-            }
+            outputQueue.add(message);
         }
 
-        private void send() {
+        private synchronized void send() {
             // Send message
-            synchronized (outputQueue){
-                Message message = outputQueue.get(0);
-                outputQueue.remove(0);
-                try {
-                    if (outputStream == null)
-                        Log.d(TAG, "null outputStream");
-                    new ObjectOutputStream(outputStream).writeObject(message);
-                } catch (IOException e) {
-                    Log.e(TAG, "Exception during write", e);
-                }
-                wakeUp();
-                if (message.getType() != Constants.MESSAGE_DATA)
-                    Log.i(TAG, "Sent message: \n" + message.getContents());
+            Message message = outputQueue.get(0);
+            outputQueue.remove(0);
+            try {
+                if (outputStream == null)
+                    Log.d(TAG, "null outputStream");
+                new ObjectOutputStream(outputStream).writeObject(message);
+            } catch (IOException e) {
+                Log.e(TAG, "Exception during write", e);
             }
+            if (message.getType() != Constants.MESSAGE_DATA)
+                Log.i(TAG, "Sent message: \n" + message.getContents());
+            queueSize--;
+            wakeUp();
         }
 
         public synchronized int getQueueSize() {
@@ -88,6 +86,7 @@ public abstract class MessageManager extends Thread {
 
     public synchronized void wakeUp() {
         notifyAll();
+        Log.d(TAG, "notified");
     }
 
     public void send(Message message) {
@@ -96,6 +95,7 @@ public abstract class MessageManager extends Thread {
             sender = new Sender();
             sender.start();
         }
+        sender.queueSize++;
         sender.addToQueue(message);
         sender.queue.release();
     }
@@ -131,8 +131,9 @@ public abstract class MessageManager extends Thread {
     }
 
     public synchronized void stopManager(boolean stopSender) {
-        while (sender.getQueueSize() > 0) {
+        while (sender.queueSize > 0) {
             try{
+                Log.d(TAG, "Waiting for Godot");
                 wait();
             } catch (InterruptedException e) {
                 e.printStackTrace();
