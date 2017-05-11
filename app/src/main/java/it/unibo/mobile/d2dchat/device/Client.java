@@ -119,7 +119,7 @@ public class Client extends Peer {
         Message message = new Message();
         message.setType(Constants.MESSAGE_STOP);
         message.setSource(deviceManager.deviceAddress);
-        message.setDest(deviceManager.currentDest);
+        message.setDest(deviceManager.getGroupOwnerMacAddress());
         message.setSeqNum(0);
         manager.send(message);
         nextAction.setAction(Action.wait);

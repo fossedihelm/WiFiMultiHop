@@ -69,6 +69,7 @@ public class ClientMessageManager extends MessageManager {
         message.setData(goListToSend);
         message.setType(Constants.MESSAGE_REGISTER);
         message.setSource(peer.getDeviceManager().deviceAddress);
+        message.setDest(peer.getDeviceManager().getGroupOwnerMacAddress());
         send(message);
         connecting.release();
 
