@@ -42,27 +42,33 @@ public abstract class MessageManager extends Thread {
         }
 
         public synchronized void addToQueue(Message message) {
-            outputQueue.add(message);
+            synchronized (outputQueue){
+                outputQueue.add(message);
+            }
         }
 
-        private synchronized void send() {
+        private void send() {
             // Send message
-            Message message = outputQueue.get(0);
-            outputQueue.remove(0);
-            try {
-                if (outputStream == null)
-                    Log.d(TAG, "null outputStream");
-                new ObjectOutputStream(outputStream).writeObject(message);
-            } catch (IOException e) {
-                Log.e(TAG, "Exception during write", e);
+            synchronized (outputQueue){
+                Message message = outputQueue.get(0);
+                outputQueue.remove(0);
+                try {
+                    if (outputStream == null)
+                        Log.d(TAG, "null outputStream");
+                    new ObjectOutputStream(outputStream).writeObject(message);
+                } catch (IOException e) {
+                    Log.e(TAG, "Exception during write", e);
+                }
+                wakeUp();
+                if (message.getType() != Constants.MESSAGE_DATA)
+                    Log.i(TAG, "Sent message: \n" + message.getContents());
             }
-            wakeUp();
-            if (message.getType() != Constants.MESSAGE_DATA)
-                Log.i(TAG, "Sent message: \n" + message.getContents());
         }
 
         public synchronized int getQueueSize() {
-            return outputQueue.size();
+            synchronized (outputQueue) {
+                return outputQueue.size();
+            }
         }
 
         @Override
