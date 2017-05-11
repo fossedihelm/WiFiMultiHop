@@ -33,12 +33,7 @@ public class GroupOwner extends Peer {
     }
 
     @Override
-    public void onConnect() {
-        count++;
-        if (count <= 1) {
-            Log.d(TAG, "onConnect() created new connection");
-        }
-    }
+    public void onConnect() {}
 
     @Override
     public void onDisconnect() {

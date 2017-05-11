@@ -47,7 +47,6 @@ public class GroupOwnerMessageManager extends MessageManager {
                     // until it is done sending. It also sets waitForClient to true, so that the MessageGenerator knows that it has to wait for
                     // the client return before sending again.
                     doneSending = false;
-                    Log.d(TAG, "StopGenerating status: " + stopGenerating);
                     if (!stopGenerating) {
                         send(message);
                         sent++;
@@ -57,7 +56,6 @@ public class GroupOwnerMessageManager extends MessageManager {
                     }
                     doneSending = true;
                     if (stopGenerating) {
-                        Log.d(TAG, "StopGenerating status is true");
                         stopGenerating = false;
                         sending.release();
                         break;
