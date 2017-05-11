@@ -54,7 +54,7 @@ public class InfoMessage extends BaseObservable {
     }
 
     public void setAverageRTT(double averageRTT) {
-        this.averageRTT = averageRTT;
+        this.averageRTT = averageRTT / 1000;
     }
 
     @Bindable
@@ -63,7 +63,7 @@ public class InfoMessage extends BaseObservable {
     }
 
     public void setAverageReconnectionTime(double averageReconnectionTime) {
-        this.averageReconnectionTime = averageReconnectionTime;
+        this.averageReconnectionTime = averageReconnectionTime / 1000;
     }
 
     @Bindable
