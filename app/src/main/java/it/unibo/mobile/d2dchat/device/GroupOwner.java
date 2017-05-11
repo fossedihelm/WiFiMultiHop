@@ -56,10 +56,10 @@ public class GroupOwner extends Peer {
         if (message.getType() == Constants.MESSAGE_DATA) {
             //Message receiver is the owner
             if (message.getDest().equals(deviceManager.deviceAddress)) {
+                totalReceived++;
+                partReceived++;
                 if (role == Role.generator) {
                     // Record message arrival.
-                    totalReceived++;
-                    partReceived++;
                     long RTT = System.currentTimeMillis() - message.getSendTime();
                     sumAllRTT += RTT;
                     double averageRTT = (double) sumAllRTT / totalReceived;
@@ -68,11 +68,11 @@ public class GroupOwner extends Peer {
                 }
                 else if (role == Role.replier) {
                     // Reply to message.
-                    totalReceived++;
-                    partReceived++;
                     message.setDest(deviceManager.currentDest);
                     message.setSource(deviceManager.deviceAddress);
                     manager.send(message);
+                    getDeviceManager().infoMessage.setTotalSentMessage(totalReceived);
+                    getDeviceManager().infoMessage.setPartialSentMessage(message.getSeqNum());
                 }
                 getDeviceManager().infoMessage.setTotalRecvMessage(totalReceived);
                 getDeviceManager().infoMessage.setPartialRecvMessage(partReceived);
