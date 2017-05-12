@@ -67,7 +67,8 @@ public class ClientMessageManager extends MessageManager {
         ArrayList<String> goListToSend = new ArrayList<>();
         for (WifiP2pDevice device : peer.getDeviceManager().GOlist)
             goListToSend.add(device.deviceAddress);
-        message.setData(goListToSend);
+        message.setGoList(goListToSend);
+        message.setSwitchTime(peer.getDeviceManager().timeInterval);
         message.setType(Constants.MESSAGE_REGISTER);
         message.setSource(peer.getDeviceManager().deviceAddress);
         message.setDest(peer.getDeviceManager().getGroupOwnerMacAddress());

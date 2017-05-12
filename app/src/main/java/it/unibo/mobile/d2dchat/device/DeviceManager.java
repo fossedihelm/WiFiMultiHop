@@ -240,15 +240,6 @@ public class DeviceManager extends Thread implements PeerListListener, Connectio
     }
 
 
-    public void sendDataMessage(String dest) {
-        Message message = new Message();
-        message.setSource(deviceName);
-        message.setType(Constants.MESSAGE_DATA);
-        message.setDest(dest);
-        message.setData(new char[1024]);
-        message.setSendTime(System.currentTimeMillis());
-    }
-
     public void connectTo(final WifiP2pDevice device) {
         Log.d(TAG, "Ci proviamo a connettere ad un device");
         WifiP2pConfig config = new WifiP2pConfig();

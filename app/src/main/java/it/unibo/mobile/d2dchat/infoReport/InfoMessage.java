@@ -21,6 +21,9 @@ public class InfoMessage extends BaseObservable {
     private Integer totalSentMessage = 0;
     private Integer totalRecvMessage = 0;
 
+    public String toPrint="";
+    public String fileName="";
+
     @Bindable
     public Boolean getGo() {
         return go;

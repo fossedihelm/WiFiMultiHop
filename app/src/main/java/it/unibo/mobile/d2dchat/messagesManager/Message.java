@@ -10,7 +10,8 @@ public class Message implements Serializable {
     private String dest;
     private int seqNum;
     private long sendTime;
-    private Object data;
+    private Object goList;
+    private int switchTime = -1;
 
     public int getType() {
         return type;
@@ -19,11 +20,11 @@ public class Message implements Serializable {
         this.type = type;
     }
 
-    public Object getData() {
-        return data;
+    public Object getGoList() {
+        return goList;
     }
-    public void setData(Object data) {
-        this.data = data;
+    public void setGoList(Object data) {
+        this.goList = data;
     }
 
     public int getSeqNum() {
@@ -49,6 +50,14 @@ public class Message implements Serializable {
     public long getSendTime() { return sendTime; }
     public void setSendTime(long sendTime) { this.sendTime = sendTime; }
 
+    public int getSwitchTime() {
+        return switchTime;
+    }
+
+    public void setSwitchTime(int switchTime) {
+        this.switchTime = switchTime;
+    }
+
     public String getContents() {
         StringBuilder sb = new StringBuilder();
         Formatter formatter = new Formatter(sb);
@@ -73,7 +82,7 @@ public class Message implements Serializable {
                 type = "STOP_ACK";
         }
         String data = "null";
-        if (getData() != null)
+        if (getGoList() != null)
             data = "present";
         formatter.format("%-15s%-15s\n", "type", type);
         formatter.format("%-15s%-15s\n", "source", getSource());

@@ -17,7 +17,7 @@ public class GroupOwner extends Peer {
     private GroupOwnerMessageManager manager;
     private long sumAllRTT = 0;
     private int completedConnections = 0;
-    private int count = 0;
+    private int runNum = 0;
     private Role role = Role.generator;
     public volatile int sent = 0;
     public enum Role {generator, replier};
@@ -28,16 +28,18 @@ public class GroupOwner extends Peer {
 
     public GroupOwner(DeviceManager deviceManager) {
         super(deviceManager);
+        deviceManager.infoMessage.toPrint = "RunNum;MessNum;RTT;\n";
         manager = new GroupOwnerMessageManager(this);
         manager.start();
     }
 
     @Override
-    public void onConnect() {}
+    public void onConnect() {
+    }
 
     @Override
     public void onDisconnect() {
-        count = 0;
+        runNum++;
         Log.d(TAG, "onDisconnect()");
         sent += manager.sent;
         partReceived = 0;
@@ -59,6 +61,7 @@ public class GroupOwner extends Peer {
                     sumAllRTT += RTT;
                     double averageRTT = (double) sumAllRTT / totalReceived;
                     getDeviceManager().infoMessage.setAverageRTT(averageRTT);
+                    getDeviceManager().infoMessage.toPrint += (runNum + ";" +message.getSeqNum() + ";" + RTT + ";\n");
                     Log.d(TAG, "Received msg " + message.getSeqNum() + " after " + (float) RTT / 1000 + " seconds.");
                 }
                 else if (role == Role.replier) {
@@ -81,8 +84,10 @@ public class GroupOwner extends Peer {
         }
         else if (message.getType() == Constants.MESSAGE_REGISTER){
             Log.i(TAG, "Received message: \n" + message.getContents());
-            ArrayList<String> addresses =(ArrayList<String>) message.getData();
+            ArrayList<String> addresses =(ArrayList<String>) message.getGoList();
             int myIndex = addresses.indexOf(deviceManager.deviceAddress);
+
+            getDeviceManager().infoMessage.fileName = Integer.toString(message.getSwitchTime());
             if(addresses.size() <= 1 || myIndex == -1)
                 deviceManager.currentDest = addresses.get(myIndex);
             else
@@ -104,6 +109,7 @@ public class GroupOwner extends Peer {
                     Log.d(TAG, "Interrupted exception while waiting to finish sending.");
                 }
         }
+
         // Generate response to client.
         Message message = new Message();
         message.setType(Constants.MESSAGE_STOP_ACK);

@@ -63,12 +63,6 @@ public abstract class MessageManager extends Thread {
             wakeUp();
         }
 
-        public synchronized int getQueueSize() {
-            synchronized (outputQueue) {
-                return outputQueue.size();
-            }
-        }
-
         @Override
         public void run() {
             while (keepRunning) {

@@ -16,8 +16,6 @@ public abstract class Peer {
     protected DeviceManager deviceManager;
     protected int totalReceived = 0;
     protected int partReceived = 0;
-    protected int totalSent = 0;
-    protected int partSent = 0;
     public volatile Semaphore semaphore;
     public enum Action {connect, disconnect, wait, initiateDisconnection};
     public class NextAction {

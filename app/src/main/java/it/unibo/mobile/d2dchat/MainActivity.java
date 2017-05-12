@@ -8,11 +8,15 @@ import android.net.wifi.p2p.WifiP2pDevice;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.net.wifi.p2p.WifiP2pManager.Channel;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -21,7 +25,6 @@ import it.unibo.mobile.d2dchat.device.DeviceManager;
 import it.unibo.mobile.d2dchat.fragment.InGroupFragment;
 import it.unibo.mobile.d2dchat.fragment.DevicesListFragment;
 import it.unibo.mobile.d2dchat.infoReport.InfoMessage;
-import it.unibo.mobile.d2dchat.messagesManager.Message;
 
 public class MainActivity extends AppCompatActivity implements IntervalFragment.TimeListener{
 
@@ -39,9 +42,6 @@ public class MainActivity extends AppCompatActivity implements IntervalFragment.
 
     //Questi oggetti verranno riempiti da fuori e letti dal main activity per fill della gui
     private List<String> groupPeers = new ArrayList();
-    private List<Message> messageToProcess = new ArrayList<>();
-    ///
-    private Object lock = new Object();
 
     private boolean chatFragmentShowed = false;
 
@@ -59,9 +59,9 @@ public class MainActivity extends AppCompatActivity implements IntervalFragment.
         mManager = (WifiP2pManager) getSystemService(Context.WIFI_P2P_SERVICE);
         mChannel = mManager.initialize(this, getMainLooper(), null);
         mInfoMessage = new InfoMessage();
-        //mReceiver = new WiFiDirectBroadcastReceiver(mManager, mChannel, this);
         deviceManager = new DeviceManager(mManager, mChannel, this, mInfoMessage);
         deviceManager.start();
+        registerReceiver(deviceManager.getWiFiDirectBroadcastReceiver(), mIntentFilter);
         //Quando clicchiamo per scrivere e si alza la tastiera, tutto i layout viene mosso con lei
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 
@@ -92,8 +92,6 @@ public class MainActivity extends AppCompatActivity implements IntervalFragment.
     protected void onDestroy() {
         super.onDestroy();  // Always call the superclass method first
         deviceManager.stopManager();
-
-        unregisterReceiver(deviceManager.getWiFiDirectBroadcastReceiver());
         Log.d(TAG, "App chiusa");
     }
 
@@ -121,7 +119,6 @@ public class MainActivity extends AppCompatActivity implements IntervalFragment.
                 participants.add(device.deviceName);
             }
             this.groupPeers.addAll(participants);
-//            inGroupFragment.setParticipants(participants);
         }
     }
 
@@ -144,14 +141,10 @@ public class MainActivity extends AppCompatActivity implements IntervalFragment.
 
     /** Called when the user clicks the Groupownami button */
     public void groupownami(View view) {
-//         Do something in response to button
-        Log.d(TAG, "button clicked");
         deviceManager.createGroup();
     }
     /** Called when the user clicks the Pingpongami button */
     public void pingpongami(View view) {
-        Log.d(TAG, "button clicked");
-//        deviceManager.startPingPongProcedure();
         FragmentManager manager = getFragmentManager();
         Fragment frag = manager.findFragmentByTag("fragment_edit_name");
         if (frag != null) {
@@ -164,14 +157,20 @@ public class MainActivity extends AppCompatActivity implements IntervalFragment.
     @Override
     public void onFinishTimeDialog(Integer time) {
         deviceManager.timeInterval = time;
+        mInfoMessage.fileName= time.toString();
         deviceManager.startPingPongProcedure();
         mInfoMessage.setGo(false);
         mInfoMessage.notifyChange();
 //        Toast.makeText(this, "Hello, " + user, Toast.LENGTH_SHORT).show();
     }
-    public void test(View view){
 
-        inGroupFragment.infoMessage.setPartialRecvMessage(inGroupFragment.infoMessage.getPartialRecvMessage()+1);
-        inGroupFragment.binding.executePendingBindings();
+    public void printNow(View view){
+        File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), mInfoMessage.fileName+"report.csv");
+        try {
+            FileOutputStream outputStream = new FileOutputStream(file);
+            outputStream.write(mInfoMessage.toPrint.getBytes());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

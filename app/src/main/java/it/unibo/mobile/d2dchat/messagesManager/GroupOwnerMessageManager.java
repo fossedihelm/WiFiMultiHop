@@ -30,7 +30,7 @@ public class GroupOwnerMessageManager extends MessageManager {
             message.setType(Constants.MESSAGE_DATA);
             message.setSource(peer.getDeviceManager().deviceAddress);
             message.setDest(peer.getDeviceManager().currentDest);
-            message.setData(new char[1024]);
+//            message.setGoList(new char[1024]);
             message.setSeqNum(0);
         }
 

@@ -22,6 +22,7 @@ public class Client extends Peer {
     private int totalSent = 0;
     private static final String TAG = "Client";
     private int count = 0;
+    private int runNum = 0;
     private int reconnections = 0;
     private long sumAllDisconnectionsTime = 0;
     private long lastDisconnectedTime = 0;
@@ -30,6 +31,7 @@ public class Client extends Peer {
 
     public Client(DeviceManager deviceManager) {
         super(deviceManager);
+        deviceManager.infoMessage.toPrint = "RunNum;TTR;\n";
         this.deviceManager = deviceManager;
         for (int i = 0; i < deviceManager.GOlist.size(); i++) {
             goQueues.put(deviceManager.GOlist.get(i).deviceAddress,new ArrayList<Message>(200));
@@ -49,10 +51,13 @@ public class Client extends Peer {
                 firstConnect = false;
             }
             else {
+                if(reconnections % deviceManager.GOlist.size()==0)
+                    runNum++ ;
                 reconnections++;
                 long reconnectionTime = System.currentTimeMillis() - lastDisconnectedTime;
                 sumAllDisconnectionsTime += reconnectionTime;
                 double averageReconnectionTime = (double) sumAllDisconnectionsTime / reconnections;
+                getDeviceManager().infoMessage.toPrint += runNum + ";" + reconnectionTime + ";\n";
                 getDeviceManager().infoMessage.setAverageReconnectionTime(averageReconnectionTime);
                 getDeviceManager().infoMessage.notifyChange();
             }
