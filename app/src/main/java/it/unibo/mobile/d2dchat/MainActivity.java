@@ -158,7 +158,7 @@ public class MainActivity extends AppCompatActivity implements IntervalFragment.
     @Override
     public void onFinishTimeDialog(Integer time) {
         deviceManager.timeInterval = time;
-        mInfoMessage.fileName= time.toString();
+        mInfoMessage.fileName= Integer.toString(time / 1000);
         deviceManager.startPingPongProcedure();
         mInfoMessage.setGo(false);
         mInfoMessage.notifyChange();

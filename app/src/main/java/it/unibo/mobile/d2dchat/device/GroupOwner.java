@@ -87,7 +87,7 @@ public class GroupOwner extends Peer {
             ArrayList<String> addresses =(ArrayList<String>) message.getGoList();
             int myIndex = addresses.indexOf(deviceManager.deviceAddress);
 
-            getDeviceManager().infoMessage.fileName = Integer.toString(message.getSwitchTime());
+            getDeviceManager().infoMessage.fileName = Integer.toString(message.getSwitchTime() / 1000);
             if(addresses.size() <= 1 || myIndex == -1)
                 deviceManager.currentDest = addresses.get(myIndex);
             else
