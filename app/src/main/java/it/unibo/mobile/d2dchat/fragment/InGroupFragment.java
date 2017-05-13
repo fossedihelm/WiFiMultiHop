@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -41,13 +42,6 @@ public class InGroupFragment extends Fragment {
                 inflater, R.layout.fragment_report, container, false);
 
         binding.setInfo(infoMessage);
-
-        binding.getRoot().findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                infoMessage.setPartialRecvMessage(infoMessage.getPartialRecvMessage()+1);
-            }
-        });
 
         Switch toggle = (Switch) binding.getRoot().findViewById(R.id.switch1);
         toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {

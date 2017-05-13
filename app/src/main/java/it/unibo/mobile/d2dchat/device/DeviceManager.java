@@ -255,6 +255,7 @@ public class DeviceManager extends Thread implements PeerListListener, Connectio
             @Override
             public void onFailure(int reason) {
                 Log.d(TAG, "["+device.deviceName+"]Connessione non riuscita, codice: " + reason);
+                connectTo(device);
             }
         });
     }

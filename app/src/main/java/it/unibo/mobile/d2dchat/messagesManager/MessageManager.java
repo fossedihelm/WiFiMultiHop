@@ -80,7 +80,6 @@ public abstract class MessageManager extends Thread {
 
     public synchronized void wakeUp() {
         notifyAll();
-        Log.d(TAG, "notified");
     }
 
     public void send(Message message) {
