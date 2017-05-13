@@ -5,6 +5,9 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 
 import it.unibo.mobile.d2dchat.Constants;
 import it.unibo.mobile.d2dchat.messagesManager.ClientMessageManager;
@@ -27,6 +30,7 @@ public class Client extends Peer {
     private long sumAllDisconnectionsTime = 0;
     private long lastDisconnectedTime = 0;
     private boolean firstConnect = true;
+    private ExecutorService pool = Executors.newSingleThreadExecutor();
     public volatile boolean keepSending = true;
 
     public Client(DeviceManager deviceManager) {
@@ -62,7 +66,8 @@ public class Client extends Peer {
                 getDeviceManager().infoMessage.notifyChange();
             }
             manager = new ClientMessageManager(this);
-            manager.start();
+            //manager.start();
+            pool.execute(manager);
             Log.d(TAG, "onConnect() created new connection");
             try {
                 manager.connecting.acquire();

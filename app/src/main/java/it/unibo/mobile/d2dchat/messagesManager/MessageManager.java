@@ -10,6 +10,8 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.Semaphore;
 
 import it.unibo.mobile.d2dchat.Constants;
@@ -27,7 +29,6 @@ public abstract class MessageManager extends Thread {
     protected InputStream inputStream = null;
     protected OutputStream outputStream = null;
     protected static final String TAG = "MessageManager";
-    protected Object lock = null;
     public volatile boolean keepRunning = true;
 
     protected class Sender extends Thread {
@@ -120,7 +121,6 @@ public abstract class MessageManager extends Thread {
 
     public MessageManager(Peer peer) {
         this.peer = peer;
-        this.lock = new Object();
     }
 
     public synchronized void stopManager(boolean stopSender) {

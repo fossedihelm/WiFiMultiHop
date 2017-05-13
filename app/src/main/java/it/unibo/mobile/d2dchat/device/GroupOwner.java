@@ -44,7 +44,6 @@ public class GroupOwner extends Peer {
         sent += manager.sent;
         partReceived = 0;
         manager.stopManager(false);
-        //socketHandlerExecutor.shutdownNow();
         completedConnections++;
     }
 
