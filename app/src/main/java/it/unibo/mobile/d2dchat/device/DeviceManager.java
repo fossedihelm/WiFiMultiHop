@@ -281,7 +281,7 @@ public class DeviceManager extends Thread implements PeerListListener, Connectio
         Log.d(TAG, "Fase di ping pong iniziata");
         GOlist = new ArrayList<WifiP2pDevice>();
         for (WifiP2pDevice peer: peers) {
-            if(peer.isGroupOwner() && (peer.deviceName.equals("Nexus4") || peer.deviceName.equals("Elephone") || peer.deviceName.equals("N5") || peer.deviceName.equals("Mi4C") )) {
+            if(peer.isGroupOwner() && (peer.deviceName.equals("Nexus4") || peer.deviceName.equals("Elephone") || peer.deviceName.equals("N5") || peer.deviceName.equals("Mi4c") )) {
                 GOlist.add(peer);
             }
         }
