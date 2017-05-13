@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -170,6 +171,12 @@ public class MainActivity extends AppCompatActivity implements IntervalFragment.
         try {
             FileOutputStream outputStream = new FileOutputStream(file);
             outputStream.write(mInfoMessage.toPrint.getBytes());
+            Context context = getApplicationContext();
+            CharSequence text = "File Saved";
+            int duration = Toast.LENGTH_SHORT;
+
+            Toast toast = Toast.makeText(context, text, duration);
+            toast.show();
         } catch (IOException e) {
             e.printStackTrace();
         }

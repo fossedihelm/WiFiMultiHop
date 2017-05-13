@@ -15,4 +15,6 @@
     <string name="time_title">Tempo</string>
     <string name="avg_rtt">RTT medio</string>
     <string name="avg_ttr">TTR medio</string>
+    <string name="run_title">Run</string>
+    <string name="run">Numero run</string>
 </resources>

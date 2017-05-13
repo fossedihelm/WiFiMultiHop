@@ -40,6 +40,8 @@ public class GroupOwner extends Peer {
     @Override
     public void onDisconnect() {
         runNum++;
+        getDeviceManager().infoMessage.setRunNumber(runNum);
+        getDeviceManager().infoMessage.notifyChange();
         Log.d(TAG, "onDisconnect()");
         sent += manager.sent;
         partReceived = 0;
