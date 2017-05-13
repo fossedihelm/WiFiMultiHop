@@ -30,7 +30,7 @@ public class Client extends Peer {
     private long sumAllDisconnectionsTime = 0;
     private long lastDisconnectedTime = 0;
     private boolean firstConnect = true;
-    private ExecutorService pool = Executors.newSingleThreadExecutor();
+    private ExecutorService pool = Executors.newFixedThreadPool(2);
     public volatile boolean keepSending = true;
 
     public Client(DeviceManager deviceManager) {
@@ -65,7 +65,7 @@ public class Client extends Peer {
                 getDeviceManager().infoMessage.setAverageReconnectionTime(averageReconnectionTime);
                 getDeviceManager().infoMessage.notifyChange();
             }
-            manager = new ClientMessageManager(this);
+            manager = new ClientMessageManager(this, pool);
             //manager.start();
             pool.execute(manager);
             Log.d(TAG, "onConnect() created new connection");

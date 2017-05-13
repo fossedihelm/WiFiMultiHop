@@ -29,6 +29,7 @@ public abstract class MessageManager extends Thread {
     protected InputStream inputStream = null;
     protected OutputStream outputStream = null;
     protected static final String TAG = "MessageManager";
+    protected ExecutorService pool = null;
     public volatile boolean keepRunning = true;
 
     protected class Sender extends Thread {
@@ -87,7 +88,7 @@ public abstract class MessageManager extends Thread {
         // lazy instantiation of sender thread
         if (sender == null || sender.keepRunning == false) {
             sender = new Sender();
-            sender.start();
+            pool.execute(sender);
         }
         sender.queueSize++;
         sender.addToQueue(message);
@@ -121,6 +122,12 @@ public abstract class MessageManager extends Thread {
 
     public MessageManager(Peer peer) {
         this.peer = peer;
+        this.pool = Executors.newSingleThreadExecutor();
+    }
+
+    public MessageManager(Peer peer, ExecutorService pool) {
+        this.peer = peer;
+        this.pool = pool;
     }
 
     public synchronized void stopManager(boolean stopSender) {

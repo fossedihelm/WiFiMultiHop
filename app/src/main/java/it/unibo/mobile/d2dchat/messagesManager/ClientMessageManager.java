@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.net.ConnectException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Semaphore;
 import java.util.ArrayList;
 
@@ -23,6 +24,10 @@ public class ClientMessageManager extends MessageManager {
 
     public ClientMessageManager(Peer peer) {
         super(peer);
+    }
+
+    public ClientMessageManager(Peer peer, ExecutorService pool) {
+        super(peer, pool);
     }
 
     @Override
