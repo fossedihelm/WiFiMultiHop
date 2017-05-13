@@ -21,6 +21,8 @@ public class InfoMessage extends BaseObservable {
     private Integer totalSentMessage = 0;
     private Integer totalRecvMessage = 0;
 
+    private Integer runNumber = 0;
+
     public String toPrint="";
     public String fileName="";
 
@@ -85,5 +87,14 @@ public class InfoMessage extends BaseObservable {
 
     public void setTotalRecvMessage(Integer totalRecvMessage) {
         this.totalRecvMessage = totalRecvMessage;
+    }
+
+    @Bindable
+    public Integer getRunNumber() {
+        return runNumber;
+    }
+
+    public void setRunNumber(Integer runNumber) {
+        this.runNumber = runNumber;
     }
 }

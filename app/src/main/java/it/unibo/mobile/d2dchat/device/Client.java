@@ -51,8 +51,10 @@ public class Client extends Peer {
                 firstConnect = false;
             }
             else {
-                if(reconnections % deviceManager.GOlist.size()==0)
+                if(reconnections % deviceManager.GOlist.size()==0){
                     runNum++ ;
+                    getDeviceManager().infoMessage.setRunNumber(runNum);
+                }
                 reconnections++;
                 long reconnectionTime = System.currentTimeMillis() - lastDisconnectedTime;
                 sumAllDisconnectionsTime += reconnectionTime;
