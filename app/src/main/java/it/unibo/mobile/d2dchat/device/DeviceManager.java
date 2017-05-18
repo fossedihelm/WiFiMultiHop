@@ -2,6 +2,7 @@ package it.unibo.mobile.d2dchat.device;
 
 import android.net.NetworkInfo;
 import android.net.wifi.WifiConfiguration;
+import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.net.wifi.p2p.WifiP2pConfig;
 import android.net.wifi.p2p.WifiP2pDevice;
@@ -14,6 +15,7 @@ import android.net.wifi.p2p.WifiP2pManager.Channel;
 import android.net.wifi.p2p.WifiP2pManager.ConnectionInfoListener;
 import android.net.wifi.p2p.WifiP2pManager.GroupInfoListener;
 import android.net.wifi.p2p.WifiP2pManager.PeerListListener;
+import android.text.format.Formatter;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -36,6 +38,7 @@ public class DeviceManager extends Thread {
     private MainActivity mainActivity;
     private String deviceName;
     private String groupOwnerMacAddress;
+    public String groupOwnerHostAddress;
     private List<WifiP2pDevice> peers;
     private NetworkInfo info;
     private WifiManager.WifiLock wifiLock;
@@ -45,8 +48,7 @@ public class DeviceManager extends Thread {
     public InfoMessage infoMessage;
     public boolean isGO;
     public List<WifiConfiguration> GOlist;
-    public boolean firstDiscovery = true;
-    public boolean switching = false;
+    public boolean started = false;
     public String currentDest = null;
     public int currentGO = 0;
     public int timeInterval = 10000;
@@ -126,6 +128,9 @@ public class DeviceManager extends Thread {
         //peer.semaphore.release();
         wifiManager.disconnect();
         wifiLock.release();
+        for (WifiConfiguration config : APlist) {
+            wifiManager.enableNetwork(config.networkId, false);
+        }
     }
 
     //Lo stato del wifi è cambiato, active == true wifi attivo (e viceversa)
@@ -154,10 +159,6 @@ public class DeviceManager extends Thread {
             peers.clear();
             peers.addAll(wifiP2pDeviceList.getDeviceList());
             mainActivity.updatePeers();
-            if (switching) {
-                switching = false;
-                switchGO();
-            }
         }
     }
 
@@ -166,6 +167,7 @@ public class DeviceManager extends Thread {
     public void onConnectionInfoAvailable(NetworkInfo info) {
         Log.d(TAG, "onConnectionInfoAvailable()");
         this.info = info;
+        groupOwnerHostAddress = Formatter.formatIpAddress(wifiManager.getDhcpInfo().gateway);
      //   if (deviceStatus != Constants.DEVICE_CONNECTED) {
             deviceStatus = Constants.DEVICE_CONNECTED;
             boolean creation = true;
@@ -212,7 +214,7 @@ public class DeviceManager extends Thread {
         }
         groupOwnerMacAddress = wifiP2pGroup.getOwner().deviceAddress;
         //Gli apaprtenenti al gruppo sono cambiati, aggiorniamo
-        mainActivity.setGroupPeers(devices);
+        mainActivity.showAPFragment();
     }
 
     //l'opposto di quello sopra, la chiamiamo quando si è registrato un cambio alla connessione ma non siamo connessi
@@ -251,31 +253,22 @@ public class DeviceManager extends Thread {
 
     public void createGroup (){
         Log.d(TAG, "Mi dichiaro GO");
-
-//        wifiManager.createGroup(channel, new WifiP2pManager.ActionListener() {
-//
-//            @Override
-//            public void onSuccess() {
-//                Log.d(TAG, "Creazione riuscita");
-//            }
-//
-//            @Override
-//            public void onFailure(int reason) {
-//                Log.d(TAG, "Creazione non riuscita, codice: " + reason);
-//            }
-//        });
+        started = true;
+        onConnectionInfoAvailable(null);
     }
 
     public void startPingPongProcedure (){
         APlist = wifiManager.getConfiguredNetworks();
+        GOlist = new ArrayList<WifiConfiguration>();
         for (WifiConfiguration config : APlist) {
             if (!wifiManager.disableNetwork(config.networkId)) {
                 Log.d(TAG, "Can not disable network: " + config.SSID);
             }
-            if (config.SSID == "AsigAP" || config.SSID == "IleniaAP") {
+            if (config.SSID.equals("\"AsigAP\"") || config.SSID.equals("\"IleniaAP\"")) {
                 GOlist.add(config);
             }
         }
+        started = true;
         switchGO();
     }
 
@@ -288,7 +281,7 @@ public class DeviceManager extends Thread {
             if (GOlist.size()>1)
                 currentGO = (currentGO + 1) % GOlist.size();
             Log.d(TAG, "switch verso: " + GOlist.get(currentGO).SSID);
-            groupOwnerMacAddress = GOlist.get(currentGO).BSSID;
+            groupOwnerMacAddress = GOlist.get(currentGO).SSID;
             wifiManager.disconnect();
             wifiManager.enableNetwork(GOlist.get(currentGO).networkId, true);
             wifiManager.reconnect();

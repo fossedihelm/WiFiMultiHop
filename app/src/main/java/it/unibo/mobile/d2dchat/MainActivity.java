@@ -53,11 +53,8 @@ public class MainActivity extends AppCompatActivity implements IntervalFragment.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mIntentFilter = new IntentFilter();
-        mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION);
-        mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION);
-        mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION);
-        mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION);
-        mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_DISCOVERY_CHANGED_ACTION);
+        mIntentFilter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
+        mIntentFilter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
 
         mContext = getApplicationContext();
         mManager = (WifiManager) mContext.getSystemService(Context.WIFI_SERVICE);
@@ -104,9 +101,9 @@ public class MainActivity extends AppCompatActivity implements IntervalFragment.
     }
 
 
-    public void setGroupPeers(Collection<WifiP2pDevice> groupPeers) {
-
-        if (inGroupFragment != null && deviceManager.getDeviceStatus() == Constants.DEVICE_CONNECTED) {
+    public void showAPFragment() {
+        Log.d(TAG, "showAPFragment()");
+        if (inGroupFragment != null) {
             //We have the peer list, let's join the chat fragment
             DevicesListFragment.WiFiDevicesAdapter adapter = devicesListFragment.getWiFiDeviceAdapter();
             adapter.clear();
@@ -119,9 +116,6 @@ public class MainActivity extends AppCompatActivity implements IntervalFragment.
 
             List<String> participants = new ArrayList<>();
 
-            for (WifiP2pDevice device : groupPeers) {
-                participants.add(device.deviceName);
-            }
             this.groupPeers.addAll(participants);
         }
     }
@@ -147,6 +141,7 @@ public class MainActivity extends AppCompatActivity implements IntervalFragment.
     public void groupownami(View view) {
         deviceManager.isGO = true;
         deviceManager.createGroup();
+        showAPFragment();
     }
     /** Called when the user clicks the Pingpongami button */
     public void pingpongami(View view) {

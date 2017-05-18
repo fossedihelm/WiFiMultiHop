@@ -3,7 +3,6 @@ package it.unibo.mobile.d2dchat;
 public class Constants {
 
     public static final int SERVER_PORT = 61222;
-    public static final String GATEWAY_ADDRESS = "192.168.43.1";
 
     //Message codes
     public static final int MESSAGE_REGISTER = 1;

@@ -21,6 +21,7 @@ import it.unibo.mobile.d2dchat.device.Peer;
 import static android.content.ContentValues.TAG;
 import static android.net.wifi.p2p.WifiP2pManager.WIFI_P2P_DISCOVERY_STARTED;
 import static android.net.wifi.p2p.WifiP2pManager.WIFI_P2P_DISCOVERY_STOPPED;
+import static java.lang.Thread.sleep;
 
 public class WiFiBroadcastReceiver extends BroadcastReceiver {
 
@@ -51,10 +52,13 @@ public class WiFiBroadcastReceiver extends BroadcastReceiver {
             NetworkInfo networkInfo = intent.getParcelableExtra(WifiP2pManager.EXTRA_NETWORK_INFO);
             if (networkInfo.isConnected()) {
                 Log.d(TAG, "WiFi status: connected");
-            } else {
-                Log.d(TAG, "WiFi status: disconnected");
+                if (deviceManager.started) {
+                    try {
+                        sleep(3000);
+                    } catch (InterruptedException e) {}
+                    deviceManager.onConnectionInfoAvailable(networkInfo);
+                }
             }
-            deviceManager.onConnectionInfoAvailable(networkInfo);
         }
     }
 }

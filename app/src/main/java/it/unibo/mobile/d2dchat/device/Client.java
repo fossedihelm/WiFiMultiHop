@@ -38,7 +38,7 @@ public class Client extends Peer {
         deviceManager.infoMessage.toPrint = "RunNum;TTR;\n";
         this.deviceManager = deviceManager;
         for (int i = 0; i < deviceManager.GOlist.size(); i++) {
-            goQueues.put(deviceManager.GOlist.get(i).BSSID, new ArrayList<Message>(200));
+            goQueues.put(deviceManager.GOlist.get(i).SSID, new ArrayList<Message>(200));
         }
     }
 
