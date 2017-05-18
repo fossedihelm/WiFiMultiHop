@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
 import android.content.IntentFilter;
+import android.net.wifi.WifiManager;
 import android.net.wifi.p2p.WifiP2pDevice;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.net.wifi.p2p.WifiP2pManager.Channel;
@@ -32,11 +33,12 @@ public class MainActivity extends AppCompatActivity implements IntervalFragment.
 
     public static final String TAG = "wifiD2Dchat";
 
-    WifiP2pManager mManager;
+    WifiManager mManager;
     Channel mChannel;
     DevicesListFragment devicesListFragment;
     InGroupFragment inGroupFragment = new InGroupFragment();
     IntentFilter mIntentFilter;
+    Context mContext;
 
     public InfoMessage mInfoMessage;
     public DeviceManager deviceManager;
@@ -57,8 +59,8 @@ public class MainActivity extends AppCompatActivity implements IntervalFragment.
         mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION);
         mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_DISCOVERY_CHANGED_ACTION);
 
-        mManager = (WifiP2pManager) getSystemService(Context.WIFI_P2P_SERVICE);
-        mChannel = mManager.initialize(this, getMainLooper(), null);
+        mContext = getApplicationContext();
+        mManager = (WifiManager) mContext.getSystemService(Context.WIFI_SERVICE);
         mInfoMessage = new InfoMessage();
         deviceManager = new DeviceManager(mManager, mChannel, this, mInfoMessage);
         deviceManager.start();
@@ -98,7 +100,7 @@ public class MainActivity extends AppCompatActivity implements IntervalFragment.
     }
 
     public void connectP2p(final WifiP2pDevice device) {
-        deviceManager.connectTo(device);
+        //deviceManager.connectTo(device);
     }
 
 
@@ -143,6 +145,7 @@ public class MainActivity extends AppCompatActivity implements IntervalFragment.
 
     /** Called when the user clicks the Groupownami button */
     public void groupownami(View view) {
+        deviceManager.isGO = true;
         deviceManager.createGroup();
     }
     /** Called when the user clicks the Pingpongami button */

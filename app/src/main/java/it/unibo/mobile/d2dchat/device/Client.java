@@ -38,7 +38,7 @@ public class Client extends Peer {
         deviceManager.infoMessage.toPrint = "RunNum;TTR;\n";
         this.deviceManager = deviceManager;
         for (int i = 0; i < deviceManager.GOlist.size(); i++) {
-            goQueues.put(deviceManager.GOlist.get(i).deviceAddress,new ArrayList<Message>(200));
+            goQueues.put(deviceManager.GOlist.get(i).BSSID, new ArrayList<Message>(200));
         }
     }
 
@@ -90,7 +90,7 @@ public class Client extends Peer {
         discarded += goQueues.get(deviceManager.getGroupOwnerMacAddress()).size();
         goQueues.get(deviceManager.getGroupOwnerMacAddress()).clear();
         lastDisconnectedTime = System.currentTimeMillis();
-        deviceManager.disconnect();
+        deviceManager.switchGO();
     }
 
     @Override

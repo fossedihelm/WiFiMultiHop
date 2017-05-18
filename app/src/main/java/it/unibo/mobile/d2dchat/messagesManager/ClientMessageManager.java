@@ -1,5 +1,6 @@
 package it.unibo.mobile.d2dchat.messagesManager;
 
+import android.net.wifi.WifiConfiguration;
 import android.net.wifi.p2p.WifiP2pDevice;
 import android.util.Log;
 
@@ -38,8 +39,8 @@ public class ClientMessageManager extends MessageManager {
             socket.bind(null);
             int c =0;
             try {
-                Log.d(TAG, "connecting to " + peer.getDeviceManager().getInfo().groupOwnerAddress.getHostAddress());
-                socket.connect(new InetSocketAddress(peer.getDeviceManager().getInfo().groupOwnerAddress.getHostAddress(),
+                Log.d(TAG, "connecting to " + Constants.GATEWAY_ADDRESS);
+                socket.connect(new InetSocketAddress(Constants.GATEWAY_ADDRESS,
                         Constants.SERVER_PORT), 5000);
                 Log.i(TAG, "Connect executed");
             } catch (ConnectException e){
@@ -70,8 +71,8 @@ public class ClientMessageManager extends MessageManager {
         // Send REGISTER message containing list of GOs.
         Message message = new Message();
         ArrayList<String> goListToSend = new ArrayList<>();
-        for (WifiP2pDevice device : peer.getDeviceManager().GOlist)
-            goListToSend.add(device.deviceAddress);
+        for (WifiConfiguration config: peer.getDeviceManager().GOlist)
+            goListToSend.add(config.BSSID);
         message.setGoList(goListToSend);
         message.setSwitchTime(peer.getDeviceManager().timeInterval);
         message.setType(Constants.MESSAGE_REGISTER);

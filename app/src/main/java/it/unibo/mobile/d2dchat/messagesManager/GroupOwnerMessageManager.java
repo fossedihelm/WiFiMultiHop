@@ -72,7 +72,6 @@ public class GroupOwnerMessageManager extends MessageManager {
     public GroupOwnerMessageManager(Peer peer) {
         super(peer);
         try {
-            Log.d(TAG, "Creating socket with address " + peer.getDeviceManager().getInfo().groupOwnerAddress.getHostAddress());
             serverSocket = new ServerSocket(Constants.SERVER_PORT);
             Log.d(TAG, "Server Socket started");
         } catch (IOException e) {

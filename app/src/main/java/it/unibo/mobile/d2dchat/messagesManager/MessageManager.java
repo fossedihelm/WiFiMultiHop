@@ -133,7 +133,6 @@ public abstract class MessageManager extends Thread {
     public synchronized void stopManager(boolean stopSender) {
         while (sender.queueSize > 0) {
             try{
-                Log.d(TAG, "Waiting for Godot");
                 wait();
             } catch (InterruptedException e) {
                 e.printStackTrace();

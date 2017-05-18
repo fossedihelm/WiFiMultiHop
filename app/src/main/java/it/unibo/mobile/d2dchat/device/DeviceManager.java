@@ -1,5 +1,8 @@
 package it.unibo.mobile.d2dchat.device;
 
+import android.net.NetworkInfo;
+import android.net.wifi.WifiConfiguration;
+import android.net.wifi.WifiManager;
 import android.net.wifi.p2p.WifiP2pConfig;
 import android.net.wifi.p2p.WifiP2pDevice;
 import android.net.wifi.p2p.WifiP2pDeviceList;
@@ -21,26 +24,27 @@ import java.util.TimerTask;
 import it.unibo.mobile.d2dchat.Constants;
 import it.unibo.mobile.d2dchat.MainActivity;
 import it.unibo.mobile.d2dchat.infoReport.InfoMessage;
-import it.unibo.mobile.d2dchat.messagesManager.Message;
-import it.unibo.mobile.d2dchat.network.wifidirect.WiFiDirectBroadcastReceiver;
+import it.unibo.mobile.d2dchat.network.wifidirect.WiFiBroadcastReceiver;
 
 //Deve gestire il device,  dovrà fare da intermediario tra la rete e l'activity. Gran parte del codice dell'activity andrà qui
-public class DeviceManager extends Thread implements PeerListListener, ConnectionInfoListener, GroupInfoListener {
+public class DeviceManager extends Thread {
 
     private int deviceStatus = Constants.DEVICE_INIT;
-    private WifiP2pManager wifiP2pManager;
+    private WifiManager wifiManager;
     private Channel channel;
-    private WiFiDirectBroadcastReceiver wiFiDirectBroadcastReceiver;
+    private WiFiBroadcastReceiver wiFiBroadcastReceiver;
     private MainActivity mainActivity;
     private String deviceName;
     private String groupOwnerMacAddress;
     private List<WifiP2pDevice> peers;
-    private WifiP2pInfo info;
+    private NetworkInfo info;
+    private WifiManager.WifiLock wifiLock;
+    private List<WifiConfiguration> APlist;
     public boolean keepRunning = true;
     public String deviceAddress;
     public InfoMessage infoMessage;
     public boolean isGO;
-    public ArrayList<WifiP2pDevice> GOlist;
+    public List<WifiConfiguration> GOlist;
     public boolean firstDiscovery = true;
     public boolean switching = false;
     public String currentDest = null;
@@ -51,15 +55,15 @@ public class DeviceManager extends Thread implements PeerListListener, Connectio
 
     private static final String TAG = "DeviceManager";
 
-    public WiFiDirectBroadcastReceiver getWiFiDirectBroadcastReceiver() {
-        return wiFiDirectBroadcastReceiver;
+    public WiFiBroadcastReceiver getWiFiDirectBroadcastReceiver() {
+        return wiFiBroadcastReceiver;
     }
 
     public String getGroupOwnerMacAddress() {
         return groupOwnerMacAddress;
     }
 
-    public WifiP2pInfo getInfo() {
+    public NetworkInfo getInfo() {
         return info;
     }
 
@@ -87,18 +91,19 @@ public class DeviceManager extends Thread implements PeerListListener, Connectio
         }
     }
 
-    public DeviceManager(WifiP2pManager wifiP2pManager, Channel channel, MainActivity mainActivity, InfoMessage infoMessage) {
+    public DeviceManager(WifiManager wifiManager, Channel channel, MainActivity mainActivity, InfoMessage infoMessage) {
 
         this.channel = channel;
-        this.wifiP2pManager = wifiP2pManager;
+        this.wifiManager = wifiManager;
         this.mainActivity = mainActivity;
         this.peers = new ArrayList<WifiP2pDevice>();
         this.infoMessage = infoMessage;
 
-        wiFiDirectBroadcastReceiver = new WiFiDirectBroadcastReceiver(wifiP2pManager, channel, this);
+        wiFiBroadcastReceiver = new WiFiBroadcastReceiver(this.wifiManager, channel, this);
+        wifiLock = wifiManager.createWifiLock(TAG);
+        wifiLock.acquire();
 
         Log.d(TAG, "Costruttore devicemanager");
-        wifiP2pManager.discoverPeers(channel, new ActionListenerDiscoverPeers());
     }
 
     @Override
@@ -115,10 +120,12 @@ public class DeviceManager extends Thread implements PeerListListener, Connectio
 
     // Called on activity destruction
     public void stopManager() {
+        Log.d(TAG, "Closing cleanly.");
         deviceStatus = Constants.DEVICE_INIT;
         //peer.nextAction.setAction(Peer.Action.disconnect);
         //peer.semaphore.release();
-        wifiP2pManager.removeGroup(channel, null);
+        wifiManager.disconnect();
+        wifiLock.release();
     }
 
     //Lo stato del wifi è cambiato, active == true wifi attivo (e viceversa)
@@ -128,19 +135,17 @@ public class DeviceManager extends Thread implements PeerListListener, Connectio
             switch (deviceStatus) {
                 case Constants.DEVICE_INIT:
                 case Constants.DEVICE_NOWIFI://non ha senso
-                    wifiP2pManager.discoverPeers(channel, new ActionListenerDiscoverPeers());
+                    //wifiManager.discoverPeers(channel, new ActionListenerDiscoverPeers());
                     //Supponiamo che siamo già nella schermata principale poichè i due stati del case dovrebbero già essere gestiti
                     break;
             }
         } else {
             deviceStatus = Constants.DEVICE_NOWIFI;
-            wifiP2pManager.stopPeerDiscovery(channel, null); //non ci interessa la callback sulla stop discovery, forse
             //TODO: Avvisiamo la'ctivity che non c'è più connessione
         }
     }
 
 
-    @Override
     //E' successo qualcosa nei vicini (nuovi vicini, vecchi vicini andati, etc..), non si parla di gruppo
     public void onPeersAvailable(WifiP2pDeviceList wifiP2pDeviceList) {
         Log.d(TAG, "onPeersAvailable()");
@@ -157,18 +162,16 @@ public class DeviceManager extends Thread implements PeerListListener, Connectio
     }
 
 
-    @Override
     //Sono disponibili informazioni sulla connessione (siamo in un gruppo), probabilmente ci siamo connessi
-    public void onConnectionInfoAvailable(WifiP2pInfo wifiP2pInfo) {
+    public void onConnectionInfoAvailable(NetworkInfo info) {
         Log.d(TAG, "onConnectionInfoAvailable()");
-        this.info = wifiP2pInfo;
+        this.info = info;
      //   if (deviceStatus != Constants.DEVICE_CONNECTED) {
             deviceStatus = Constants.DEVICE_CONNECTED;
             boolean creation = true;
             if (peer != null)
                 creation = false;
-            if (wifiP2pInfo.isGroupOwner) {
-                isGO = true;
+            if (isGO) {
                 if (creation) {
                     peer = new GroupOwner(this);
                 }
@@ -192,11 +195,11 @@ public class DeviceManager extends Thread implements PeerListListener, Connectio
             //TODO: verify that one thread is enough
             //((Thread) (peer)).start();
 
-            wifiP2pManager.requestGroupInfo(channel, this);
+            //wifiManager.requestGroupInfo(channel, this);
         //}
     }
 
-    @Override
+
     //Riceviamo le informazioni sul gruppo
     public void onGroupInfoAvailable(WifiP2pGroup wifiP2pGroup) {
         Log.d(TAG, "onGroupInfoAvailable()");
@@ -217,7 +220,7 @@ public class DeviceManager extends Thread implements PeerListListener, Connectio
         if (deviceStatus == Constants.DEVICE_CONNECTED) {
             //Non siamo più nel gruppo, ricominciamo la discovery
             deviceStatus = Constants.DEVICE_INIT;
-            wifiP2pManager.discoverPeers(channel, new ActionListenerDiscoverPeers());
+            //wifiManager.discoverPeers(channel, new ActionListenerDiscoverPeers());
             mainActivity.updateDevice();
         }
     }
@@ -240,49 +243,37 @@ public class DeviceManager extends Thread implements PeerListListener, Connectio
     }
 
 
-    public void connectTo(final WifiP2pDevice device) {
+    public void connectTo(int networkId) {
         Log.d(TAG, "Ci proviamo a connettere ad un device");
-        WifiP2pConfig config = new WifiP2pConfig();
-        config.deviceAddress = device.deviceAddress;
-
-        wifiP2pManager.connect(channel, config, new WifiP2pManager.ActionListener() {
-
-            @Override
-            public void onSuccess() {
-                Log.d(TAG, "["+device.deviceName+"]Connessione riuscita");
-            }
-
-            @Override
-            public void onFailure(int reason) {
-                Log.d(TAG, "["+device.deviceName+"]Connessione non riuscita, codice: " + reason);
-                connectTo(device);
-            }
-        });
+        wifiManager.disconnect();
+        wifiManager.enableNetwork(networkId, true);
     }
 
     public void createGroup (){
         Log.d(TAG, "Mi dichiaro GO");
 
-        wifiP2pManager.createGroup(channel, new WifiP2pManager.ActionListener() {
-
-            @Override
-            public void onSuccess() {
-                Log.d(TAG, "Creazione riuscita");
-            }
-
-            @Override
-            public void onFailure(int reason) {
-                Log.d(TAG, "Creazione non riuscita, codice: " + reason);
-            }
-        });
+//        wifiManager.createGroup(channel, new WifiP2pManager.ActionListener() {
+//
+//            @Override
+//            public void onSuccess() {
+//                Log.d(TAG, "Creazione riuscita");
+//            }
+//
+//            @Override
+//            public void onFailure(int reason) {
+//                Log.d(TAG, "Creazione non riuscita, codice: " + reason);
+//            }
+//        });
     }
 
     public void startPingPongProcedure (){
-        Log.d(TAG, "Fase di ping pong iniziata");
-        GOlist = new ArrayList<WifiP2pDevice>();
-        for (WifiP2pDevice peer: peers) {
-            if(peer.isGroupOwner() && (peer.deviceName.equals("Nexus4") || peer.deviceName.equals("Elephone") || peer.deviceName.equals("N5") || peer.deviceName.equals("Mi4c") )) {
-                GOlist.add(peer);
+        APlist = wifiManager.getConfiguredNetworks();
+        for (WifiConfiguration config : APlist) {
+            if (!wifiManager.disableNetwork(config.networkId)) {
+                Log.d(TAG, "Can not disable network: " + config.SSID);
+            }
+            if (config.SSID == "AsigAP" || config.SSID == "IleniaAP") {
+                GOlist.add(config);
             }
         }
         switchGO();
@@ -296,9 +287,11 @@ public class DeviceManager extends Thread implements PeerListListener, Connectio
         else {
             if (GOlist.size()>1)
                 currentGO = (currentGO + 1) % GOlist.size();
-            Log.d(TAG, "switch verso: " + GOlist.get(currentGO).deviceName);
-            groupOwnerMacAddress = GOlist.get(currentGO).deviceAddress;
-            connectTo(GOlist.get(currentGO));
+            Log.d(TAG, "switch verso: " + GOlist.get(currentGO).SSID);
+            groupOwnerMacAddress = GOlist.get(currentGO).BSSID;
+            wifiManager.disconnect();
+            wifiManager.enableNetwork(GOlist.get(currentGO).networkId, true);
+            wifiManager.reconnect();
         }
     }
 
@@ -311,22 +304,9 @@ public class DeviceManager extends Thread implements PeerListListener, Connectio
         }, timeInterval);
     }
 
-    public void discover() {
-        wifiP2pManager.discoverPeers(channel, new ActionListenerDiscoverPeers());
-    }
 
     public void disconnect() {
-        Log.d(TAG, "Disconnecting from group.");
-        wifiP2pManager.removeGroup(channel, new WifiP2pManager.ActionListener() {
-            @Override
-            public void onSuccess(){
-                deviceStatus = Constants.DEVICE_DISCONNECTED;
-            }
-
-            @Override
-            public void onFailure(int reason) {
-                Log.d(TAG, "Disconnect non riuscita, codice: " + reason);
-            }
-        });
+        Log.d(TAG, "Disconnecting from AP.");
+        wifiManager.disconnect();
     }
 }
