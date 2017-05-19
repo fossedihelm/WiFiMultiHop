@@ -46,18 +46,16 @@ public class WiFiBroadcastReceiver extends BroadcastReceiver {
             int state = intent.getIntExtra(WifiManager.EXTRA_WIFI_STATE, -1);
             deviceManager.wifiState(state == WifiManager.WIFI_STATE_ENABLED);
         } else if (WifiManager.NETWORK_STATE_CHANGED_ACTION.equals(action)) {
-            if (mManager == null) {
-                return;
-            }
             NetworkInfo networkInfo = intent.getParcelableExtra(WifiP2pManager.EXTRA_NETWORK_INFO);
             if (networkInfo.isConnected()) {
                 Log.d(TAG, "WiFi status: connected");
                 if (deviceManager.started) {
-                    try {
-                        sleep(3000);
-                    } catch (InterruptedException e) {}
+                    //TODO con la sleep funziona, quindi forse non siamo connessi a livello rete
                     deviceManager.onConnectionInfoAvailable(networkInfo);
                 }
+            }
+            else {
+                deviceManager.deviceStatus = Constants.DEVICE_DISCONNECTED;
             }
         }
     }

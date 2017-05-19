@@ -90,6 +90,7 @@ public class Client extends Peer {
         discarded += goQueues.get(deviceManager.getGroupOwnerMacAddress()).size();
         goQueues.get(deviceManager.getGroupOwnerMacAddress()).clear();
         lastDisconnectedTime = System.currentTimeMillis();
+        deviceManager.deviceStatus = Constants.DEVICE_DISCONNECTED;
         deviceManager.switchGO();
     }
 
@@ -106,7 +107,6 @@ public class Client extends Peer {
         else if (message.getType() == Constants.MESSAGE_STOP_ACK) {
             Log.i(TAG, "Received message: \n" + message.getContents());
             onDisconnect();
-            deviceManager.disconnect();
         }
     }
 
@@ -134,6 +134,5 @@ public class Client extends Peer {
         message.setDest(deviceManager.getGroupOwnerMacAddress());
         message.setSeqNum(0);
         manager.send(message);
-        nextAction.setAction(Action.wait);
     }
 }

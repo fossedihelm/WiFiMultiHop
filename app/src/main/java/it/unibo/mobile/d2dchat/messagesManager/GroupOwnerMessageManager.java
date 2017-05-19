@@ -90,6 +90,7 @@ public class GroupOwnerMessageManager extends MessageManager {
         while (true) {
             try {
                 keepRunning = true;
+                Log.d(TAG, "Accepting...");
                 socket = serverSocket.accept();
                 Log.d(TAG, "Server Socket accepted");
             } catch (IOException e) {

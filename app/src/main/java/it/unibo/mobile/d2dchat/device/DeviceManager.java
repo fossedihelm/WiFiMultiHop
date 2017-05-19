@@ -31,7 +31,7 @@ import it.unibo.mobile.d2dchat.network.wifidirect.WiFiBroadcastReceiver;
 //Deve gestire il device,  dovrà fare da intermediario tra la rete e l'activity. Gran parte del codice dell'activity andrà qui
 public class DeviceManager extends Thread {
 
-    private int deviceStatus = Constants.DEVICE_INIT;
+    public int deviceStatus = Constants.DEVICE_INIT;
     private WifiManager wifiManager;
     private Channel channel;
     private WiFiBroadcastReceiver wiFiBroadcastReceiver;

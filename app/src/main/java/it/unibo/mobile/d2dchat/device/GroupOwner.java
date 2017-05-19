@@ -90,7 +90,7 @@ public class GroupOwner extends Peer {
 
             getDeviceManager().infoMessage.fileName = Integer.toString(message.getSwitchTime() / 1000);
             if(addresses.size() <= 1 || myIndex == -1)
-                deviceManager.currentDest = addresses.get(myIndex);
+                deviceManager.currentDest = addresses.get(0);
             else
                 deviceManager.currentDest = addresses.get( (myIndex+1) % addresses.size() );
             if (role == Role.generator)
