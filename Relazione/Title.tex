@@ -68,7 +68,26 @@ WiFi Direct consente la formazione di gruppi di comunicazione peer-to-peer. Ogni
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%		 
 \section{Architettura}
-\paragraph{} In questa sezione verrà descritta a grandi linee l'implementazione dell'applicazione usata per i test.
+\paragraph{} In questa sezione verrà descritta a grandi linee l'implementazione dell'applicazione usata per i test. Il protocollo da noi previsto prevede diversi tipi di messaggi che possono essere inviati. Quando il client 
+riesce a stabilire una nuova connessione, esso invia un messaggio di tipo REGISTER che contiene la lista dei GO raggiungibili dal client. La ricezione di questo messaggio anticipa lo scambio di messaggi di tipo DATA, il cui scopo
+è solamente quello di trasmettere dati per la rilevazione delle statistiche. Quando il timer impostato dall'utente scade, il client avvia una procedura di disconnessione che consiste nell'invio di un messaggio di STOP e nella ricezione 
+di un relativo STOP\_ACK. A questo punto il client è in grado di avviare la disconnessione a livello data link con la certezza di non aver perso informazioni a livello applicativo.
+Le classi principali sono MainActivity, DeviceManager, Peer e MessageManager.
+\paragraph{MainActivity} è un'activity che gestisce l'interfaccia grafica. L'aspetto dell'interfaccia cambia grazie all'uso dei fragment.
+//TODO Fosse lascio a te la parte in cui descriviamo l'interfaccia grafica.
+\paragraph{DeviceManager} è un thread che si occupa di gestire la rete a livello di WiFi Direct. Implementa varie callback che vengono chiamate quando si verificano determinati eventi.
+Ad esempio onConnectionInfoAvailable() viene chiamata quando alcune informazioni sulla connessione sono disponibili: questo significa che la connessione è stata stabilita.
+\emph{DeviceManager} si occupa anche di istanziare una delle due sottoclassi di Peer (\emph{GroupOwner} e \emph{Client}) a seconda del ruolo che il dispositivo deve svolgere. Questi oggetti vengono informati sui cambiamenti della connessione,
+in particolare su quando essa viene stabilita.
+\paragraph{Peer} è una classe astratta che rappresenta un peer, sia esso GO o client. Il suo compito è quello di rispondere al completato stabilimento di una nuova connessione (onConnect()), 
+di gestire i messaggi ricevuti (receiveMessage()) e di gestire la procedura di disconnessione (initiateDisconnection() e onDisconnect()). 
+\emph{Peer} genera anche un'istanza di una sottoclasse di \emph{MessageManager} (\emph{GroupOwnerMessageManager} o \emph{ClientMessageManager}).
+\paragraph{MessageManager} è un thread che gestisce la ricezione e l'invio dei messaggi. L'invio dei messaggi è inoltrato ad un thread \emph{Sender} generato appositamente dal \emph{MessageManager}. Il motivo dell'esistenza di due thread, per ricezione ed invio di messaggi, risiede nella possibilità di eseguire le due operazioni contemporaneamente senza bloccarsi, in particolare per non rischiare di perdere informazioni in arrivo. Il \emph{Sender} mantiene 
+una coda di messaggi da inviare. La procedura di disconnessione prevede l'invio di un messaggio (STOP per il client e STOP\_ACK per il GO); questo messaggio deve essere l'ultimo inviato, perciò è anche previsto un meccanismo che 
+permette al thread di aspettare fino a quando la coda dei messaggi da inviare non sia vuota.
+\paragraph{GroupOwner} una sottoclasse di \emph{Peer} che rappresenta un Group Owner. Il GO può assumere il ruolo di generator o di replier; questo ruolo può essere cambiato anche dopo la creazione. Se il ruolo è quello di generator, 
+dopo aver ricevuto il messaggio REGISTER dal client, verrà avviata la generazione dei messaggi all'interno del \emph{GroupOwnerMessageManager}. La raccolta delle statistiche viene effettuata dal generator all'invio e alla ricezione dei messaggi.
+\paragraph{GroupOwnerMessageManager} è una sottoclasse di \emph{MessageManager} che si occupa dell'invio e della ricezione dei messaggi da parte del GroupOwner. 
 		
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Section4} 

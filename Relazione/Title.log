@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2015/dev/Debian) (preloaded format=pdflatex 2017.3.8)  19 MAY 2017 17:30
+This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2015/dev/Debian) (preloaded format=pdflatex 2017.3.8)  23 MAY 2017 14:26
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -682,29 +682,36 @@ File: ot1pcr.fd 2001/06/04 font definitions for OT1/pcr.
 
 
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}]
-Overfull \hbox (7.9881pt too wide) in paragraph at lines 71--72
+Overfull \hbox (7.9881pt too wide) in paragraph at lines 71--76
  [][] \OT1/cmr/m/n/10 In questa sezione verr^^Ra de-scritta a grandi li-nee l'i
 mplementazione dell'applicazione
  []
 
 
-LaTeX Warning: Empty `thebibliography' environment on input line 96.
+Overfull \hbox (14.0654pt too wide) in paragraph at lines 76--78
+ []\OT1/cmr/m/it/10 MainActivity[] \OT1/cmr/m/n/10 ^^Re un'activity che gestisc
+e l'interfaccia grafica. L'aspetto dell'interfaccia
+ []
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 98.
 [2]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 98.
+
+LaTeX Warning: Empty `thebibliography' environment on input line 114.
+
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 116.
+[3]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 116.
  (./Title.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 98.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 98.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 116.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 116.
 Package rerunfilecheck Info: File `Title.out' has not changed.
 (rerunfilecheck)             Checksum: F8E7E98921FB0787CCD1976C126A1040;66.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 98.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 116.
  ) 
 Here is how much of TeX's memory you used:
- 6965 strings out of 495009
- 101244 string characters out of 6180849
- 197536 words of memory out of 5000000
- 10047 multiletter control sequences out of 15000+600000
+ 6972 strings out of 495009
+ 101322 string characters out of 6180849
+ 199536 words of memory out of 5000000
+ 10048 multiletter control sequences out of 15000+600000
  6318 words of font info for 23 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  42i,5n,35p,745b,320s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -712,12 +719,13 @@ Here is how much of TeX's memory you used:
 e/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texlive/texm
 f-dist/fonts/type1/public/amsfonts/cm/cmbx9.pfb></usr/share/texlive/texmf-dist/
 fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/t
-ype1/public/amsfonts/cm/cmr9.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw
-/courier/ucrr8a.pfb>
-Output written on Title.pdf (2 pages, 68805 bytes).
+ype1/public/amsfonts/cm/cmr9.pfb></usr/share/texlive/texmf-dist/fonts/type1/pub
+lic/amsfonts/cm/cmti10.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/couri
+er/ucrr8a.pfb>
+Output written on Title.pdf (3 pages, 87009 bytes).
 PDF statistics:
- 63 PDF objects out of 1000 (max. 8388607)
- 53 compressed objects within 1 object stream
- 20 named destinations out of 1000 (max. 500000)
+ 77 PDF objects out of 1000 (max. 8388607)
+ 65 compressed objects within 1 object stream
+ 26 named destinations out of 1000 (max. 500000)
  9 words of extra memory for PDF output out of 10000 (max. 10000000)
 
