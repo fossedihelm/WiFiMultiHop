@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2015/dev/Debian) (preloaded format=pdflatex 2017.3.8)  24 MAY 2017 12:56
+This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2015/dev/Debian) (preloaded format=pdflatex 2017.3.8)  24 MAY 2017 13:03
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -682,30 +682,30 @@ File: ot1pcr.fd 2001/06/04 font definitions for OT1/pcr.
 
 
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}]
-Overfull \hbox (7.9881pt too wide) in paragraph at lines 71--76
+Overfull \hbox (7.9881pt too wide) in paragraph at lines 76--81
  [][] \OT1/cmr/m/n/10 In questa sezione verr^^Ra de-scritta a grandi li-nee l'i
 mplementazione dell'applicazione
  []
 
 
-Overfull \hbox (14.0654pt too wide) in paragraph at lines 76--78
+Overfull \hbox (14.0654pt too wide) in paragraph at lines 82--84
  []\OT1/cmr/m/it/10 MainActivity[] \OT1/cmr/m/n/10 ^^Re un'activity che gestisc
 e l'interfaccia grafica. L'aspetto dell'interfaccia
  []
 
 [2] [3]
 
-LaTeX Warning: Empty `thebibliography' environment on input line 127.
+LaTeX Warning: Empty `thebibliography' environment on input line 139.
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 129.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 141.
 [4]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 129.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 141.
  (./Title.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 129.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 129.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 141.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 141.
 Package rerunfilecheck Info: File `Title.out' has not changed.
 (rerunfilecheck)             Checksum: F8E7E98921FB0787CCD1976C126A1040;66.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 129.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 141.
  ) 
 Here is how much of TeX's memory you used:
  6977 strings out of 495009
