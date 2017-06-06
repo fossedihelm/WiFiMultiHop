@@ -38,11 +38,11 @@
 \section{Introduzione}
 
 \paragraph{} Questo lavoro, inserito nel contesto del corso di Sistemi Mobili, consiste nello studio di alcune potenzialità di WiFi Direct.\\
-WiFi Direct consente la formazione di gruppi di comunicazione peer-to-peer. Ogni gruppo è formato da un GO (Group Owner), che agisce come access point, e più client connessi al GO. I gruppi sono indipendenti tra loro e lo standard non prevede una procedura per connettere più gruppi tra loro, per formare dei cluster più ampi.
+WiFi Direct consente la formazione di gruppi di comunicazione peer-to-peer. Ogni gruppo è formato da un GO (Group Owner), che agisce come access point, e più client connessi al GO. I gruppi sono indipendenti e lo standard non prevede una procedura per connettere più gruppi tra loro, per formare dei cluster più ampi.
 
-\paragraph{} Un possibile modo per collegare più gruppi tra loro consiste nell'avere un client che si connette a più GO, rimanendo connesso a ciascuno di essi per un determinato perdiodo di tempo. Il client, saltando da un GO all'altro ed inoltrando i messaggi ricevuti, è in grado di agire da ponte tra i gruppi, permettendo lo scambio di messaggi tra dispositivi appartenenti a gruppi diversi.
+\paragraph{} Un possibile modo per collegare più gruppi consiste nell'avere un client che si connette a più GO, rimanendo connesso a ciascuno di essi per un determinato perdiodo di tempo. Il client, saltando da un GO all'altro ed inoltrando i messaggi ricevuti, è in grado di agire da ponte tra i gruppi, permettendo lo scambio di messaggi tra dispositivi appartenenti a gruppi diversi.
 
-\paragraph{} Lo scopo del progetto presentato è quello di fornire un proof of concept del metodo appena descritto, analizzare i ritardi introdotti ed eventualmente trovare un tempo di permanenza nel gruppo adeguato. L'implementazione consiste in un'applicazione Android che fa uso del framework WifiP2p dello stesso. Lo scenario analizzato è quello in cui sono presenti due Group Owner ed un client se si connette in alternanza ad essi.
+\paragraph{} Lo scopo del progetto presentato è quello di fornire un proof-of-concept del metodo appena descritto, analizzare i ritardi introdotti ed eventualmente trovare un adeguato tempo di permanenza nel gruppo. L'implementazione consiste in un'applicazione Android che fa uso del framework WifiP2p fornito dalla piattaforma. Lo scenario analizzato è quello in cui sono presenti due Group Owner ed un client che si connette in alternanza ad essi.
 
 %	\begin{enumerate}
 %		\item \textit{}
@@ -53,7 +53,7 @@ WiFi Direct consente la formazione di gruppi di comunicazione peer-to-peer. Ogni
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Scenario del test}
 
-\paragraph{} I dispositivi Android a disposizione per questo progetto sono 3: essi sono sufficienti per creare le condizioni minime per poter testare l'idea del salto tra gruppi: due dispositivi agiscono come Group Owner, mentre il terzo agirà come client che si connette in alternanza tra i primi due, rimanendo connesso a ciascuno per un periodo di tempo prefissato.
+\paragraph{} I dispositivi Android a disposizione per questo progetto sono 3: essi sono sufficienti per creare le condizioni minime per poter testare l'idea del salto tra gruppi: due dispositivi agiscono come Group Owner, mentre il terzo agirà come client che si connette in alternanza tra i primi due, rimanendo connesso a ciascuno di essi per un periodo di tempo prefissato.
 
 \paragraph{} Ai due Group Owner sono stati assegnati due ruoli. Il primo, detto generator, genera periodicamente messaggi da inoltrare. Il secondo, detto replier, non fa altro che rispedire al mittente i messaggi ricevuti. Il generator prende nota dei tempi di invio e di ricezione, in modo da poter calcolare l'RTT (round trip time) presente tra sè stesso ed il replier. La stima di questo RTT è influenzata dai tempi di processamento e dal tempo di trasmissione dei messaggi. Tuttavia il tempo di processamento dovrebbe essere molto più basso rispetto ad i tempi di ritardo e trasmissione, mentre la piccola dimensione dei messaggi fa sì che la misurazione finale non venga distorta in maniera significativa.
 %	\cite{relatedWork}
@@ -80,11 +80,11 @@ Le classi principali sono MainActivity, DeviceManager, Peer e MessageManager.
 //TODO Fosse lascio a te la parte in cui descriviamo l'interfaccia grafica.
 
 \paragraph{DeviceManager} è un thread che si occupa di gestire la rete a livello di WiFi Direct. Implementa varie callback che vengono chiamate quando si verificano determinati eventi.
-Ad esempio onConnectionInfoAvailable() viene chiamata quando alcune informazioni sulla connessione sono disponibili: questo significa che la connessione è stata stabilita.
+Ad esempio \emph{onConnectionInfoAvailable()} viene chiamata quando alcune informazioni sulla connessione sono disponibili: questo significa che la connessione è stata stabilita.
 \emph{DeviceManager} si occupa anche di istanziare una delle due sottoclassi di Peer (\emph{GroupOwner} e \emph{Client}) a seconda del ruolo che il dispositivo deve svolgere. Questi oggetti vengono informati sui cambiamenti della connessione, in particolare su quando essa viene stabilita.
 
-\paragraph{Peer} è una classe astratta che rappresenta un peer, sia esso GO o client. Il suo compito è quello di rispondere al completato stabilimento di una nuova connessione (onConnect()), 
-di gestire i messaggi ricevuti (receiveMessage()) e di gestire la procedura di disconnessione (initiateDisconnection() e onDisconnect()). 
+\paragraph{Peer} è una classe astratta che rappresenta un peer, sia esso GO o client. Il suo compito è quello di rispondere al completato stabilimento di una nuova connessione (\emph{onConnect()}), 
+di gestire i messaggi ricevuti (\emph{receiveMessage()}) e di gestire la procedura di disconnessione (\emph{initiateDisconnection()} e \emph{onDisconnect()}). 
 \emph{Peer} genera anche un'istanza di una sottoclasse di \emph{MessageManager} (\emph{GroupOwnerMessageManager} o \emph{ClientMessageManager}).
 
 \paragraph{MessageManager} è un thread che gestisce la ricezione e l'invio dei messaggi. L'invio dei messaggi è inoltrato ad un thread \emph{Sender} generato appositamente dal \emph{MessageManager}. Il motivo dell'esistenza di due thread, per ricezione ed invio di messaggi, risiede nella possibilità di eseguire le due operazioni contemporaneamente senza bloccarsi, in particolare per non rischiare di perdere informazioni in arrivo. Il \emph{Sender} mantiene 
@@ -109,6 +109,20 @@ tiene conto del tempo necessario a stabilire una connessione TCP.
 connessione e viene terminato al termine della connessione. Questa scelta è dettata dal fatto che il socket è associato ad una connessione, quindi è più semplice gestirlo in questo modo. È stato utilizzato un thread pool per minimizzare 
 il tempo di creazione del thread. Il client dà inizio allo scambio di messaggi inviando un messaggio REGISTER contenente la lista di GO nelle vicinanze. Vengono gestiti l'invio e la ricezione dei messaggi come descritti in 
 \emph{MessageManager} e \emph{Client}.
+
+\subsection{TCP e UDP}
+\paragraph{} All'interno di questo progetto sono stati considerati due protocolli di trasporto: TCP e UDP. Ci sono ragioni valide per utilizzare entrambi i protocolli.
+\paragraph{} La scelta di TCP, che fornisce uno stream affidabile di dati, può essere argomentata col fatto che è piuttosto comune per molte
+tipologie di applicazioni si aspettino che venga fornito questo tipo di servizio. Ovviamente ci sono alcune eccezioni, specialmente quando i requisiti di
+latenza sono particolarmente stretti. Tuttavia questo protocollo non si comporta in maniera ottimale quando utilizzato su una tecnologia trasmissiva a livello fisico di tipo wireless.
+\paragraph{} Nel caso specifico del progetto, UDP è stato ritenuto più adatto a misurare la latenza, in quanto il protocollo non introduce ritardi sostanziali.
+La scelta di utilizzare UDP richiede nella maggior parte dei casi lo sviluppo di un protocollo complementare di livello applicativo, per gestire perdite e/o ordine dei pacchetti.
+\paragraph{} È stato deciso che invece di scegliere ed implementare solo uno dei due protocolli, sarebbe stato più interessante realizzare due implementazioni alternative che ne fanno uso, per poi confrontare i risultati. Sono quindi state realizzate due diverse implementazioni. Tuttavia è stato riscontrato un
+problema nella versione con UDP. La API Android per WiFi Direct fornisce un metodo \emph{disconnect()} che consente al client di scollegarsi da un gruppo. La chiamata di questo metodo è necessario affinché il client possa disconnettersi e riconnettersi ad un gruppo diverso. Vengono definite due callback che vengono
+chiamate in base all'esito di \emph{disconnect()}: \emph{onSuccess()} e \emph{onFailure()}. Nell'implementazione con UDP, la chiamata di \emph{disconnect()}
+non ha alcun effetto: non viene chiamata nessuna delle callback e lo stato della connessione non viene modificato. Questa è una delle tante testimonianze
+dell'instabilità del framework fornito da Android. Dato che il debug del framework è stato considerato al di fuori della portata di questo progetto,
+l'implementazione con UDP è stata infine abbandonata, e tutti i test sono stati effettuati utilizzando TCP.
 		
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{WiFiP2P API} 
