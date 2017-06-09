@@ -56,6 +56,13 @@ WiFi Direct consente la formazione di gruppi di comunicazione peer-to-peer. Ogni
 \paragraph{} I dispositivi Android a disposizione per questo progetto sono 3: essi sono sufficienti per creare le condizioni minime per poter testare l'idea del salto tra gruppi: due dispositivi agiscono come Group Owner, mentre il terzo agirà come client che si connette in alternanza tra i primi due, rimanendo connesso a ciascuno di essi per un periodo di tempo prefissato.
 
 \paragraph{} Ai due Group Owner sono stati assegnati due ruoli. Il primo, detto generator, genera periodicamente messaggi da inoltrare. Il secondo, detto replier, non fa altro che rispedire al mittente i messaggi ricevuti. Il generator prende nota dei tempi di invio e di ricezione, in modo da poter calcolare l'RTT (round trip time) presente tra sè stesso ed il replier. La stima di questo RTT è influenzata dai tempi di processamento e dal tempo di trasmissione dei messaggi. Tuttavia il tempo di processamento dovrebbe essere molto più basso rispetto ad i tempi di ritardo e trasmissione, mentre la piccola dimensione dei messaggi fa sì che la misurazione finale non venga distorta in maniera significativa.
+
+\begin{figure}[H]
+	\includegraphics[scale=0.3,center]{img/archp2p.png}
+	\caption{}
+	\label{label}
+\end{figure}
+\noindent
 %	\cite{relatedWork}
 
 %	\ref{leo_arch}
@@ -75,6 +82,12 @@ riesce a stabilire una nuova connessione, esso invia un messaggio di tipo REGIST
 è solamente quello di trasmettere dati per la rilevazione delle statistiche. Quando il timer impostato dall'utente scade, il client avvia una procedura di disconnessione che consiste nell'invio di un messaggio di STOP e nella ricezione 
 di un relativo STOP\_ACK. A questo punto il client è in grado di avviare la disconnessione a livello data link con la certezza di non aver perso informazioni a livello applicativo.
 Le classi principali sono MainActivity, DeviceManager, Peer e MessageManager.
+\begin{figure}[H]
+	\includegraphics[scale=0.3,center]{img/class.png}
+	\caption{}
+	\label{class}
+\end{figure}
+\noindent
 
 \paragraph{MainActivity} è un'activity che gestisce l'interfaccia grafica. L'aspetto dell'interfaccia cambia grazie all'uso dei fragment.
 //TODO Fosse lascio a te la parte in cui descriviamo l'interfaccia grafica.
@@ -118,7 +131,7 @@ latenza sono particolarmente stretti. Tuttavia questo protocollo non si comporta
 \paragraph{} Nel caso specifico del progetto, UDP è stato ritenuto più adatto a misurare la latenza, in quanto il protocollo non introduce ritardi sostanziali.
 La scelta di utilizzare UDP richiede nella maggior parte dei casi lo sviluppo di un protocollo complementare di livello applicativo, per gestire perdite e/o ordine dei pacchetti.
 \paragraph{} È stato deciso che invece di scegliere ed implementare solo uno dei due protocolli, sarebbe stato più interessante realizzare due implementazioni alternative che ne fanno uso, per poi confrontare i risultati. Sono quindi state realizzate due diverse implementazioni. Tuttavia è stato riscontrato un
-problema nella versione con UDP. La API Android per WiFi Direct fornisce un metodo \emph{disconnect()} che consente al client di scollegarsi da un gruppo. La chiamata di questo metodo è necessario affinché il client possa disconnettersi e riconnettersi ad un gruppo diverso. Vengono definite due callback che vengono
+problema nella versione con UDP. La API Android per WiFi Direct fornisce un metodo \emph{disconnect()} che consente al client di scollegarsi da un gruppo. La chiamata di questo metodo è necessaria affinché il client possa disconnettersi e riconnettersi ad un gruppo diverso. Vengono definite due callback che vengono
 chiamate in base all'esito di \emph{disconnect()}: \emph{onSuccess()} e \emph{onFailure()}. Nell'implementazione con UDP, la chiamata di \emph{disconnect()}
 non ha alcun effetto: non viene chiamata nessuna delle callback e lo stato della connessione non viene modificato. Questa è una delle tante testimonianze
 dell'instabilità del framework fornito da Android. Dato che il debug del framework è stato considerato al di fuori della portata di questo progetto,
@@ -173,7 +186,15 @@ Gli Intent sono messaggi asincroni di cui viene fatto broadcast quando un determ
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%			
 \section{Esperimenti}
-
+\paragraph{} In questa sezione desciveremo gli esperimenti condotti e mostreremo i risultati ottenuti da tali esperimenti. Mostreremo come il tempo di connessione ad un gruppo aggiunga un effort in termini di tempi molto elevato.
+\paragraph{Scenari} Gli esperimenti effettuati miravano a trovare L'RTT di un qualsiasi messaggio al variare dello scenario. I differenti scenari differiscono tra loro nel tempo di permanenza del client in ognuno dei gruppi.I tempi di permanenza presi in considerazione sono i seguenti: \textit{1sec, 2sec, 3sec, 4sec, 5sec, 6sec, 7sec, 8sec, 9sec, 10sec, 15sec, 20sec}. Ogni esperimento nei differenti scenari è stato ripetuto 6 volte, dove per esperimento si intende il completo ciclo di connessione al generator con ricezione dei messaggi, disconnessione dal generator e connessione al receiver con invio e ricezione dei messaggi e disconnessione dal receiver e riconnessione al generator per reinviare i messaggi.
+\paragraph{Risultati} dsad
+\begin{figure}[H]
+	\includegraphics[scale=0.5,center]{img/rtt.png}
+	\caption{}
+	\label{rtt}
+\end{figure}
+\noindent
 	
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%			
 \section{Conclusioni}
