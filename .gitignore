@@ -40,3 +40,12 @@ captures/
 
 # Keystore files
 *.jks
+
+# Tex-generated files for Relazione
+*.synctex.gz
+*.aux
+*.pdf
+*.log
+*.out
+
+=======
