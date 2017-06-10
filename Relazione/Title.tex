@@ -180,15 +180,15 @@ Gli Intent sono messaggi asincroni di cui viene fatto broadcast quando un determ
 	\item{WIFI\_P2P\_STATE\_CHANGED\_ACTION} Indica se lo stato del WifiP2P è attivo o disattivo.
 	\item{WIFI\_P2P\_THIS\_DEVICE\_CHANGED\_ACTION} Inviato quando informazioni del dispositivo sono state modificate come ad esempio il nome del dispositivo.
 \end{itemize}
-\paragraph{} L'utilizzo e la comprensione di queste API è stato necessario per lo svolgimento dell'esperimento. Tuttavia, la documentazione fornita non è ben dettagliata e in molte occasioni è stato necessario andare a vedere in maniera empirica come funzionassero, o l'ordine giusto dei metodi.
-/TODO forse bisogna allungare il brodo
+\paragraph{} L'utilizzo e la comprensione di queste API è stato necessario per lo svolgimento dell'esperimento. Tuttavia, la documentazione fornita non è ben dettagliata ed in molte occasioni è stato necessario scoprire in maniera empirica come funzionassero. L'ordine giusto in cui i metodi devono essere chiamati è stato trovato solamente dopo numerosi tentativi.
+È stato inoltre constatato che il framework è piuttosto instabile: a volte le operazioni non vengono completate correttamente senza che venga  fornita alcuna spiegazione. In alcuni casi il comportamento del framework è addirittura in contrasto con la documentazione ufficiale. Solo a titolo di esempio si ricorda il caso già citato della \emph{disconnect()} per disconnettersi dal gruppo: in determinate condizioni non viene chiamata alcuna callback per indicare il successo o il fallimento dell'operazione, che no nviene mai portata a termine.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%			
 \section{Esperimenti}
 \paragraph{} In questa sezione desciveremo gli esperimenti condotti e mostreremo i risultati ottenuti da tali esperimenti. Mostreremo come il tempo di connessione ad un gruppo aggiunga un effort in termini di tempi molto elevato.
-\paragraph{Scenari} Gli esperimenti effettuati miravano a trovare L'RTT di un qualsiasi messaggio al variare dello scenario. I differenti scenari differiscono tra loro nel tempo di permanenza del client in ognuno dei gruppi.I tempi di permanenza presi in considerazione sono i seguenti: \textit{1sec, 2sec, 3sec, 4sec, 5sec, 6sec, 7sec, 8sec, 9sec, 10sec, 15sec, 20sec}. Ogni esperimento nei differenti scenari è stato ripetuto 6 volte, dove per esperimento si intende il completo ciclo di connessione al generator con ricezione dei messaggi, disconnessione dal generator e connessione al receiver con invio e ricezione dei messaggi e disconnessione dal receiver e riconnessione al generator per reinviare i messaggi.
-\paragraph{Risultati} dsad
+\paragraph{Scenari} Gli esperimenti effettuati miravano a trovare L'RTT di un qualsiasi messaggio al variare dello scenario. I differenti scenari differiscono tra loro nel tempo di permanenza del client in ognuno dei gruppi.I tempi di permanenza presi in considerazione sono i seguenti: \textit{1 s, 2 s, 3 s, 4 s, 5 s, 6 s, 7 s, 8 s, 9 s, 10 s, 15 s, 20 s}. Ogni esperimento nei differenti scenari è stato ripetuto 6 volte, dove per esperimento si intende il completo ciclo di connessione al generator con ricezione dei messaggi, disconnessione dal generator e connessione al receiver con invio e ricezione dei messaggi e disconnessione dal receiver e riconnessione al generator per reinviare i messaggi.
+\paragraph{Risultati}
 \begin{figure}[H]
 	\includegraphics[scale=0.5,center]{img/rtt.png}
 	\caption{}
