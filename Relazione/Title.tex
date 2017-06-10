@@ -36,9 +36,6 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Introduzione}
-%	\begin{itemize}
-%		\item 
-%	\end{itemize}
 
 \paragraph{} Questo lavoro, inserito nel contesto del corso di Sistemi Mobili, consiste nello studio di alcune potenzialità di WiFi Direct.\\
 WiFi Direct consente la formazione di gruppi di comunicazione peer-to-peer. Ogni gruppo è formato da un GO (Group Owner), che agisce come access point, e più client connessi al GO. I gruppi sono indipendenti e lo standard non prevede una procedura per connettere più gruppi tra loro, per formare dei cluster più ampi.
@@ -59,6 +56,13 @@ WiFi Direct consente la formazione di gruppi di comunicazione peer-to-peer. Ogni
 \paragraph{} I dispositivi Android a disposizione per questo progetto sono 3: essi sono sufficienti per creare le condizioni minime per poter testare l'idea del salto tra gruppi: due dispositivi agiscono come Group Owner, mentre il terzo agirà come client che si connette in alternanza tra i primi due, rimanendo connesso a ciascuno di essi per un periodo di tempo prefissato.
 
 \paragraph{} Ai due Group Owner sono stati assegnati due ruoli. Il primo, detto generator, genera periodicamente messaggi da inoltrare. Il secondo, detto replier, non fa altro che rispedire al mittente i messaggi ricevuti. Il generator prende nota dei tempi di invio e di ricezione, in modo da poter calcolare l'RTT (round trip time) presente tra sè stesso ed il replier. La stima di questo RTT è influenzata dai tempi di processamento e dal tempo di trasmissione dei messaggi. Tuttavia il tempo di processamento dovrebbe essere molto più basso rispetto ad i tempi di ritardo e trasmissione, mentre la piccola dimensione dei messaggi fa sì che la misurazione finale non venga distorta in maniera significativa.
+
+\begin{figure}[H]
+	\includegraphics[scale=0.3,center]{img/archp2p.png}
+	\caption{}
+	\label{label}
+\end{figure}
+\noindent
 %	\cite{relatedWork}
 
 %	\ref{leo_arch}
@@ -78,6 +82,12 @@ riesce a stabilire una nuova connessione, esso invia un messaggio di tipo REGIST
 è solamente quello di trasmettere dati per la rilevazione delle statistiche. Quando il timer impostato dall'utente scade, il client avvia una procedura di disconnessione che consiste nell'invio di un messaggio di STOP e nella ricezione 
 di un relativo STOP\_ACK. A questo punto il client è in grado di avviare la disconnessione a livello data link con la certezza di non aver perso informazioni a livello applicativo.
 Le classi principali sono MainActivity, DeviceManager, Peer e MessageManager.
+\begin{figure}[H]
+	\includegraphics[scale=0.3,center]{img/class.png}
+	\caption{}
+	\label{class}
+\end{figure}
+\noindent
 
 \paragraph{MainActivity} è un'activity che gestisce l'interfaccia grafica. L'aspetto dell'interfaccia cambia grazie all'uso dei fragment.
 //TODO Fosse lascio a te la parte in cui descriviamo l'interfaccia grafica.
@@ -128,23 +138,67 @@ dell'instabilità del framework fornito da Android. Dato che il debug del framew
 l'implementazione con UDP è stata infine abbandonata, e tutti i test sono stati effettuati utilizzando TCP.
 		
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Section4} 
+\section{WiFiP2P API} 
+\paragraph{}In questa sezione verranno descritte le API fornite da Android che sono state utilizzate per permettere l'uso della tecnologia WiFi Direct. Come descritto nella documentazione ufficiale, queste API consistono in tre parti principali:
+
+\begin{itemize}
+	\item Il WifiP2pManager che contiene i metodi per la discovery, la richiesta di connessione e la connessione ai peer;
+	\item I Listener che consentono di essere notificati sulla riuscita o meno di una chiamata di un metodo del WifiP2pManager. Questi listener vengono passati come parametri alle chiamate dei metodi.
+	\item Gli Intent che permetto di essere notificati sull'avvenimento di uno specifico evento a livello WiFi P2P, come la perdita di connessione o la scoperta di un nuovo peer disponibile.
+\end{itemize}
+Vediamo ora nello specifico ognuno di questi tre componenti:
+
+\paragraph{WifiP2pManager}
+È la classe che fornisce i metodi che consentono di interagine con l'hardware WiFi. I metodi disponibili sono:
+\begin{itemize}
+	\item{initialize()} Registra l'applicazione con il framework WiFi P2P. Deve essere chiamata prima di ogni altro metodo.
+	\item{connect()} Utilizzato per connettersi ad un device con le configurazioni passate.
+	\item{cancelConnect()} Cancella tutte le negoziazioni in corso per la formazione di un gruppo.
+	\item{requestConnectInfo()} Richiede le informazioni di connessione del dipsositivo.
+	\item{createGroup()} Crea un gruppo P2P con il dispositivo corrente nel ruolo di Group Owner.
+	\item{removeGroup()} Rimuove il gruppo P2P corrente.
+	\item{requestGroupInfo()} Richiede le informazione del gruppo nel quale il dispositivo è connesso.
+	\item{discoverPeers()} Inzia la fase di scoperta dei peer vicini disponibili per stabilire una connessione. La discovery rimane attiva finchè non viene formato un gruppo o viene iniziata la fase di connessione.
+	\item{requestPeers()} Restituisce la lista dei peer facenti parte del gruppo corrente.
+\end{itemize}
+
+\paragraph{Listener}
+I listner sono interfacce che vengono passate ai metodi del WifiP2pManager per essere informati sullo stato della chiamata. I diversi metodi del WifiP2pManager accettano diversi tipi di listener:
+\begin{itemize}
+	\item{ActionListener} Vengono utilizzati dai metodi \textit{connect(), cancelConnect(), createGroup(), removeGroup(), discoverPeers()} e prevedono due metodi: onSuccess() che notifica l'esecuzione corretta del metodo e la onFailure() che informa la non riuscita dell'operazione fornendo anche un intero che identifica la ragione.
+	\item{ChannelListener} Utilizzato dalla \textit{initialize()} e notifica sulla perdita di un canale attraverso la onChannelDisconnected().
+	\item{ConnectionInfoListener} Attraverso la onConnectionInfoAvailable() notifica la disponibilità delle informazioni del gruppo richieste dalla \textit{requestConnectInfo()}.
+	\item{GroupInfoListener} Attraverso la onGroupInfoAvailable() notifica che le informazioni del gruppo P2P richieste dalla \textit{requestGroupInfo()} sono disponibili.
+	\item{PeerListListener} Fornisce l'informazione, attraverso la onPeersAvailable(), che la lista dei peer richiesta dalla \textit{requestPeers()} è disponibile.
+\end{itemize}
+
+\paragraph{Intent}
+Gli Intent sono messaggi asincroni di cui viene fatto broadcast quando un determinato evento WiFi P2P avviene, come ad esempio la scoperta di un  nuovo peer o il cambio di stato del dispositivo. Per abilitare la ricezione di questi tip di messaggi bisogna registrare l'applicazione creando un Broadcast receiver che gestisce i seguenti tipi di intent:
+\begin{itemize}
+	\item{WIFI\_P2P\_CONNECTION\_CHANGED\_ACTION} Inviato quando lo stato wiFi del dispositivo è cambiato.
+	\item{WIFI\_P2P\_PEERS\_CHANGED\_ACTION} Inviato quando si chiama la  \textit{discoverPeers()} e indica che la lista dei peer disponibile ha subito una variazione.
+	\item{WIFI\_P2P\_STATE\_CHANGED\_ACTION} Indica se lo stato del WifiP2P è attivo o disattivo.
+	\item{WIFI\_P2P\_THIS\_DEVICE\_CHANGED\_ACTION} Inviato quando informazioni del dispositivo sono state modificate come ad esempio il nome del dispositivo.
+\end{itemize}
+\paragraph{} L'utilizzo e la comprensione di queste API è stato necessario per lo svolgimento dell'esperimento. Tuttavia, la documentazione fornita non è ben dettagliata e in molte occasioni è stato necessario andare a vedere in maniera empirica come funzionassero, o l'ordine giusto dei metodi.
+/TODO forse bisogna allungare il brodo
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%			
-\section{Section5}
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%			
-\section{Section6}
-
+\section{Esperimenti}
+\paragraph{} In questa sezione desciveremo gli esperimenti condotti e mostreremo i risultati ottenuti da tali esperimenti. Mostreremo come il tempo di connessione ad un gruppo aggiunga un effort in termini di tempi molto elevato.
+\paragraph{Scenari} Gli esperimenti effettuati miravano a trovare L'RTT di un qualsiasi messaggio al variare dello scenario. I differenti scenari differiscono tra loro nel tempo di permanenza del client in ognuno dei gruppi.I tempi di permanenza presi in considerazione sono i seguenti: \textit{1sec, 2sec, 3sec, 4sec, 5sec, 6sec, 7sec, 8sec, 9sec, 10sec, 15sec, 20sec}. Ogni esperimento nei differenti scenari è stato ripetuto 6 volte, dove per esperimento si intende il completo ciclo di connessione al generator con ricezione dei messaggi, disconnessione dal generator e connessione al receiver con invio e ricezione dei messaggi e disconnessione dal receiver e riconnessione al generator per reinviare i messaggi.
+\paragraph{Risultati} dsad
+\begin{figure}[H]
+	\includegraphics[scale=0.5,center]{img/rtt.png}
+	\caption{}
+	\label{rtt}
+\end{figure}
+\noindent
 	
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%			
-\section{Section7}
+\section{Conclusioni}
 
-	
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%			
-\section{Section8}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
