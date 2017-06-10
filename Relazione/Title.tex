@@ -131,8 +131,8 @@ latenza sono particolarmente stretti. Tuttavia questo protocollo non si comporta
 \paragraph{} Nel caso specifico del progetto, UDP è stato ritenuto più adatto a misurare la latenza, in quanto il protocollo non introduce ritardi sostanziali.
 La scelta di utilizzare UDP richiede nella maggior parte dei casi lo sviluppo di un protocollo complementare di livello applicativo, per gestire perdite e/o ordine dei pacchetti.
 \paragraph{} È stato deciso che invece di scegliere ed implementare solo uno dei due protocolli, sarebbe stato più interessante realizzare due implementazioni alternative che ne fanno uso, per poi confrontare i risultati. Sono quindi state realizzate due diverse implementazioni. Tuttavia è stato riscontrato un
-problema nella versione con UDP. La API Android per WiFi Direct fornisce un metodo \emph{disconnect()} che consente al client di scollegarsi da un gruppo. La chiamata di questo metodo è necessaria affinché il client possa disconnettersi e riconnettersi ad un gruppo diverso. Vengono definite due callback che vengono
-chiamate in base all'esito di \emph{disconnect()}: \emph{onSuccess()} e \emph{onFailure()}. Nell'implementazione con UDP, la chiamata di \emph{disconnect()}
+problema nella versione con UDP. La API Android per WiFi Direct fornisce un metodo \emph{removeGroup()} che consente al client di scollegarsi da un gruppo. La chiamata di questo metodo è necessaria affinché il client possa disconnettersi e riconnettersi ad un gruppo diverso. Vengono definite due callback che vengono
+chiamate in base all'esito di \emph{removeGroup()}: \emph{onSuccess()} e \emph{onFailure()}. Nell'implementazione con UDP, la chiamata di \emph{removeGroup()}
 non ha alcun effetto: non viene chiamata nessuna delle callback e lo stato della connessione non viene modificato. Questa è una delle tante testimonianze
 dell'instabilità del framework fornito da Android. Dato che il debug del framework è stato considerato al di fuori della portata di questo progetto,
 l'implementazione con UDP è stata infine abbandonata, e tutti i test sono stati effettuati utilizzando TCP.
@@ -163,7 +163,7 @@ Vediamo ora nello specifico ognuno di questi tre componenti:
 \end{itemize}
 
 \paragraph{Listener}
-I listner sono interfacce che vengono passate ai metodi del WifiP2pManager per essere informati sullo stato della chiamata. I diversi metodi del WifiP2pManager accettano diversi tipi di listener:
+I listener sono interfacce che vengono passate ai metodi del WifiP2pManager per essere informati sullo stato della chiamata. I diversi metodi del WifiP2pManager accettano diversi tipi di listener:
 \begin{itemize}
 	\item{ActionListener} Vengono utilizzati dai metodi \textit{connect(), cancelConnect(), createGroup(), removeGroup(), discoverPeers()} e prevedono due metodi: onSuccess() che notifica l'esecuzione corretta del metodo e la onFailure() che informa la non riuscita dell'operazione fornendo anche un intero che identifica la ragione.
 	\item{ChannelListener} Utilizzato dalla \textit{initialize()} e notifica sulla perdita di un canale attraverso la onChannelDisconnected().
@@ -181,7 +181,7 @@ Gli Intent sono messaggi asincroni di cui viene fatto broadcast quando un determ
 	\item{WIFI\_P2P\_THIS\_DEVICE\_CHANGED\_ACTION} Inviato quando informazioni del dispositivo sono state modificate come ad esempio il nome del dispositivo.
 \end{itemize}
 \paragraph{} L'utilizzo e la comprensione di queste API è stato necessario per lo svolgimento dell'esperimento. Tuttavia, la documentazione fornita non è ben dettagliata ed in molte occasioni è stato necessario scoprire in maniera empirica come funzionassero. L'ordine giusto in cui i metodi devono essere chiamati è stato trovato solamente dopo numerosi tentativi.
-È stato inoltre constatato che il framework è piuttosto instabile: a volte le operazioni non vengono completate correttamente senza che venga  fornita alcuna spiegazione. In alcuni casi il comportamento del framework è addirittura in contrasto con la documentazione ufficiale. Solo a titolo di esempio si ricorda il caso già citato della \emph{disconnect()} per disconnettersi dal gruppo: in determinate condizioni non viene chiamata alcuna callback per indicare il successo o il fallimento dell'operazione, che no nviene mai portata a termine.
+È stato inoltre constatato che il framework è piuttosto instabile: a volte le operazioni non vengono completate correttamente senza che venga  fornita alcuna spiegazione. In alcuni casi il comportamento del framework è addirittura in contrasto con la documentazione ufficiale. Solo a titolo di esempio si ricorda il caso già citato della \emph{removeGroup()} per disconnettersi dal gruppo: in determinate condizioni non viene chiamata alcuna callback per indicare il successo o il fallimento dell'operazione, che no nviene mai portata a termine.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%			
@@ -195,7 +195,7 @@ Gli Intent sono messaggi asincroni di cui viene fatto broadcast quando un determ
 	\label{report}
 \end{figure}
 \noindent
-Dagli esperimenti effettuati si evidenziano due fatti principali come mostrato in Fig. \ref{rtt}: Il RoundTripTime (RTT) e di conseguenza il Delay aumenta con l'aumentare del tempo di permanenza del client nel gruppo P2P e che il TimeToReconnect (TTR) in media circa 7 secondi.
+Dagli esperimenti effettuati si evidenziano due fatti principali come mostrato in Fig. \ref{rtt}: Il RoundTripTime (RTT) e di conseguenza il Delay aumenta con l'aumentare del tempo di permanenza del client nel gruppo P2P ed il TimeToReconnect (TTR) dura in media circa 7 secondi.
 \begin{figure}[H]
 	\includegraphics[scale=0.5,center]{img/rtt.png}
 	\caption{}
@@ -205,7 +205,9 @@ Dagli esperimenti effettuati si evidenziano due fatti principali come mostrato i
 	
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%			
 \section{Conclusioni}
-
+\paragraph{} Lo sviluppo di questa applicazione Android ha portato a dei risultati che si possono definire insoddisfacenti. Il tempo di riconnessione del client è molto lungo, tanto da limitare fortemente i possibili utilizzi pratici di questa tecnica
+(il salto da un gruppo dall'altro). Le uniche applicazioni possibili sono quelle che richiedono solamente uno scambio di messaggi asincrono e che hanno requisiti di latenza molto blandi o inesistenti. Un esempio può essere l'invio di messaggi di testo come le e-mail. Se venisse impiegato un algoritmo di routing adeguato, questo scambio di messaggi potrebbe essere utile in situazioni di disastro, in cui la comunicazione cellulare non è possibile. In questo caso la comunicazione sarebbe piuttosto lenta, ma comunque possibile.
+\paragraph{} Purtroppo lo sviluppo di un'applicazione stabile, pronta ad essere rilasciata al pubblico, è ben difficile a causa dell'alta instabilità ed imprevedibilità del framework fornito da Android. Secondo gli autori, affermare che Android supporta WiFi Direct è stata una mossa al solo fine pubblicitario, in quanto in pratica ad oggi è improbabile che il framework possa essere sfruttato per scopi pratici e non accademici.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
