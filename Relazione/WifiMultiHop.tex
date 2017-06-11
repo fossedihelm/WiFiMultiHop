@@ -12,14 +12,16 @@
 \usepackage[export]{adjustbox}
 \usepackage{graphicx}
 \usepackage{hyperref}
+\usepackage[notes]{biblatex-chicago}
 
-
+\DefineBibliographyStrings{english}{%
+	references = {Riferimenti},% replace "references" with "bibliography"  for `book`/`report`
+}
 
 %
 \newcommand{\exedout}{%
 	\rule{0.8\textwidth}{0.5\textwidth}%
 }
-
 \begin{document}
 	\mainmatter              % start of the contributions
 	%
@@ -38,7 +40,6 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Introduzione}
-
 \paragraph{} Questo lavoro, inserito nel contesto del corso di Sistemi Mobili, consiste nello studio di alcune potenzialità di WiFi Direct.\\
 WiFi Direct consente la formazione di gruppi di comunicazione peer-to-peer. Ogni gruppo è formato da un GO (Group Owner), che agisce come access point, e più client connessi al GO. I gruppi sono indipendenti e lo standard non prevede una procedura per connettere più gruppi tra loro, per formare dei cluster più ampi.
 
@@ -247,7 +248,7 @@ Inoltre, ciò che si è rivelato dagli esperimenti è che l'effort maggiore in t
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{thebibliography}{}
-	\bibitem{codice} Progetto su GitHub: https://github.com/ghosty89/WiFiMultiHop
+		\bibitem{codice} Progetto su GitHub: https://github.com/ghosty89/WiFiMultiHop
 	\bibitem{android} Guida API Android: https://developer.android.com/guide/topics/connectivity/wifip2p.html
 \end{thebibliography}
 
