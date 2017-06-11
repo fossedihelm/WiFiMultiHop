@@ -44,7 +44,8 @@ WiFi Direct consente la formazione di gruppi di comunicazione peer-to-peer. Ogni
 
 \paragraph{} Un possibile modo per collegare più gruppi consiste nell'avere un client che si connette a più GO, rimanendo connesso a ciascuno di essi per un determinato perdiodo di tempo. Il client, saltando da un GO all'altro ed inoltrando i messaggi ricevuti, è in grado di agire da ponte tra i gruppi, permettendo lo scambio di messaggi tra dispositivi appartenenti a gruppi diversi.
 
-\paragraph{} Lo scopo del progetto presentato è quello di fornire un proof-of-concept del metodo appena descritto, analizzare i ritardi introdotti ed eventualmente trovare un adeguato tempo di permanenza nel gruppo. L'implementazione consiste in un'applicazione Android che fa uso del framework WifiP2p fornito dalla piattaforma. Lo scenario analizzato è quello in cui sono presenti due Group Owner ed un client che si connette in alternanza ad essi.
+\paragraph{} Lo scopo del progetto presentato è quello di fornire un proof-of-concept del metodo appena descritto, analizzare i ritardi introdotti ed eventualmente trovare un adeguato tempo di permanenza nel gruppo. L'implementazione consiste in un'applicazione Android, disponibile su Github \cite{codice}, che fa uso del framework WifiP2p fornito dalla piattaforma. Lo scenario analizzato è quello in cui sono presenti due Group Owner ed un client che si connette in alternanza ad essi.
+
 
 %	\begin{enumerate}
 %		\item \textit{}
@@ -246,8 +247,8 @@ Inoltre, ciò che si è rivelato dagli esperimenti è che l'effort maggiore in t
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{thebibliography}{}
-	\bibitem{android} Guida API Android https://developer.android.com/guide/topics/connectivity/wifip2p.html
-	\bibitem{codice} Progetto su GitHub:
+	\bibitem{codice} Progetto su GitHub: https://github.com/ghosty89/WiFiMultiHop
+	\bibitem{android} Guida API Android: https://developer.android.com/guide/topics/connectivity/wifip2p.html
 \end{thebibliography}
 
 \end{document}
