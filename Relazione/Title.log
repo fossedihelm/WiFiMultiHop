@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2015/dev/Debian) (preloaded format=pdflatex 2017.5.16)  11 JUN 2017 10:55
+This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2015/dev/Debian) (preloaded format=pdflatex 2017.5.16)  11 JUN 2017 14:04
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -787,11 +787,11 @@ Overfull \hbox (10.19551pt too wide) in paragraph at lines 205--206
 for-mazioni
  []
 
-<img/report.png, id=88, 1195.46625pt x 845.40843pt>
+<img/report.png, id=88, 845.40843pt x 597.73312pt>
 File: img/report.png Graphic file (type png)
  <use img/report.png>
 Package pdftex.def Info: img/report.png used on input line 217.
-(pdftex.def)             Requested size: 358.64264pt x 253.62448pt.
+(pdftex.def)             Requested size: 338.15738pt x 239.089pt.
 
 [8] <img/rtt.png, id=100, 703.87968pt x 322.95656pt>
 File: img/rtt.png Graphic file (type png)
@@ -799,15 +799,13 @@ File: img/rtt.png Graphic file (type png)
 Package pdftex.def Info: img/rtt.png used on input line 224.
 (pdftex.def)             Requested size: 351.93898pt x 161.47787pt.
 
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [9 <./img/report.png>] <img/diff.png, id=108, 700.11563pt x 330.48468pt>
+<img/diff.png, id=102, 700.11563pt x 330.48468pt>
 File: img/diff.png Graphic file (type png)
-
-<use img/diff.png>
+ <use img/diff.png>
 Package pdftex.def Info: img/diff.png used on input line 231.
 (pdftex.def)             Requested size: 350.05696pt x 165.24193pt.
- [10 <./img/rtt.png (PNG copy)> <./img/diff.png (PNG copy)>]
+ [9 <./img/report.png> <./img/rtt.png (PNG copy)>] [10 <./img/diff.png (PNG cop
+y)>]
 Overfull \hbox (32.61105pt too wide) in paragraph at lines 249--250
 []\OT1/cmr/m/n/9 Guida API An-droid https://developer.android.com/guide/topics/
 connectivity/wifip2p.html 
@@ -826,7 +824,7 @@ Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 252.
 Here is how much of TeX's memory you used:
  8137 strings out of 493105
  122009 string characters out of 6137072
- 223072 words of memory out of 5000000
+ 223071 words of memory out of 5000000
  11405 multiletter control sequences out of 15000+600000
  8150 words of font info for 29 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
@@ -839,7 +837,7 @@ type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/p
 ublic/amsfonts/cm/cmr9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/am
 sfonts/cm/cmti10.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/courier/ucr
 r8a.pfb>
-Output written on Title.pdf (11 pages, 398701 bytes).
+Output written on Title.pdf (11 pages, 373637 bytes).
 PDF statistics:
  163 PDF objects out of 1000 (max. 8388607)
  129 compressed objects within 2 object streams

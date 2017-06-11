@@ -214,7 +214,7 @@ Gli Intent sono messaggi asincroni di cui viene fatto broadcast quando un determ
 \paragraph{Scenari} Gli esperimenti effettuati miravano a trovare L'RTT di un qualsiasi messaggio al variare dello scenario. I differenti scenari differiscono tra loro nel tempo di permanenza del client in ognuno dei gruppi.I tempi di permanenza presi in considerazione sono i seguenti: \textit{1sec, 2sec, 3sec, 4sec, 5sec, 6sec, 7sec, 8sec, 9sec, 10sec, 15sec, 20sec}. Ogni esperimento nei differenti scenari è stato ripetuto 6 volte, dove per esperimento si intende il completo ciclo di connessione al generator con ricezione dei messaggi, disconnessione dal generator e connessione al receiver con invio e ricezione dei messaggi e disconnessione dal receiver e riconnessione al generator per reinviare i messaggi.
 \paragraph{Risultati} I risultati delle prove effettuate sono mostrati in Fig. \ref{report}. Nella tabella vengono riportati i RoundTripTime medi (RTT Avg.), i TimeToReconnect medi (TTR Avg.) e il Delay, calcolato come la metà dell' RTT. Ciò che salta subito all'occhio è il tempo di riconnessione medio che si mantiene stabile negli intorni dei 7 secondi, variando da un 6.3345833333 ad un 8.2815 secondi. Discorso differente è se si va a valutare il valore assoluto di questo tempo in ogni esperimento. Infatti si è riscontrato che questo valore ha un comportamento altamente incostante, variando tempi di 3.356 secondi a picchi di valore pari a 16.54 (giustificati da possibili interferenze).
 \begin{figure}[H]
-	\includegraphics[scale=0.3,center]{img/report.png}
+	\includegraphics[scale=0.4,center]{img/report.png}
 	\caption{}
 	\label{report}
 \end{figure}
