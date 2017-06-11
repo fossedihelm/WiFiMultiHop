@@ -6,6 +6,8 @@
 \usepackage{float}
 \usepackage{courier}
 \usepackage{color}
+\usepackage{caption}
+\usepackage{subcaption}
 \usepackage[usenames,dvipsnames]{xcolor}
 \usepackage[export]{adjustbox}
 \usepackage{graphicx}
@@ -89,8 +91,30 @@ Le classi principali sono MainActivity, DeviceManager, Peer e MessageManager.
 \end{figure}
 \noindent
 
-\paragraph{MainActivity} è un'activity che gestisce l'interfaccia grafica. L'aspetto dell'interfaccia cambia grazie all'uso dei fragment.
-//TODO Fosse lascio a te la parte in cui descriviamo l'interfaccia grafica.
+\paragraph{MainActivity} è un'activity che gestisce l'interfaccia grafica. L'aspetto dell'interfaccia cambia grazie all'uso dei fragment. Non essendo caso di studio, l'interfaccia è molto semplice e consiste di due view. La view iniziale è quella che, oltre a mostrarti un delenco dei dispositivi disponibili, ti permette di sceglere il ruolo del device (group owner o client) attraverso due pulsanti. La seconda view mostra invece in real time i dati utili per gli esperimenti come il numero di messaggi ricevuti e inviati, l'RTT medio (per il generator) e il tempo di riconnessione per il client. Inoltre in questa view è possibile scegliere il ruolo del group owner attraverso uno switch. Infine, il tempo di permanenza del client nel gruppo viene impostato in fase di scelta del ruolo. Infatti, quando si seleziona il ruolo client, viene mostrato un dialog che permette di impostare questo parametro.
+\begin{figure}
+	\centering
+	\begin{subfigure}{.33\textwidth}
+		\centering
+		\includegraphics[width=.7\linewidth]{img/gui-init.jpg}
+		\caption{View\\Iniziale}
+		\label{fig:sub1}
+	\end{subfigure}%
+	\begin{subfigure}{.33\textwidth}
+		\centering
+		\includegraphics[width=.7\linewidth]{img/gui-dialog.jpg}
+		\caption{Dialog scelta tempo di permanenza}
+		\label{fig:sub2}
+	\end{subfigure}
+	\begin{subfigure}{.33\textwidth}
+		\centering
+		\includegraphics[width=.7\linewidth]{img/gui-report.jpg}
+		\caption{View\\ esperimenti}
+		\label{fig:sub3}
+	\end{subfigure}
+	\caption{Interfaccia grafica}
+	\label{fig:gui}
+\end{figure}
 
 \paragraph{DeviceManager} è un thread che si occupa di gestire la rete a livello di WiFi Direct. Implementa varie callback che vengono chiamate quando si verificano determinati eventi.
 Ad esempio \emph{onConnectionInfoAvailable()} viene chiamata quando alcune informazioni sulla connessione sono disponibili: questo significa che la connessione è stata stabilita.
@@ -195,13 +219,23 @@ Gli Intent sono messaggi asincroni di cui viene fatto broadcast quando un determ
 	\label{report}
 \end{figure}
 \noindent
-Dagli esperimenti effettuati si evidenziano due fatti principali come mostrato in Fig. \ref{rtt}: Il RoundTripTime (RTT) e di conseguenza il Delay aumenta con l'aumentare del tempo di permanenza del client nel gruppo P2P ed il TimeToReconnect (TTR) dura in media circa 7 secondi.
+In Fig. \ref{rtt} è rappresentato graficamente l'andamento dei valori di RTT, Delay e TTR. Si può notare come l'RTT, e di conseguenza il Delay, cresca in maniera quasi lineare al crescere del tempo di permanenza nel gruppo del client, mentre il TTR rimane sostanzialmente costante. 
 \begin{figure}[H]
 	\includegraphics[scale=0.5,center]{img/rtt.png}
 	\caption{}
 	\label{rtt}
 \end{figure}
 \noindent
+Per quanto riguarda l'RTT è presente una leggera flessione nelle prove effettuate con tempo di permanenza di 8 - 9 secondi. Questo comportamento è giustificato dall'aumento del TTR nelle suddette prove, provocato da possibili interferenze. L'incidenza del tempo di riconnessione sul delay viene  dimostrata facendo la differenza tra i due come mostrato in Fig. \ref{diff}.
+\begin{figure}[H]
+	\includegraphics[scale=0.5,center]{img/diff.png}
+	\caption{}
+	\label{diff}
+\end{figure}
+\noindent
+Questo dimostra come il TTR sia il fattore che incide maggiormente nel calcolo del delay e come sue variazioni vadano a peggiorare i tempi.
+Inoltre, ciò che si è rivelato dagli esperimenti è che l'effort maggiore in termini di tempo è proprio dovuto al tempo di riconnessione che va ad incidere per quasi la totalità del valore di delay e funge lower bound. Dati questi risultati è stato ritenuto non rilevante indagare sul un tempo di permanenza ottimale, nè indagare sul throughput, ricavabile comunque per via teorica.
+
 	
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%			
 \section{Conclusioni}

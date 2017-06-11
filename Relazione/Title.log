@@ -1,11 +1,11 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2015/dev/Debian) (preloaded format=pdflatex 2017.3.8)  10 JUN 2017 15:57
+This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2015/dev/Debian) (preloaded format=pdflatex 2017.5.16)  11 JUN 2017 10:55
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
 **Title.tex
 (./Title.tex
 LaTeX2e <2014/05/01>
-Babel <3.9l> and hyphenation patterns for 3 languages loaded.
+Babel <3.9l> and hyphenation patterns for 79 languages loaded.
 (./llncs.cls
 Document Class: llncs 2010/07/12 v2.17 
  LaTeX document class for Lecture Notes in Computer Science
@@ -429,6 +429,38 @@ Package color Info: Driver file: pdftex.def on input line 137.
 File: pdftex.def 2011/05/27 v0.06d Graphics/color for pdfTeX
 \Gread@gobject=\count117
 ))
+(/usr/share/texlive/texmf-dist/tex/latex/caption/caption.sty
+Package: caption 2013/05/02 v3.3-89 Customizing captions (AR)
+
+(/usr/share/texlive/texmf-dist/tex/latex/caption/caption3.sty
+Package: caption3 2013/05/02 v1.6-88 caption3 kernel (AR)
+Package caption3 Info: TeX engine: e-TeX on input line 57.
+\captionmargin=\dimen125
+\captionmargin@=\dimen126
+\captionwidth=\dimen127
+\caption@tempdima=\dimen128
+\caption@indent=\dimen129
+\caption@parindent=\dimen130
+\caption@hangindent=\dimen131
+Package caption Info: Unknown document class (or package),
+(caption)             standard defaults will be used.
+)
+
+Package caption Warning: Unsupported document class (or package) detected,
+(caption)                usage of the caption package is not recommended.
+See the caption package documentation for explanation.
+
+Package caption Info: \@makecaption = \long macro:#1#2->\small \vskip \abovecap
+tionskip \sbox \@tempboxa {{\bfseries #1.} #2}\ifdim \wd \@tempboxa >\hsize {\b
+fseries #1.} #2\par \else \global \@minipagefalse \hb@xt@ \hsize {\hfil \box \@
+tempboxa \hfil }\fi \vskip \belowcaptionskip .
+\c@ContinuedFloat=\count118
+Package caption Info: float package is loaded.
+) (/usr/share/texlive/texmf-dist/tex/latex/caption/subcaption.sty
+Package: subcaption 2013/02/03 v1.1-62 Sub-captions (AR)
+\c@subfigure=\count119
+\c@subtable=\count120
+)
 (/usr/share/texlive/texmf-dist/tex/latex/xcolor/xcolor.sty
 Package: xcolor 2007/01/21 v2.11 LaTeX color extensions (UK)
 
@@ -462,7 +494,7 @@ Package: xkeyval 2014/05/25 v2.7 package option processing (HA)
 \XKV@toks=\toks23
 \XKV@tempa@toks=\toks24
 )
-\XKV@depth=\count118
+\XKV@depth=\count121
 File: xkeyval.tex 2014/05/25 v2.7 key=value parser (HA)
 ))
 (/usr/share/texlive/texmf-dist/tex/latex/adjustbox/adjcalc.sty
@@ -486,37 +518,37 @@ File: graphics.cfg 2010/04/23 v1.9 graphics configuration of TeX Live
 )
 Package graphics Info: Driver file: pdftex.def on input line 91.
 )
-\Gin@req@height=\dimen125
-\Gin@req@width=\dimen126
+\Gin@req@height=\dimen132
+\Gin@req@width=\dimen133
 )
 (/usr/share/texlive/texmf-dist/tex/latex/collectbox/collectbox.sty
 Package: collectbox 2012/05/17 v0.4b Collect macro arguments as boxes
 \collectedbox=\box56
 )
-\tc@llx=\dimen127
-\tc@lly=\dimen128
-\tc@urx=\dimen129
-\tc@ury=\dimen130
+\tc@llx=\dimen134
+\tc@lly=\dimen135
+\tc@urx=\dimen136
+\tc@ury=\dimen137
 Package trimclip Info: Using driver 'tc-pdftex.def'.
 
 (/usr/share/texlive/texmf-dist/tex/latex/adjustbox/tc-pdftex.def
 File: tc-pdftex.def 2012/05/13 v1.0 Clipping driver for pdftex
 ))
-\adjbox@Width=\dimen131
-\adjbox@Height=\dimen132
-\adjbox@Depth=\dimen133
-\adjbox@Totalheight=\dimen134
+\adjbox@Width=\dimen138
+\adjbox@Height=\dimen139
+\adjbox@Depth=\dimen140
+\adjbox@Totalheight=\dimen141
 
 (/usr/share/texlive/texmf-dist/tex/latex/ifoddpage/ifoddpage.sty
 Package: ifoddpage 2011/09/13 v1.0 Conditionals for odd/even page detection
-\c@checkoddpage=\count119
+\c@checkoddpage=\count122
 )
 (/usr/share/texlive/texmf-dist/tex/latex/varwidth/varwidth.sty
 Package: varwidth 2009/03/30 ver 0.92;  Variable-width minipages
 \@vwid@box=\box57
-\sift@deathcycles=\count120
-\@vwid@loff=\dimen135
-\@vwid@roff=\dimen136
+\sift@deathcycles=\count123
+\@vwid@loff=\dimen142
+\@vwid@roff=\dimen143
 ))
 (/usr/share/texlive/texmf-dist/tex/latex/hyperref/hyperref.sty
 Package: hyperref 2012/11/06 v6.83m Hypertext links for LaTeX
@@ -561,16 +593,16 @@ Package: ifxetex 2010/09/12 v0.6 Provides ifxetex conditional
 (/usr/share/texlive/texmf-dist/tex/latex/oberdiek/auxhook.sty
 Package: auxhook 2011/03/04 v1.3 Hooks for auxiliary files (HO)
 )
-\@linkdim=\dimen137
-\Hy@linkcounter=\count121
-\Hy@pagecounter=\count122
+\@linkdim=\dimen144
+\Hy@linkcounter=\count124
+\Hy@pagecounter=\count125
 
 (/usr/share/texlive/texmf-dist/tex/latex/hyperref/pd1enc.def
 File: pd1enc.def 2012/11/06 v6.83m Hyperref: PDFDocEncoding definition (HO)
 Now handling font encoding PD1 ...
 ... no UTF-8 mapping file for font encoding PD1
 )
-\Hy@SavedSpaceFactor=\count123
+\Hy@SavedSpaceFactor=\count126
 
 (/usr/share/texlive/texmf-dist/tex/latex/latexconfig/hyperref.cfg
 File: hyperref.cfg 2002/06/06 v1.2 hyperref configuration of TeXLive
@@ -582,17 +614,17 @@ Package hyperref Info: Plain pages OFF on input line 4458.
 Package hyperref Info: Backreferencing OFF on input line 4463.
 Package hyperref Info: Implicit mode ON; LaTeX internals redefined.
 Package hyperref Info: Bookmarks ON on input line 4688.
-\c@Hy@tempcnt=\count124
+\c@Hy@tempcnt=\count127
 
 (/usr/share/texlive/texmf-dist/tex/latex/url/url.sty
 \Urlmuskip=\muskip10
 Package: url 2013/09/16  ver 3.4  Verb mode for urls, etc.
 )
 LaTeX Info: Redefining \url on input line 5041.
-\XeTeXLinkMargin=\dimen138
-\Fld@menulength=\count125
-\Field@Width=\dimen139
-\Fld@charsize=\dimen140
+\XeTeXLinkMargin=\dimen145
+\Fld@menulength=\count128
+\Field@Width=\dimen146
+\Fld@charsize=\dimen147
 Package hyperref Info: Hyper figures OFF on input line 6295.
 Package hyperref Info: Link nesting OFF on input line 6300.
 Package hyperref Info: Hyper index ON on input line 6303.
@@ -602,17 +634,17 @@ Package hyperref Info: Link coloring with OCG OFF on input line 6320.
 Package hyperref Info: PDF/A mode OFF on input line 6325.
 LaTeX Info: Redefining \ref on input line 6365.
 LaTeX Info: Redefining \pageref on input line 6369.
-\Hy@abspage=\count126
-\c@Item=\count127
-\c@Hfootnote=\count128
+\Hy@abspage=\count129
+\c@Item=\count130
+\c@Hfootnote=\count131
 )
 
 Package hyperref Message: Driver (autodetected): hpdftex.
 
 (/usr/share/texlive/texmf-dist/tex/latex/hyperref/hpdftex.def
 File: hpdftex.def 2012/11/06 v6.83m Hyperref driver for pdfTeX
-\Fld@listcount=\count129
-\c@bookmark@seq@number=\count130
+\Fld@listcount=\count132
+\c@bookmark@seq@number=\count133
 
 (/usr/share/texlive/texmf-dist/tex/latex/oberdiek/rerunfilecheck.sty
 Package: rerunfilecheck 2011/04/15 v1.7 Rerun checks for auxiliary files (HO)
@@ -624,57 +656,60 @@ Package uniquecounter Info: New unique counter `rerunfilecheck' on input line 2
 (./Title.aux)
 \openout1 = `Title.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 21.
-LaTeX Font Info:    ... okay on input line 21.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 21.
-LaTeX Font Info:    ... okay on input line 21.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 21.
-LaTeX Font Info:    ... okay on input line 21.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 21.
-LaTeX Font Info:    ... okay on input line 21.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 21.
-LaTeX Font Info:    ... okay on input line 21.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 21.
-LaTeX Font Info:    ... okay on input line 21.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 21.
-LaTeX Font Info:    ... okay on input line 21.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 23.
+LaTeX Font Info:    ... okay on input line 23.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 23.
+LaTeX Font Info:    ... okay on input line 23.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 23.
+LaTeX Font Info:    ... okay on input line 23.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 23.
+LaTeX Font Info:    ... okay on input line 23.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 23.
+LaTeX Font Info:    ... okay on input line 23.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 23.
+LaTeX Font Info:    ... okay on input line 23.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 23.
+LaTeX Font Info:    ... okay on input line 23.
  (/usr/share/texlive/texmf-dist/tex/context/base/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count131
-\scratchdimen=\dimen141
+\scratchcounter=\count134
+\scratchdimen=\dimen148
 \scratchbox=\box58
-\nofMPsegments=\count132
-\nofMParguments=\count133
+\nofMPsegments=\count135
+\nofMParguments=\count136
 \everyMPshowfont=\toks25
-\MPscratchCnt=\count134
-\MPscratchDim=\dimen142
-\MPnumerator=\count135
-\makeMPintoPDFobject=\count136
+\MPscratchCnt=\count137
+\MPscratchDim=\dimen149
+\MPnumerator=\count138
+\makeMPintoPDFobject=\count139
 \everyMPtoPDFconversion=\toks26
 )
+Package caption Info: Begin \AtBeginDocument code.
+Package caption Info: hyperref package is loaded.
+Package caption Info: End \AtBeginDocument code.
 \AtBeginShipoutBox=\box59
-Package hyperref Info: Link coloring OFF on input line 21.
+Package hyperref Info: Link coloring OFF on input line 23.
  (/usr/share/texlive/texmf-dist/tex/latex/hyperref/nameref.sty
 Package: nameref 2012/10/27 v2.43 Cross-referencing by name of section
 
 (/usr/share/texlive/texmf-dist/tex/generic/oberdiek/gettitlestring.sty
 Package: gettitlestring 2010/12/03 v1.4 Cleanup title references (HO)
 )
-\c@section@level=\count137
+\c@section@level=\count140
 )
-LaTeX Info: Redefining \ref on input line 21.
-LaTeX Info: Redefining \pageref on input line 21.
-LaTeX Info: Redefining \nameref on input line 21.
+LaTeX Info: Redefining \ref on input line 23.
+LaTeX Info: Redefining \pageref on input line 23.
+LaTeX Info: Redefining \nameref on input line 23.
 
 (./Title.out) (./Title.out)
 \@outlinefile=\write3
 \openout3 = `Title.out'.
 
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <7> on input line 31.
+(Font)              <7> on input line 33.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <5> on input line 31.
-LaTeX Font Info:    Try loading font information for OT1+pcr on input line 31.
+(Font)              <5> on input line 33.
+LaTeX Font Info:    Try loading font information for OT1+pcr on input line 33.
 
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1pcr.fd
 File: ot1pcr.fd 2001/06/04 font definitions for OT1/pcr.
@@ -685,16 +720,16 @@ File: ot1pcr.fd 2001/06/04 font definitions for OT1/pcr.
 <img/archp2p.png, id=25, 1004.75375pt x 392.46625pt>
 File: img/archp2p.png Graphic file (type png)
  <use img/archp2p.png>
-Package pdftex.def Info: img/archp2p.png used on input line 61.
+Package pdftex.def Info: img/archp2p.png used on input line 63.
 (pdftex.def)             Requested size: 301.42845pt x 117.74077pt.
 
 <img/class.png, id=27, 666.49pt x 1135.24126pt>
 File: img/class.png Graphic file (type png)
  <use img/class.png>
-Package pdftex.def Info: img/class.png used on input line 86.
+Package pdftex.def Info: img/class.png used on input line 88.
 (pdftex.def)             Requested size: 199.94853pt x 340.575pt.
 
-Overfull \hbox (7.9881pt too wide) in paragraph at lines 80--89
+Overfull \hbox (7.9881pt too wide) in paragraph at lines 82--91
  [][] \OT1/cmr/m/n/10 In questa sezione verr^^Ra de-scritta a grandi li-nee l'i
 mplementazione dell'applicazione
  []
@@ -702,69 +737,100 @@ mplementazione dell'applicazione
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [2 <./img/archp2p.png>]
-Overfull \hbox (14.0654pt too wide) in paragraph at lines 92--94
+ [2 <./img/archp2p.png>] <img/gui-init.jpg, id=37, 722.7pt x 1284.8pt>
+File: img/gui-init.jpg Graphic file (type jpg)
+
+<use img/gui-init.jpg>
+Package pdftex.def Info: img/gui-init.jpg used on input line 99.
+(pdftex.def)             Requested size: 80.18562pt x 142.54391pt.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <9> on input line 102.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <6> on input line 102.
+ <img/gui-dialog.jpg, id=38, 722.7pt x 1284.8pt>
+File: img/gui-dialog.jpg Graphic file (type jpg)
+
+<use img/gui-dialog.jpg>
+Package pdftex.def Info: img/gui-dialog.jpg used on input line 105.
+(pdftex.def)             Requested size: 80.18562pt x 142.54391pt.
+ <img/gui-report.jpg, id=39, 722.7pt x 1284.8pt>
+File: img/gui-report.jpg Graphic file (type jpg)
+
+<use img/gui-report.jpg>
+Package pdftex.def Info: img/gui-report.jpg used on input line 111.
+(pdftex.def)             Requested size: 80.18562pt x 142.54391pt.
+
+Overfull \hbox (14.0654pt too wide) in paragraph at lines 94--118
  []\OT1/cmr/m/it/10 MainActivity[] \OT1/cmr/m/n/10 ^^Re un'activity che gestisc
 e l'interfaccia grafica. L'aspetto dell'interfaccia
  []
 
-[3 <./img/class.png>] [4] [5]
-Overfull \hbox (17.83113pt too wide) in paragraph at lines 166--167
+
+Underfull \vbox (badness 1515) has occurred while \output is active []
+
+ [3 <./img/class.png>] [4 <./img/gui-init.jpg> <./img/gui-dialog.jpg> <./img/gu
+i-report.jpg>] [5] [6]
+Overfull \hbox (17.83113pt too wide) in paragraph at lines 190--191
  []\OT1/cmr/m/it/10 Listener[] \OT1/cmr/m/n/10 I lis-tener sono in-ter-facce ch
 e ven-gono pas-sate ai metodi del WifiP2pManager
  []
 
 
-Overfull \hbox (10.93158pt too wide) in paragraph at lines 166--167
+Overfull \hbox (10.93158pt too wide) in paragraph at lines 190--191
 \OT1/cmr/m/n/10 per es-sere in-for-mati sullo stato della chia-mata. I di-versi
  metodi del WifiP2pManager
  []
 
-[6]
-Overfull \hbox (10.19551pt too wide) in paragraph at lines 181--182
+[7]
+Overfull \hbox (10.19551pt too wide) in paragraph at lines 205--206
 []\OT1/cmr/m/n/10 WIFI[]P2P[]THIS[]DEVICE[]CHANGED[]ACTION In-vi-ato quando in-
 for-mazioni
  []
 
-[7] <img/report.png, id=87, 1195.46625pt x 845.40843pt>
+<img/report.png, id=88, 1195.46625pt x 845.40843pt>
 File: img/report.png Graphic file (type png)
  <use img/report.png>
-Package pdftex.def Info: img/report.png used on input line 193.
+Package pdftex.def Info: img/report.png used on input line 217.
 (pdftex.def)             Requested size: 358.64264pt x 253.62448pt.
 
-<img/rtt.png, id=89, 703.87968pt x 322.95656pt>
+[8] <img/rtt.png, id=100, 703.87968pt x 322.95656pt>
 File: img/rtt.png Graphic file (type png)
  <use img/rtt.png>
-Package pdftex.def Info: img/rtt.png used on input line 200.
+Package pdftex.def Info: img/rtt.png used on input line 224.
 (pdftex.def)             Requested size: 351.93898pt x 161.47787pt.
 
-Underfull \vbox (badness 2503) has occurred while \output is active []
+Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [8 <./img/report.png>]
-Overfull \hbox (32.61105pt too wide) in paragraph at lines 215--216
+ [9 <./img/report.png>] <img/diff.png, id=108, 700.11563pt x 330.48468pt>
+File: img/diff.png Graphic file (type png)
+
+<use img/diff.png>
+Package pdftex.def Info: img/diff.png used on input line 231.
+(pdftex.def)             Requested size: 350.05696pt x 165.24193pt.
+ [10 <./img/rtt.png (PNG copy)> <./img/diff.png (PNG copy)>]
+Overfull \hbox (32.61105pt too wide) in paragraph at lines 249--250
 []\OT1/cmr/m/n/9 Guida API An-droid https://developer.android.com/guide/topics/
 connectivity/wifip2p.html 
  []
 
-[9 <./img/rtt.png (PNG copy)>]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 218.
- [10]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 218.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 252.
+[11]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 252.
  (./Title.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 218.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 218.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 252.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 252.
 Package rerunfilecheck Info: File `Title.out' has not changed.
 (rerunfilecheck)             Checksum: F8E7E98921FB0787CCD1976C126A1040;66.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 218.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 252.
  ) 
 Here is how much of TeX's memory you used:
- 7035 strings out of 495009
- 102046 string characters out of 6180849
- 199661 words of memory out of 5000000
- 10076 multiletter control sequences out of 15000+600000
- 6626 words of font info for 24 fonts, out of 8000000 for 9000
- 14 hyphenation exceptions out of 8191
- 42i,10n,35p,749b,458s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 8137 strings out of 493105
+ 122009 string characters out of 6137072
+ 223072 words of memory out of 5000000
+ 11405 multiletter control sequences out of 15000+600000
+ 8150 words of font info for 29 fonts, out of 8000000 for 9000
+ 1141 hyphenation exceptions out of 8191
+ 42i,10n,75p,939b,579s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/share/texliv
 e/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/share/texlive/texm
 f-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texlive/texmf-dist
@@ -773,10 +839,10 @@ type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/p
 ublic/amsfonts/cm/cmr9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/am
 sfonts/cm/cmti10.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/courier/ucr
 r8a.pfb>
-Output written on Title.pdf (10 pages, 273094 bytes).
+Output written on Title.pdf (11 pages, 398701 bytes).
 PDF statistics:
- 151 PDF objects out of 1000 (max. 8388607)
- 122 compressed objects within 2 object streams
- 54 named destinations out of 1000 (max. 500000)
- 29 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 163 PDF objects out of 1000 (max. 8388607)
+ 129 compressed objects within 2 object streams
+ 57 named destinations out of 1000 (max. 500000)
+ 49 words of extra memory for PDF output out of 10000 (max. 10000000)
 
