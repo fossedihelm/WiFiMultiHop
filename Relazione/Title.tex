@@ -57,12 +57,12 @@ WiFi Direct consente la formazione di gruppi di comunicazione peer-to-peer. Ogni
 
 \paragraph{} I dispositivi Android a disposizione per questo progetto sono 3: essi sono sufficienti per creare le condizioni minime per poter testare l'idea del salto tra gruppi: due dispositivi agiscono come Group Owner, mentre il terzo agirà come client che si connette in alternanza tra i primi due, rimanendo connesso a ciascuno di essi per un periodo di tempo prefissato.
 
-\paragraph{} Ai due Group Owner sono stati assegnati due ruoli. Il primo, detto generator, genera periodicamente messaggi da inoltrare. Il secondo, detto replier, non fa altro che rispedire al mittente i messaggi ricevuti. Il generator prende nota dei tempi di invio e di ricezione, in modo da poter calcolare l'RTT (round trip time) presente tra sè stesso ed il replier. La stima di questo RTT è influenzata dai tempi di processamento e dal tempo di trasmissione dei messaggi. Tuttavia il tempo di processamento dovrebbe essere molto più basso rispetto ad i tempi di ritardo e trasmissione, mentre la piccola dimensione dei messaggi fa sì che la misurazione finale non venga distorta in maniera significativa.
+\paragraph{} Ai due Group Owner sono stati assegnati due ruoli. Il primo, detto generator, genera periodicamente messaggi da inoltrare. Il secondo, detto replier, non fa altro che rispedire al mittente i messaggi ricevuti. Il generator prende nota dei tempi di invio e di ricezione, in modo da poter calcolare l'RTT (round trip time) presente tra sè stesso ed il replier. Lo scenario appena descritto è mostrato in figura \ref{fig:scenario} La stima di questo RTT è influenzata dai tempi di processamento e dal tempo di trasmissione dei messaggi. Tuttavia il tempo di processamento dovrebbe essere molto più basso rispetto ad i tempi di ritardo e trasmissione, mentre la piccola dimensione dei messaggi fa sì che la misurazione finale non venga distorta in maniera significativa.
 
 \begin{figure}[H]
 	\includegraphics[scale=0.3,center]{img/archp2p.png}
 	\caption{}
-	\label{label}
+	\label{fig:scenario}
 \end{figure}
 \noindent
 %	\cite{relatedWork}
@@ -79,7 +79,7 @@ WiFi Direct consente la formazione di gruppi di comunicazione peer-to-peer. Ogni
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%		 
 \section{Architettura}
 
-\paragraph{} In questa sezione verrà descritta a grandi linee l'implementazione dell'applicazione usata per i test. Il protocollo da noi previsto prevede diversi tipi di messaggi che possono essere inviati. Quando il client 
+\paragraph{} In questa sezione verrà descritta a grandi linee l'implementazione dell'applicazione usata per i test. Uno schema dell'architettura viene mostrato in figura \ref{fig:class}. Il protocollo da noi previsto prevede diversi tipi di messaggi che possono essere inviati. Quando il client 
 riesce a stabilire una nuova connessione, esso invia un messaggio di tipo REGISTER che contiene la lista dei GO raggiungibili dal client. La ricezione di questo messaggio anticipa lo scambio di messaggi di tipo DATA, il cui scopo
 è solamente quello di trasmettere dati per la rilevazione delle statistiche. Quando il timer impostato dall'utente scade, il client avvia una procedura di disconnessione che consiste nell'invio di un messaggio di STOP e nella ricezione 
 di un relativo STOP\_ACK. A questo punto il client è in grado di avviare la disconnessione a livello data link con la certezza di non aver perso informazioni a livello applicativo.
@@ -87,11 +87,11 @@ Le classi principali sono MainActivity, DeviceManager, Peer e MessageManager.
 \begin{figure}[H]
 	\includegraphics[scale=0.3,center]{img/class.png}
 	\caption{}
-	\label{class}
+	\label{fig:class}
 \end{figure}
 \noindent
 
-\paragraph{MainActivity} è un'activity che gestisce l'interfaccia grafica. L'aspetto dell'interfaccia cambia grazie all'uso dei fragment. Non essendo caso di studio, l'interfaccia è molto semplice e consiste di due view. La view iniziale è quella che, oltre a mostrarti un delenco dei dispositivi disponibili, ti permette di sceglere il ruolo del device (group owner o client) attraverso due pulsanti. La seconda view mostra invece in real time i dati utili per gli esperimenti come il numero di messaggi ricevuti e inviati, l'RTT medio (per il generator) e il tempo di riconnessione per il client. Inoltre in questa view è possibile scegliere il ruolo del group owner attraverso uno switch. Infine, il tempo di permanenza del client nel gruppo viene impostato in fase di scelta del ruolo. Infatti, quando si seleziona il ruolo client, viene mostrato un dialog che permette di impostare questo parametro.
+\paragraph{MainActivity} è un'activity che gestisce l'interfaccia grafica. L'aspetto dell'interfaccia cambia grazie all'uso dei fragment. Non essendo caso di studio, l'interfaccia è molto semplice e consiste di due view. La view iniziale (Fig. \ref{fig:sub1}) è quella che, oltre a mostrare un elenco dei dispositivi disponibili, permette di sceglere il ruolo del device (group owner o client) attraverso due pulsanti. La seconda view (Fig. \ref{fig:sub3}) mostra invece in real time i dati utili per gli esperimenti come il numero di messaggi ricevuti e inviati, l'RTT medio (per il generator) e il tempo di riconnessione per il client. Inoltre in questa view è possibile scegliere il ruolo del group owner attraverso uno switch. Infine, il tempo di permanenza del client nel gruppo viene impostato in fase di scelta del ruolo (Fig. \ref{fig:sub2}). Infatti, quando si seleziona il ruolo client, viene mostrato un dialog che permette di impostare questo parametro.
 \begin{figure}
 	\centering
 	\begin{subfigure}{.33\textwidth}
@@ -205,36 +205,36 @@ Gli Intent sono messaggi asincroni di cui viene fatto broadcast quando un determ
 	\item{WIFI\_P2P\_THIS\_DEVICE\_CHANGED\_ACTION} Inviato quando informazioni del dispositivo sono state modificate come ad esempio il nome del dispositivo.
 \end{itemize}
 \paragraph{} L'utilizzo e la comprensione di queste API è stato necessario per lo svolgimento dell'esperimento. Tuttavia, la documentazione fornita non è ben dettagliata ed in molte occasioni è stato necessario scoprire in maniera empirica come funzionassero. L'ordine giusto in cui i metodi devono essere chiamati è stato trovato solamente dopo numerosi tentativi.
-È stato inoltre constatato che il framework è piuttosto instabile: a volte le operazioni non vengono completate correttamente senza che venga  fornita alcuna spiegazione. In alcuni casi il comportamento del framework è addirittura in contrasto con la documentazione ufficiale. Solo a titolo di esempio si ricorda il caso già citato della \emph{removeGroup()} per disconnettersi dal gruppo: in determinate condizioni non viene chiamata alcuna callback per indicare il successo o il fallimento dell'operazione, che no nviene mai portata a termine.
+È stato inoltre constatato che il framework è piuttosto instabile: a volte le operazioni non vengono completate correttamente senza che venga  fornita alcuna spiegazione. In alcuni casi il comportamento del framework è addirittura in contrasto con la documentazione ufficiale. Solo a titolo di esempio si ricorda il caso già citato della \emph{removeGroup()} per disconnettersi dal gruppo: in determinate condizioni non viene chiamata alcuna callback per indicare il successo o il fallimento dell'operazione, che non viene mai portata a termine.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%			
 \section{Esperimenti}
-\paragraph{} In questa sezione desciveremo gli esperimenti condotti e mostreremo i risultati ottenuti da tali esperimenti. Mostreremo come il tempo di connessione ad un gruppo aggiunga un effort in termini di tempi molto elevato.
-\paragraph{Scenari} Gli esperimenti effettuati miravano a trovare L'RTT di un qualsiasi messaggio al variare dello scenario. I differenti scenari differiscono tra loro nel tempo di permanenza del client in ognuno dei gruppi.I tempi di permanenza presi in considerazione sono i seguenti: \textit{1sec, 2sec, 3sec, 4sec, 5sec, 6sec, 7sec, 8sec, 9sec, 10sec, 15sec, 20sec}. Ogni esperimento nei differenti scenari è stato ripetuto 6 volte, dove per esperimento si intende il completo ciclo di connessione al generator con ricezione dei messaggi, disconnessione dal generator e connessione al receiver con invio e ricezione dei messaggi e disconnessione dal receiver e riconnessione al generator per reinviare i messaggi.
-\paragraph{Risultati} I risultati delle prove effettuate sono mostrati in Fig. \ref{report}. Nella tabella vengono riportati i RoundTripTime medi (RTT Avg.), i TimeToReconnect medi (TTR Avg.) e il Delay, calcolato come la metà dell' RTT. Ciò che salta subito all'occhio è il tempo di riconnessione medio che si mantiene stabile negli intorni dei 7 secondi, variando da un 6.3345833333 ad un 8.2815 secondi. Discorso differente è se si va a valutare il valore assoluto di questo tempo in ogni esperimento. Infatti si è riscontrato che questo valore ha un comportamento altamente incostante, variando tempi di 3.356 secondi a picchi di valore pari a 16.54 (giustificati da possibili interferenze).
+\paragraph{} In questa sezione vengono descritti gli esperimenti condotti e mostrati i risultati ottenuti da tali esperimenti. Mostreremo come il tempo di connessione ad un gruppo aggiunga un effort in termini di tempi molto elevato.
+\paragraph{Scenari} Gli esperimenti effettuati miravano a trovare L'RTT di un qualsiasi messaggio al variare dello scenario. I differenti scenari differiscono tra loro nel tempo di permanenza del client in ognuno dei gruppi.I tempi di permanenza presi in considerazione sono i seguenti (espressi in secondi): \textit{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20}. Ogni esperimento nei differenti scenari è stato ripetuto 6 volte, dove per esperimento si intende il completo ciclo di connessione al generator con ricezione dei messaggi, disconnessione dal generator e connessione al receiver con invio e ricezione dei messaggi e disconnessione dal receiver e riconnessione al generator per reinviare i messaggi.
+\paragraph{Risultati} I risultati delle prove effettuate sono mostrati in Fig. \ref{report}. Nella tabella vengono riportati i RoundTripTime medi (RTT Avg.), i TimeToReconnect medi (TTR Avg.) e il Delay, calcolato come la metà dell' RTT. Ciò che salta subito all'occhio è il tempo di riconnessione medio che si mantiene stabile negli intorni dei 7 secondi, variando da un 6.33 ad un 8.28 secondi. Discorso differente è se si va a valutare il valore assoluto di questo tempo in ogni esperimento. Infatti si è riscontrato che questo valore ha un comportamento altamente variabile, da tempi di 3.35 secondi a picchi di valore pari a 16.54 (giustificati da possibili interferenze).
 \begin{figure}[H]
 	\includegraphics[scale=0.3,center]{img/report.png}
-	\caption{}
+	\caption{Tabella dei risultati. RTT è il round trip time, TTR è il tempo impiegato dal client per cambiare gruppo, delay è RTT/2. Tutti i dati sono riportati in secondi.}
 	\label{report}
 \end{figure}
 \noindent
 In Fig. \ref{rtt} è rappresentato graficamente l'andamento dei valori di RTT, Delay e TTR. Si può notare come l'RTT, e di conseguenza il Delay, cresca in maniera quasi lineare al crescere del tempo di permanenza nel gruppo del client, mentre il TTR rimane sostanzialmente costante. 
 \begin{figure}[H]
 	\includegraphics[scale=0.5,center]{img/rtt.png}
-	\caption{}
+	\caption{RTT, TTR, delay in funzione del tempo di permanenza nel gruppo.}
 	\label{rtt}
 \end{figure}
 \noindent
 Per quanto riguarda l'RTT è presente una leggera flessione nelle prove effettuate con tempo di permanenza di 8 - 9 secondi. Questo comportamento è giustificato dall'aumento del TTR nelle suddette prove, provocato da possibili interferenze. L'incidenza del tempo di riconnessione sul delay viene  dimostrata facendo la differenza tra i due come mostrato in Fig. \ref{diff}.
 \begin{figure}[H]
 	\includegraphics[scale=0.5,center]{img/diff.png}
-	\caption{}
+	\caption{Differenza tra delay e tempo di riconnessione (TTR).}
 	\label{diff}
 \end{figure}
 \noindent
 Questo dimostra come il TTR sia il fattore che incide maggiormente nel calcolo del delay e come sue variazioni vadano a peggiorare i tempi.
-Inoltre, ciò che si è rivelato dagli esperimenti è che l'effort maggiore in termini di tempo è proprio dovuto al tempo di riconnessione che va ad incidere per quasi la totalità del valore di delay e funge lower bound. Dati questi risultati è stato ritenuto non rilevante indagare sul un tempo di permanenza ottimale, nè indagare sul throughput, ricavabile comunque per via teorica.
+Inoltre, ciò che si è rivelato dagli esperimenti è che l'effort maggiore in termini di tempo è proprio dovuto al tempo di riconnessione che va ad incidere per quasi la totalità del valore di delay e funge da lower bound. Dati questi risultati è stato ritenuto non rilevante indagare sul tempo di permanenza ottimale, contrariamente a quanto previsto, né indagare sul throughput, ricavabile comunque moltiplicando il throughput della trasmissione WiFi per il tempo in cui essa avviene e dividendolo per il tempo rimanente.
 
 	
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%			
@@ -247,6 +247,7 @@ Inoltre, ciò che si è rivelato dagli esperimenti è che l'effort maggiore in t
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{thebibliography}{}
 	\bibitem{android} Guida API Android https://developer.android.com/guide/topics/connectivity/wifip2p.html
+	\bibitem{codice} Progetto su GitHub: 
 \end{thebibliography}
 
 \end{document}
