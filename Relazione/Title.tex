@@ -79,7 +79,7 @@ WiFi Direct consente la formazione di gruppi di comunicazione peer-to-peer. Ogni
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%		 
 \section{Architettura}
 
-\paragraph{} In questa sezione verrà descritta a grandi linee l'implementazione dell'applicazione usata per i test. Uno schema dell'architettura viene mostrato in figura \ref{fig:class}. Il protocollo da noi previsto prevede diversi tipi di messaggi che possono essere inviati. Quando il client 
+\paragraph{} In questa sezione verrà descritta a grandi linee l'implementazione dell'applicazione usata per i test. Uno schema dell'architettura viene mostrato in figura \ref{fig:class}. Il protocollo da noi previsto prevede diversi tipi di messaggi che possono essere inviati. Quando il client
 riesce a stabilire una nuova connessione, esso invia un messaggio di tipo REGISTER che contiene la lista dei GO raggiungibili dal client. La ricezione di questo messaggio anticipa lo scambio di messaggi di tipo DATA, il cui scopo
 è solamente quello di trasmettere dati per la rilevazione delle statistiche. Quando il timer impostato dall'utente scade, il client avvia una procedura di disconnessione che consiste nell'invio di un messaggio di STOP e nella ricezione 
 di un relativo STOP\_ACK. A questo punto il client è in grado di avviare la disconnessione a livello data link con la certezza di non aver perso informazioni a livello applicativo.
@@ -214,7 +214,7 @@ Gli Intent sono messaggi asincroni di cui viene fatto broadcast quando un determ
 \paragraph{Scenari} Gli esperimenti effettuati miravano a trovare L'RTT di un qualsiasi messaggio al variare dello scenario. I differenti scenari differiscono tra loro nel tempo di permanenza del client in ognuno dei gruppi.I tempi di permanenza presi in considerazione sono i seguenti (espressi in secondi): \textit{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20}. Ogni esperimento nei differenti scenari è stato ripetuto 6 volte, dove per esperimento si intende il completo ciclo di connessione al generator con ricezione dei messaggi, disconnessione dal generator e connessione al receiver con invio e ricezione dei messaggi e disconnessione dal receiver e riconnessione al generator per reinviare i messaggi.
 \paragraph{Risultati} I risultati delle prove effettuate sono mostrati in Fig. \ref{report}. Nella tabella vengono riportati i RoundTripTime medi (RTT Avg.), i TimeToReconnect medi (TTR Avg.) e il Delay, calcolato come la metà dell' RTT. Ciò che salta subito all'occhio è il tempo di riconnessione medio che si mantiene stabile negli intorni dei 7 secondi, variando da un 6.33 ad un 8.28 secondi. Discorso differente è se si va a valutare il valore assoluto di questo tempo in ogni esperimento. Infatti si è riscontrato che questo valore ha un comportamento altamente variabile, da tempi di 3.35 secondi a picchi di valore pari a 16.54 (giustificati da possibili interferenze).
 \begin{figure}[H]
-	\includegraphics[scale=0.3,center]{img/report.png}
+	\includegraphics[scale=0.4,center]{img/report.png}
 	\caption{Tabella dei risultati. RTT è il round trip time, TTR è il tempo impiegato dal client per cambiare gruppo, delay è RTT/2. Tutti i dati sono riportati in secondi.}
 	\label{report}
 \end{figure}
@@ -247,7 +247,7 @@ Inoltre, ciò che si è rivelato dagli esperimenti è che l'effort maggiore in t
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{thebibliography}{}
 	\bibitem{android} Guida API Android https://developer.android.com/guide/topics/connectivity/wifip2p.html
-	\bibitem{codice} Progetto su GitHub: 
+	\bibitem{codice} Progetto su GitHub:
 \end{thebibliography}
 
 \end{document}
